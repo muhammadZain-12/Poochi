@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "221236714928",
+    "project_id": "poochie-50675",
+    "storage_bucket": "poochie-50675.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221236714928:android:2437d00492d449db5f0a75",
+        "android_client_info": {
+          "package_name": "com.poochi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "221236714928-u1ds8n5l05btua62ruft4cq7upurh5u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIcpjK-pSez82bCkFMkoBrGA8IvwzxUnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221236714928-u1ds8n5l05btua62ruft4cq7upurh5u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
