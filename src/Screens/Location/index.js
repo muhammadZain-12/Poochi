@@ -13,10 +13,12 @@ import MapView, {Marker} from 'react-native-maps';
 import Colors from '../../Constant/Color';
 import CustomButton from '../../Components/CustomButton';
 import Geolocation from 'react-native-geolocation-service';
-import Navigation from '../Navigation';
+import { useIsFocused } from '@react-navigation/native';
 
 function Location({navigation}) {
   const [modalVisible, setModalVisible] = useState(true);
+
+  const focus = useIsFocused()
 
   const locationPermission = () =>
     new Promise(async (resolve, reject) => {
@@ -133,7 +135,7 @@ function Location({navigation}) {
         style={StyleSheet.absoluteFill}
       />
 
-      {modalVisible && ShowLocationModal()}
+      {modalVisible && focus && ShowLocationModal()}
     </View>
   );
 }

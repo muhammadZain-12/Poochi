@@ -3,29 +3,28 @@ import { View, StyleSheet, Image, useWindowDimensions, Touchable, TouchableOpaci
 import Colors from '../Constant/Color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function CustomHeader({ onPress, iconname, color, source,rightButton,cancelRideFunction,iconStyle}) {
+export default function CustomHeader({ onPress, iconname, color, source,rightButton,cancelRideFunction,iconStyle,text}) {
     const { height } = useWindowDimensions();
     
         
     return (
         <View style={styles.header}>
-            {/* <Image
-                    style={[styles.toggle, { height: height * 0.05 }]}
-                    resizeMode="contain"
-                    source={require('../Assets/Images/blackImg.png')}
-                /> */}
             <Ionicons
                 onPress={onPress}
                 name={iconname}
-                size={30}
+                size={25}
                 color={color}
                 style={[styles.backIcon,{...iconStyle}]}
             />
-            <Image
+            {/* <Image
                 style={[styles.Logo, { height: height * 0.06 }]}
                 resizeMode="contain"
                 source={source}
-            />
+            /> */}
+
+            <Text style={{fontSize:18,fontFamily:"Poppins-SemiBold",color:Colors.black}} >{text}</Text>
+
+
            {rightButton &&  <TouchableOpacity onPress={cancelRideFunction} style={{position:"absolute",right:10}} ><Text style={{color:"red",fontSize:16}} >Cancel Ride</Text></TouchableOpacity>}
            <View style={styles.emptyContainer}></View>
 

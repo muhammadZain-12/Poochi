@@ -14,6 +14,11 @@ import Chat from '../Chat';
 import { Image, TouchableOpacity, TouchableOpacityBase, View } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icon from "react-native-vector-icons/AntDesign"
+import MedicalTrip from '../MedicalTrip';
+import PetSelect from '../PetSelect';
+import PaymentMethod from '../PaymentMethod';
+import Drivers from '../Drivers';
+import SinglePetDetail from '../SinglePetDetail';
 
 
 const Stack = createNativeStackNavigator();
@@ -77,7 +82,7 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SplashScreen"
+        initialRouteName="MedicalTrip"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} />
@@ -86,6 +91,11 @@ export default function Navigation() {
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="Location" component={Location} />
         <Stack.Screen name="Tab" component={MyTabs} />
+        <Stack.Screen name="MedicalTrip" component={MedicalTrip} />
+        <Stack.Screen name="PetSelect" component={PetSelect} />
+        <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
+        <Stack.Screen name="Drivers" component={Drivers} />
+        <Stack.Screen name="SinglePetDetails" component={SinglePetDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
