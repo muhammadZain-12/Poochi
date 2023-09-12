@@ -12,42 +12,98 @@ function PetSelect({ navigation }) {
         {
             image: require("../../Images/pet1.png"),
             name: "Capri",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet2.png"),
             name: "Lucy",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet3.png"),
             name: "Raddy",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet1.png"),
             name: "Tito",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet2.png"),
             name: "Jacki",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet3.png"),
             name: "Argos",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet1.png"),
             name: "Capri",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
         {
             image: require("../../Images/pet2.png"),
             name: "Raddy",
-            breed: "Ragdoll"
+            breed: "Ragdoll",
+            category: "dog",
+            gender: "male",
+            height: "20",
+            weight: "20",
+            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+            natureOfPet: "angry",
+            injuryOrHealthIssue: "no"
         },
 
 
@@ -67,6 +123,10 @@ function PetSelect({ navigation }) {
                     iconname={"arrow-back-outline"}
                     text="Pet Select"
                     color={Colors.black}
+                    image={require("../../Images/plus.png")}
+                    imageFunc={() => navigation.navigate('Tab', {
+                        screen: 'PetDetails',
+                    })}
                 />
             </View>
 
@@ -76,7 +136,7 @@ function PetSelect({ navigation }) {
 
                     {pets && pets.length > 0 && pets.map((e, i) => {
                         return (
-                            <TouchableOpacity key={i} style={{ width: "48%", marginTop: 20 }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("SinglePetDetails", e)} key={i} style={{ width: "48%", marginTop: 20 }} >
 
                                 <Image source={e.image} style={{ width: "100%" }} />
 

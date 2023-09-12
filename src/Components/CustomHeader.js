@@ -1,20 +1,22 @@
 import React from 'react'
-import { View, StyleSheet, Image, useWindowDimensions, Touchable, TouchableOpacity,Text } from 'react-native'
+import { View, StyleSheet, Image, useWindowDimensions, Touchable, TouchableOpacity, Text } from 'react-native'
 import Colors from '../Constant/Color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function CustomHeader({ onPress, iconname, color, source,rightButton,cancelRideFunction,iconStyle,text}) {
+export default function CustomHeader({ onPress, iconname, color, source, rightButton, cancelRideFunction, iconStyle, text, image, imageFunc }) {
     const { height } = useWindowDimensions();
-    
-        
+
+
     return (
         <View style={styles.header}>
+
+
             <Ionicons
                 onPress={onPress}
                 name={iconname}
                 size={25}
                 color={color}
-                style={[styles.backIcon,{...iconStyle}]}
+                style={[styles.backIcon, { ...iconStyle }]}
             />
             {/* <Image
                 style={[styles.Logo, { height: height * 0.06 }]}
@@ -22,12 +24,21 @@ export default function CustomHeader({ onPress, iconname, color, source,rightBut
                 source={source}
             /> */}
 
-            <Text style={{fontSize:18,fontFamily:"Poppins-SemiBold",color:Colors.black}} >{text}</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold", color: Colors.black, width: "50%", textAlign: "center" }} >{text}</Text>
 
 
-           {rightButton &&  <TouchableOpacity onPress={cancelRideFunction} style={{position:"absolute",right:10}} ><Text style={{color:"red",fontSize:16}} >Cancel Ride</Text></TouchableOpacity>}
-           <View style={styles.emptyContainer}></View>
+            {rightButton && <TouchableOpacity onPress={cancelRideFunction} style={{ position: "absolute", right: 10 }} ><Text style={{ color: "red", fontSize: 16 }} >Cancel Ride</Text></TouchableOpacity>}
 
+            <View style={{ width: "25%" }} >
+                {image ? <TouchableOpacity onPress={imageFunc} style={{ alignSelf: "flex-end", marginRight: 20, width: 60 }} >
+                    <Image source={image} style={{ alignSelf: "flex-end" }} />
+                </TouchableOpacity>
+                    :
+                    <View>
+                    </View>
+                }
+
+            </View>
         </View>
 
     )
@@ -36,7 +47,8 @@ export default function CustomHeader({ onPress, iconname, color, source,rightBut
 const styles = StyleSheet.create({
     backIcon: {
         flex: 1,
-        marginLeft: 10
+        marginLeft: 10,
+        width: "25%"
     },
     emptyContainer: {
         flex: 1

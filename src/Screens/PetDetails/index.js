@@ -180,10 +180,10 @@ function PetDetails({ navigation }) {
             setOpen={setOpenGender}
             setValue={setGender}
             setItems={setGenderOptions}
-            containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10 }}
+            containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, zIndex: 100 }}
             style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10, }}
             textStyle={{ fontSize: 16 }}
-            dropDownContainerStyle={{ zIndex: 999 }}
+            dropDownContainerStyle={{ zIndex: 800 }}
             placeholder={'Gender'}
             placeholderStyle={{ color: "gray" }}
           />
@@ -198,10 +198,11 @@ function PetDetails({ navigation }) {
               setOpen={setOpenWeight}
               setValue={setWeight}
               setItems={setWeightOptions}
-              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%" }}
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10, zIndex: 100 }}
+              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%", }}
+              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10 }}
               textStyle={{ fontSize: 16 }}
-              dropDownContainerStyle={{ zIndex: 999 }}
+              dropDownContainerStyle={{ zIndex: 700 }}
+              dropDownDirection='Bottom'
               placeholder={'Weight'}
               placeholderStyle={{ color: "gray" }}
             />
@@ -213,10 +214,11 @@ function PetDetails({ navigation }) {
               setOpen={setOpenHeight}
               setValue={setHeight}
               setItems={setHeightOptions}
-              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%" }}
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10, zIndex: 100 }}
+              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%", }}
+              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10 }}
               textStyle={{ fontSize: 16 }}
-              dropDownContainerStyle={{ zIndex: 999 }}
+              dropDownDirection='Bottom'
+              dropDownContainerStyle={{ zIndex: 600 }}
               placeholder={'Height'}
               placeholderStyle={{ color: "gray" }}
             />

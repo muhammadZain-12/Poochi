@@ -3,7 +3,7 @@ import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, S
 import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
 
-function Home() {
+function Home({ navigation }) {
 
 
   const { height, width } = Dimensions.get('screen');
@@ -11,7 +11,6 @@ function Home() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
-
 
   const HomePageBanner = [
     {
@@ -133,7 +132,7 @@ function Home() {
 
           <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >
 
-            <TouchableOpacity style={{ width: "49%" }} >
+            <TouchableOpacity style={{ width: "49%" }} onPress={() => navigation.navigate("MedicalTrip")} >
 
               <Image source={require("../../Images/medical.png")} style={{ width: "100%", borderRadius: 10 }} />
 

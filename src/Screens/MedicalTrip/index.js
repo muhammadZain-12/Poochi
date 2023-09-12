@@ -13,7 +13,7 @@ function MedicalTrip({ navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
-    <View style={{marginTop:5}} >            
+            <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
                     text={"Medical Trip"}
@@ -24,8 +24,8 @@ function MedicalTrip({ navigation }) {
 
                 />
 
-</View>
-<ScrollView>
+            </View>
+            <ScrollView>
 
 
                 <View style={{ paddingHorizontal: 15, marginTop: 20 }} >
@@ -163,7 +163,7 @@ function MedicalTrip({ navigation }) {
 
                 </View>
 
-                <CustomButton onPress={()=>navigation.navigate("Drivers")} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text="Find a Driver" />
+                <CustomButton onPress={() => navigation.navigate("Drivers")} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text="Find a Driver" />
 
 
             </ScrollView>
