@@ -9,6 +9,7 @@ export default function CustomButton({
   bgColor,
   styleContainer,
   btnTextStyle,
+  linearColor,
 }) {
   return (
     <TouchableOpacity
@@ -18,7 +19,7 @@ export default function CustomButton({
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
         colors={
-          bgColor ? [Colors.black, Colors.black] : [Colors.buttonColor, Colors.buttonColor]
+          bgColor ? [Colors.black, Colors.black] : [linearColor ? linearColor : Colors.buttonColor, linearColor ? linearColor : Colors.buttonColor]
         }
         style={styles.linearGradient}>
         <Text style={[styles.buttonText, btnTextStyle]}>{text}</Text>

@@ -19,6 +19,14 @@ import PetSelect from '../PetSelect';
 import PaymentMethod from '../PaymentMethod';
 import Drivers from '../Drivers';
 import SinglePetDetail from '../SinglePetDetail';
+import Profile from '../Profile';
+import ScheduleRide from '../ScheduleRide';
+import ScheduleRideDetails from '../ScheduleRideDetails';
+import RideCancel from '../RideCancel';
+import PassengerRideDetail from '../PassengerRideDetailScreen';
+import Track from '../Track';
+import PetGrooming from '../PetGrooming';
+import FriendsAndFamily from '../FriendsAndFamily';
 
 
 const Stack = createNativeStackNavigator();
@@ -96,6 +104,14 @@ export default function Navigation() {
         <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
         <Stack.Screen name="Drivers" component={Drivers} />
         <Stack.Screen name="SinglePetDetails" component={SinglePetDetail} />
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="ScheduleRide" component={ScheduleRide} />
+        <Stack.Screen name="ScheduleRideDetails" component={ScheduleRideDetails} />
+        <Stack.Screen name="RideCancel" component={RideCancel} />
+        <Stack.Screen name="PassengerRideDetail" component={PassengerRideDetail} />
+        <Stack.Screen name="Track" component={Track} />
+        <Stack.Screen name="PetGrooming" component={PetGrooming} />
+        <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
       </Stack.Navigator>
     </NavigationContainer>
   );

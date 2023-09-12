@@ -24,12 +24,12 @@ export default function CustomHeader({ onPress, iconname, color, source, rightBu
                 source={source}
             /> */}
 
-            <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold", color: Colors.black, width: "50%", textAlign: "center" }} >{text}</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold", color: Colors.black, width: "60%", textAlign: "center" }} >{text}</Text>
 
 
             {rightButton && <TouchableOpacity onPress={cancelRideFunction} style={{ position: "absolute", right: 10 }} ><Text style={{ color: "red", fontSize: 16 }} >Cancel Ride</Text></TouchableOpacity>}
 
-            <View style={{ width: "25%" }} >
+            <View style={{ width: "20%" }} >
                 {image ? <TouchableOpacity onPress={imageFunc} style={{ alignSelf: "flex-end", marginRight: 20, width: 60 }} >
                     <Image source={image} style={{ alignSelf: "flex-end" }} />
                 </TouchableOpacity>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     backIcon: {
         flex: 1,
         marginLeft: 10,
-        width: "25%"
+        width: "20%"
     },
     emptyContainer: {
         flex: 1

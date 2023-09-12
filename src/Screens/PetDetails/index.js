@@ -87,9 +87,6 @@ function PetDetails({ navigation }) {
   }
 
 
-  console.log(natureOfPet, "natureOfPets")
-
-
   return <View style={{ flex: 1, backgroundColor: Colors.white }} >
     <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true} >
 

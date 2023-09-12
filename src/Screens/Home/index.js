@@ -28,6 +28,108 @@ function Home({ navigation }) {
   ];
 
 
+  const [scheduleData, setScheduleData] = useState([
+
+    {
+      image: require("../../Images/driverProfile.png"),
+      name: "Robert",
+      car: "Toyota Prius",
+      rating: 4.9,
+      carModel: "AA 5841 AO",
+      currentLocation: "Chicago,US",
+      DropoffLocation: "PET Hospital",
+      scheduleDate: "09-Sep-2023",
+      scheduleTime: "06:30 PM",
+      fare: 30,
+      phoneNumber: "+921234567890",
+      pickupCords: {
+        latitude: -10.68860,
+        longitude: -106.27245
+      },
+      dropoffCords: {
+        latitude: -10.69860,
+        longitude: -106.30245
+      },
+      last4: "8970",
+      cardType: "visa"
+    },
+    {
+      image: require("../../Images/driverProfile.png"),
+      name: "Robert",
+      car: "Toyota Prius",
+      rating: 4.9,
+      carModel: "AA 5841 AO",
+      currentLocation: "Chicago,US",
+      DropoffLocation: "PET Hospital",
+      scheduleDate: "09-Sep-2023",
+      scheduleTime: "06:30 PM",
+      fare: 30,
+      phoneNumber: "+921234567890",
+      pickupCords: {
+        latitude: -10.68860,
+        longitude: -106.27245
+      },
+      dropoffCords: {
+        latitude: -10.69860,
+        longitude: -106.30245
+
+      },
+      last4: "8970",
+      cardType: "visa"
+    },
+    {
+      image: require("../../Images/driverProfile.png"),
+      name: "Robert",
+      car: "Toyota Prius",
+      rating: 4.9,
+      carModel: "AA 5841 AO",
+      currentLocation: "Chicago,US",
+      DropoffLocation: "PET Hospital",
+      scheduleDate: "09-Sep-2023",
+      scheduleTime: "06:30 PM",
+      fare: 30,
+      phoneNumber: "+921234567890",
+      pickupCords: {
+        latitude: -10.68860,
+        longitude: -106.27245
+      },
+      dropoffCords: {
+        latitude: -10.69860,
+        longitude: -106.30245
+
+      },
+      last4: "8970",
+      cardType: "visa"
+    }
+  ])
+
+
+  const [trackData, setTrackData] = useState({
+    image: require("../../Images/driverProfile.png"),
+    name: "Robert",
+    car: "Toyota Prius",
+    rating: 4.9,
+    carModel: "AA 5841 AO",
+    currentLocation: "Chicago,US",
+    DropoffLocation: "PET Hospital",
+    scheduleDate: "09-Sep-2023",
+    scheduleTime: "06:30 PM",
+    fare: 30,
+    phoneNumber: "+921234567890",
+    pickupCords: {
+      latitude: -10.68860,
+      longitude: -106.27245
+    },
+    dropoffCords: {
+      latitude: -10.69860,
+      longitude: -106.30245
+
+    },
+    last4: "8970",
+    cardType: "visa"
+  })
+
+
   const nextImage = () => {
     const nextIndex = (currentIndex + 1) % HomePageBanner.length;
     setCurrentIndex(nextIndex);
@@ -49,8 +151,9 @@ function Home({ navigation }) {
     <ScrollView>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
-
-        <Image source={require("../../Images/profile.png")} />
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
+          <Image source={require("../../Images/profile.png")} />
+        </TouchableOpacity>
 
         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
 
@@ -72,7 +175,7 @@ function Home({ navigation }) {
           </TouchableOpacity>
 
 
-          <TouchableOpacity style={{ marginLeft: 5 }} >
+          <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => navigation.navigate("Track", trackData)} >
             <Image source={require("../../Images/tracking.png")} />
 
           </TouchableOpacity>
@@ -85,9 +188,23 @@ function Home({ navigation }) {
 
       <View style={{ paddingHorizontal: 20 }} >
 
-        <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 16 }} >Hi Smith</Text>
-        <Text style={{ color: Colors.gray, fontFamily: "Poppins-Regular", fontSize: 18 }} >Good Morning!</Text>
 
+        <View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
+            <View>
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 16 }} >Hi Smith</Text>
+              <Text style={{ color: Colors.gray, fontFamily: "Poppins-Regular", fontSize: 18 }} >Good Morning!</Text>
+            </View>
+            {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide", scheduleData)} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, height: 50, justifyContent: "center", alignItems: "center" }} >
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Schedule Ride <Image source={require("../../Images/callender.png")} style={{ width: 20, height: 20 }} /> </Text>
+            </TouchableOpacity>}
+          </View>
+
+
+
+
+
+        </View>
 
         <View
           // colors={[Color.mainColor, Color.white]}
@@ -142,12 +259,12 @@ function Home({ navigation }) {
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Walk</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => navigation.navigate("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Friends & Family</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => navigation.navigate("PetGrooming")} style={{ width: "49%" }} >
               <Image source={require("../../Images/grooming.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Grooming</Text>

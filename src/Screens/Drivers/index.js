@@ -6,7 +6,7 @@ import Colors from "../../Constant/Color"
 
 
 
-function Drivers({navigation}) {
+function Drivers({ navigation }) {
 
     const [drivers, setDrivers] = useState([
         {
@@ -14,56 +14,192 @@ function Drivers({navigation}) {
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
         {
             image: require("../../Images/driverProfile.png"),
             name: "Robert",
             car: "Toyota Prius",
             rating: 4.9,
-            carModel: "AA 5841 AO"
+            carModel: "AA 5841 AO",
+            currentLocation: "Chicago,US",
+            DropoffLocation: "PET Hospital",
+            scheduleDate: "09-Sep-2023",
+            scheduleTime: "06:30 PM",
+            fare: 30,
+            phoneNumber: "+921234567890",
+            pickupCords: {
+                latitude: -10.68860,
+                longitude: -106.27245
+            },
+            dropoffCords: {
+                latitude: -10.69860,
+                longitude: -106.30245
+
+            },
+            last4: "8970",
+            cardType: "visa"
         },
     ])
 
@@ -110,7 +246,7 @@ function Drivers({navigation}) {
 
                                 <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >$25</Text>
 
-                                <TouchableOpacity style={{ padding: 5, backgroundColor: Colors.buttonColor, borderRadius: 30, width: 100 }} >
+                                <TouchableOpacity onPress={() => navigation.navigate("PassengerRideDetail", e)} style={{ padding: 5, backgroundColor: Colors.buttonColor, borderRadius: 30, width: 100 }} >
                                     <Text style={{ fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 14, textAlign: "center" }} >Select</Text>
 
                                 </TouchableOpacity>
