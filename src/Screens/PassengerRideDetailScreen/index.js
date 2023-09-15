@@ -17,7 +17,6 @@ function PassengerRideDetail({ navigation, route }) {
 
     const [rating, setRating] = useState(null)
 
-
     const [stars, setStars] = useState([
         {
             star: 1,
@@ -199,9 +198,9 @@ function PassengerRideDetail({ navigation, route }) {
 
                     {endRide && <TextInput placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
 
-                    {endRide && <CustomButton text={"Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
+                    {endRide && <CustomButton onPress={() => navigation.navigate("Tab")} text={"Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
 
-                    {endRide && <CustomButton text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
+                    {endRide && <CustomButton onPress={() => navigation.navigate("Tab")} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
 
                     {!arrived && <CustomButton text={"Ride Cancel"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
 

@@ -1,10 +1,57 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native"
+import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid } from "react-native"
 import React from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import auth from "@react-native-firebase/auth"
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { StackActions } from "@react-navigation/native"
 
 
 function Profile({ navigation }) {
+
+
+    const handleLogoutUser = () => {
+
+        AsyncStorage.removeItem("user")
+
+        if (GoogleSignin.isSignedIn()) {
+
+            GoogleSignin.signOut()
+            ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Login',
+
+                    },
+                ],
+            });
+        } else {
+
+            auth().signOut().then((res) => {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Login',
+
+                        },
+                    ],
+                });
+                ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+
+            }).catch((error) => {
+
+                ToastAndroid.show("Logout Unsuccessfull", ToastAndroid.SHORT)
+
+
+            })
+        }
+
+    }
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -96,7 +143,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20, marginBottom: 20 }} >
+                <TouchableOpacity onPress={() => handleLogoutUser()} style={{ paddingHorizontal: 20, marginTop: 20, marginBottom: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 

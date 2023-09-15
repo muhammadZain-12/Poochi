@@ -23,30 +23,81 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export default function Login() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+
+  const [goggleLoading, setGoogleLoading] = useState(false);
   const [secureEntry, setSecureEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [signinData, setSigninData] = useState({
+    email: "",
+    password: ""
+  })
+
+
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '889265375440-76ihli23dk6ulbuamsujt41t0t3gvdcs.apps.googleusercontent.com',
+      androidClientId:
+        '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
+    });
+  }, []);
+
+  async function onGoogleButtonPress() {
+    setGoogleLoading(true);
+    // Check if your device supports Google Play
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
+  const afterGoogleLogin = res => {
+    let { user } = res;
+
+    let { uid } = user;
+
+    setGoogleLoading(false);
+    navigation.replace('Tab');
+
+  };
+
+
   const togglePassword = () => {
     setSecureEntry(!secureEntry);
   };
 
-  const signInValidation = () => {
+  const signInValidation = async () => {
+
+    let { email, password } = signinData
+
     const strongRegex = new RegExp(
       '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$',
     );
     if (!email) {
-      setEmailError(true);
+      ToastAndroid.show('Please Enter Email', ToastAndroid.SHORT);
+      return false;
+    }
+
+    let emailTest = strongRegex.test(email)
+
+    if (!emailTest) {
+
       ToastAndroid.show('Please Enter Valid Email', ToastAndroid.SHORT);
       return false;
-    } else if (password == '' || password.length < 8) {
-      setPasswordError(true);
+    }
+
+    else if (password == '' || password.length < 8) {
+
       if (password == '') {
         ToastAndroid.show('Password cannot be empty', ToastAndroid.SHORT);
         return false;
@@ -60,21 +111,60 @@ export default function Login() {
       }
       return false;
     }
-    // else {
-    // setEmail('');
-    // setPassword('');
-    // navigation.navigate('PassengerDetailScreen')
-    signInHandler();
-    // }
+
+    try {
+      setLoading(true);
+      const isUserLogin = await auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(async res => {
+          let { user } = res;
+          let { uid } = user;
+
+
+          let loginAuth = {
+            email: email,
+            password: password,
+          };
+
+          loginAuth = JSON.stringify(loginAuth);
+
+          AsyncStorage.setItem("user", loginAuth)
+
+          setLoading(false);
+          ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
+
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Tab',
+                params: {
+                  email: user.email,
+                },
+              },
+            ],
+          });
+        });
+
+    } catch (err) {
+      setLoading(false);
+      ToastAndroid.show(
+        err.message ?? 'Your email is not valid',
+        ToastAndroid.SHORT,
+      );
+    }
+
+
   };
 
-  const handleTextChange = inputText => {
-    const formattedText = inputText.replace(/\s/g, '');
-    setEmail(formattedText);
-  };
+
 
   return (
-    <KeyboardAvoidingView
+    goggleLoading ? (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color={Colors.main} size="small" />
+      </View>
+    ) : <KeyboardAvoidingView
       behavior="height"
       style={{ flex: 1, backgroundColor: Colors.white }}>
       <ScrollView>
@@ -109,7 +199,13 @@ export default function Login() {
               borderRadius: 10,
               padding: 10,
               justifyContent: 'center',
-            }}>
+            }}
+            onPress={() =>
+              onGoogleButtonPress()
+                .then(res => afterGoogleLogin(res))
+                .catch(error => setGoogleLoading(false))
+            }
+          >
             <View
               style={{
                 paddingHorizontal: 10,
@@ -167,6 +263,7 @@ export default function Login() {
                 fontSize: 16,
                 paddingHorizontal: 20,
               }}
+              onChangeText={(e) => setSigninData({ ...signinData, email: e })}
               placeholder="Email"
               placeholderTextColor={Colors.gray}
             />
@@ -194,6 +291,7 @@ export default function Login() {
                   fontSize: 16,
                   paddingHorizontal: 20,
                 }}
+                onChangeText={(e) => setSigninData({ ...signinData, password: e })}
                 placeholder="Password"
                 placeholderTextColor={Colors.gray}
                 secureTextEntry={secureEntry}
@@ -220,13 +318,13 @@ export default function Login() {
           </TouchableOpacity>
 
           <CustomButton
-            text="Log in"
+            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Log in"}
             styleContainer={{
               alignSelf: 'center',
               marginTop: 30,
               width: '90%',
             }}
-            onPress={() => navigation.navigate("Location")}
+            onPress={() => signInValidation()}
             btnTextStyle={{ fontSize: 18 }}
           />
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>

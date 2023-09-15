@@ -27,6 +27,8 @@ import PassengerRideDetail from '../PassengerRideDetailScreen';
 import Track from '../Track';
 import PetGrooming from '../PetGrooming';
 import FriendsAndFamily from '../FriendsAndFamily';
+import ScheduleRideDate from '../ScheduleRideDate';
+import GooglePlace from '../googlePlaceScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -86,14 +88,29 @@ function MyTabs() {
 export default function Navigation() {
 
 
+  const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(null);
+
+  useEffect(() => {
+    async function setData() {
+      const appData = await AsyncStorage.getItem('isAppFirstLaunched');
+      if (appData == null) {
+        setIsAppFirstLaunched(true);
+        AsyncStorage.setItem('isAppFirstLaunched', 'false');
+      } else {
+        setIsAppFirstLaunched(false);
+      }
+    }
+    setData();
+  }, []);
+
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Tab"
+        initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="OnBoardingScreen" component={OnBoardingScreen} />
+        <Stack.Screen name="OnBoardingScreen" component={isAppFirstLaunched ? OnBoardingScreen : Login} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
@@ -112,6 +129,8 @@ export default function Navigation() {
         <Stack.Screen name="Track" component={Track} />
         <Stack.Screen name="PetGrooming" component={PetGrooming} />
         <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
+        <Stack.Screen name="ScheduleRideDate" component={ScheduleRideDate} />
+        <Stack.Screen name="GooglePlace" component={GooglePlace} />
       </Stack.Navigator>
     </NavigationContainer>
   );

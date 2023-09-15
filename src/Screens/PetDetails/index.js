@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -6,18 +6,25 @@ import { useState } from 'react';
 import { getEnforcing } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Icons from 'react-native-vector-icons/Feather';
 import CustomButton from '../../Components/CustomButton';
+import ModalImg from '../../Components/modalimg';
+import { launchCamera, launchImageLibrary } from "react-native-image-picker"
+import storage from '@react-native-firebase/storage';
+
 
 
 function PetDetails({ navigation }) {
 
   let { width, height } = Dimensions.get("window")
   const [healthIssue, setHealthIssue] = useState(false)
+  const [visible1, setVisible1] = useState(false)
+  const [visible2, setVisible2] = useState(false)
+  const [visible3, setVisible3] = useState(false)
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
+    { label: 'Dog', value: 'dog' },
+    { label: 'Cat', value: 'cat' },
   ]);
 
   const [openGender, setOpenGender] = useState(false)
@@ -44,6 +51,13 @@ function PetDetails({ navigation }) {
     { label: 'Female', value: 'female' },
   ]);
 
+  const [image1, setImage1] = useState("")
+  const [image1url, setImage1url] = useState("")
+  const [image2, setImage2] = useState("")
+  const [image2url, setImage2Url] = useState("")
+  const [image3, setImage3] = useState("")
+  const [image3Url, setImage3Url] = useState("")
+
 
   const [natureOfPet, setNatureOfPets] = useState([
 
@@ -67,6 +81,244 @@ function PetDetails({ navigation }) {
   ])
 
 
+  const uploadImageToFirebase = async (imageUri, imageName) => {
+    const reference = storage().ref(`images/${imageName}`);
+    await reference.putFile(imageUri);
+  };
+
+
+  const getDownloadURLFromFirebase = async (imageName) => {
+    const reference = storage().ref(`images/${imageName}`);
+    try {
+      const url = await reference.getDownloadURL();
+      return url;
+    } catch (error) {
+      console.error('Error getting download URL:', error);
+      throw error;
+    }
+  };
+
+
+  const openGallery = async () => {
+    hideModal1();
+    let options = {
+      saveToPhotos: true,
+      mediaType: 'photo',
+    };
+    const result = await launchImageLibrary(options);
+    if (result.didCancel) {
+      hideModal1();
+      ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'permission') {
+      hideModal1();
+      ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'others') {
+      hideModal1();
+      ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+    } else {
+      hideModal1();
+      let uri = result.assets[0].uri
+      let filename = result.assets[0].fileName
+      setImage1url(uri)
+      await uploadImageToFirebase(uri, filename);
+
+      // Get the download URL of the uploaded image
+      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      console.log('Download URL:', downloadURL);
+
+      setImage1(downloadURL)
+
+    }
+  };
+
+  const openCamera = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      hideModal1();
+      let options = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+      };
+      const result = await launchCamera(options);
+      if (result.didCancel) {
+        hideModal1();
+        ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'permission') {
+        hideModal1();
+        ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'others') {
+        hideModal1();
+        ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+      } else {
+        hideModal1();
+
+        let uri = result.assets[0].uri
+        let filename = result.assets[0].fileName
+        setImage1url(uri)
+        await uploadImageToFirebase(uri, filename);
+        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        setImage1(downloadURL)
+
+
+
+      }
+    }
+  };
+
+
+
+
+  const openCamera2 = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      hideModal2();
+      let options = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+      };
+      const result = await launchCamera(options);
+      if (result.didCancel) {
+        hideModal2();
+        ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'permission') {
+        hideModal2();
+        ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'others') {
+        hideModal2();
+        ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+      } else {
+        hideModal2();
+
+        let uri = result.assets[0].uri
+        let filename = result.assets[0].fileName
+
+
+        setImage2Url(uri)
+
+        // Provide a unique name for the image
+        await uploadImageToFirebase(uri, filename);
+
+        // Get the download URL of the uploaded image
+        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        console.log('Download URL:', downloadURL);
+
+        setImage2(downloadURL)
+
+
+
+      }
+    }
+  };
+  const openGallery2 = async () => {
+    hideModal2();
+    let options = {
+      saveToPhotos: true,
+      mediaType: 'photo',
+    };
+    const result = await launchImageLibrary(options);
+    if (result.didCancel) {
+      hideModal2();
+      ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'permission') {
+      hideModal2();
+      ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'others') {
+      hideModal2();
+      ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+    } else {
+      hideModal2();
+      let uri = result.assets[0].uri
+      let filename = result.assets[0].fileName
+      setImage2Url(uri)
+      await uploadImageToFirebase(uri, filename);
+      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      setImage2(downloadURL)
+
+    }
+  };
+
+
+  const openCamera3 = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      hideModal3();
+      let options = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+      };
+      const result = await launchCamera(options);
+      if (result.didCancel) {
+        hideModal3();
+        ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'permission') {
+        hideModal3();
+        ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+      } else if (result.errorCode == 'others') {
+        hideModal3();
+        ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+      } else {
+        hideModal3();
+
+        let uri = result.assets[0].uri
+
+        let filename = result.assets[0].fileName
+
+        setImage3Url(uri)
+        // Provide a unique name for the image
+        await uploadImageToFirebase(uri, filename);
+
+        // Get the download URL of the uploaded image
+        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        console.log('Download URL:', downloadURL);
+
+        setImage3(downloadURL)
+
+
+
+      }
+    }
+  };
+  const openGallery3 = async () => {
+    hideModal3();
+    let options = {
+      saveToPhotos: true,
+      mediaType: 'photo',
+    };
+    const result = await launchImageLibrary(options);
+    if (result.didCancel) {
+      hideModal3();
+      ToastAndroid.show("Image Permission Denied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'permission') {
+      hideModal3();
+      ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
+    } else if (result.errorCode == 'others') {
+      hideModal3();
+      ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
+    } else {
+      hideModal3();
+      let uri = result.assets[0].uri
+
+      let filename = result.assets[0].fileName
+      setImage3Url(uri)
+      await uploadImageToFirebase(uri, filename);
+      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      setImage3(downloadURL)
+
+    }
+  };
+
+
+  const hideModal1 = () => setVisible1(false);
+  const hideModal2 = () => setVisible2(false);
+  const hideModal3 = () => setVisible3(false);
+
+
   const selectNatureOfPet = (ind) => {
 
     setNatureOfPets(natureOfPet && natureOfPet.length > 0 && natureOfPet.map((e, i) => {
@@ -83,7 +335,6 @@ function PetDetails({ navigation }) {
         }
       }
     }))
-
   }
 
 
@@ -99,18 +350,18 @@ function PetDetails({ navigation }) {
 
         <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row", marginTop: 10 }} >
 
-          <TouchableOpacity style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
+          <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
 
-            <Image source={require("../../Images/picker.png")} />
+            {image1url ? <Image source={{ uri: image1url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
-
-          </TouchableOpacity>
-          <TouchableOpacity style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
-            <Image source={require("../../Images/picker.png")} />
 
           </TouchableOpacity>
-          <TouchableOpacity style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
-            <Image source={require("../../Images/picker.png")} />
+          <TouchableOpacity onPress={() => setVisible2(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
+            {image2url ? <Image source={{ uri: image2url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
+
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setVisible3(true)} d style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
+            {image3Url ? <Image source={{ uri: image3Url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
           </TouchableOpacity>
 
@@ -188,36 +439,18 @@ function PetDetails({ navigation }) {
           <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
 
-            <DropDownPicker
-              open={openWeight}
-              value={weight}
-              items={weightOptions}
-              setOpen={setOpenWeight}
-              setValue={setWeight}
-              setItems={setWeightOptions}
-              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%", }}
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10 }}
-              textStyle={{ fontSize: 16 }}
-              dropDownContainerStyle={{ zIndex: 700 }}
-              dropDownDirection='Bottom'
-              placeholder={'Weight'}
-              placeholderStyle={{ color: "gray" }}
+            <TextInput
+
+              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
+              placeholder={'Weight in lbs'}
+              placeholderTextColor={"gray"}
             />
 
-            <DropDownPicker
-              open={openHeight}
-              value={heights}
-              items={heightOptions}
-              setOpen={setOpenHeight}
-              setValue={setHeight}
-              setItems={setHeightOptions}
-              containerStyle={{ height: 60, borderWidth: 0, borderRadius: 5, backgroundColor: "#e6e6e6", alignItems: "center", justifyContent: "center", marginTop: 10, width: "49%", }}
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 10 }}
-              textStyle={{ fontSize: 16 }}
-              dropDownDirection='Bottom'
-              dropDownContainerStyle={{ zIndex: 600 }}
-              placeholder={'Height'}
-              placeholderStyle={{ color: "gray" }}
+            <TextInput
+
+              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
+              placeholder={'Height in inches'}
+              placeholderTextColor={"gray"}
             />
 
           </View>
@@ -305,7 +538,34 @@ function PetDetails({ navigation }) {
 
 
       </View>
+
+
+
       <CustomButton text="Submit" styleContainer={{ width: "80%", alignSelf: "center", marginBottom: 20, marginTop: 10 }} />
+
+
+      <ModalImg
+        modalVisible={visible1}
+        openGallery={openGallery}
+        openCamera={openCamera}
+        closeModal={hideModal1}
+      />
+
+
+      <ModalImg
+        modalVisible={visible2}
+        openGallery={openGallery2}
+        openCamera={openCamera2}
+        closeModal={hideModal2}
+      />
+
+      <ModalImg
+        modalVisible={visible3}
+        openGallery={openGallery3}
+        openCamera={openCamera3}
+        closeModal={hideModal3}
+      />
+
 
     </ScrollView>
   </View>;

@@ -23,36 +23,77 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
 
 export default function Signup() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const [signupData, setSignupData] = useState({
+    email: "",
+    passowrd: "",
+    name: ""
+  })
   const [secureEntry, setSecureEntry] = useState(true);
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [goggleLoading, setGoogleLoading] = useState(false);
   const togglePassword = () => {
     setSecureEntry(!secureEntry);
   };
 
-  const signInValidation = () => {
-    const strongRegex = new RegExp(
-      '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$',
-    );
-    if (!email) {
-      setEmailError(true);
-      ToastAndroid.show('Please Enter Valid Email', ToastAndroid.SHORT);
-      return false;
-    } else if (password == '' || password.length < 8) {
-      setPasswordError(true);
-      if (password == '') {
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '889265375440-76ihli23dk6ulbuamsujt41t0t3gvdcs.apps.googleusercontent.com',
+      androidClientId:
+        '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
+    });
+  }, []);
+
+  async function onGoogleButtonPress() {
+    setGoogleLoading(true);
+    // Check if your device supports Google Play
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Get the users ID token
+    const { idToken } = await GoogleSignin.signIn();
+
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(googleCredential);
+  }
+  const afterGoogleLogin = res => {
+    let { user } = res;
+
+    let { uid } = user;
+
+    setGoogleLoading(false);
+    navigation.replace('Tab');
+
+  };
+
+
+
+  const handleSignupUser = async () => {
+
+    if (!signupData.name) {
+      ToastAndroid.show("Name is missing", ToastAndroid.SHORT)
+      return
+    }
+
+    if (!signupData.email) {
+      ToastAndroid.show("Email is missing", ToastAndroid.SHORT)
+      return
+    }
+    else if (signupData.password == '' || signupData.password.length < 8) {
+
+      if (signupData.password == '') {
         ToastAndroid.show('Password cannot be empty', ToastAndroid.SHORT);
         return false;
       }
-      if (password.length < 8) {
+      if (signupData.password.length < 8) {
         ToastAndroid.show(
           'Password Must Contain 8 characters',
           ToastAndroid.SHORT,
@@ -61,21 +102,81 @@ export default function Signup() {
       }
       return false;
     }
-    // else {
-    // setEmail('');
-    // setPassword('');
-    // navigation.navigate('PassengerDetailScreen')
-    signInHandler();
-    // }
-  };
+
+    if (!agree) {
+      ToastAndroid.show("Kindly accept terms and conditions", ToastAndroid.SHORT)
+      return
+    }
+
+
+
+    const strongRegex = new RegExp(
+      '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$',
+    );
+
+    let emailTest = strongRegex.test(signupData.email)
+
+    if (!emailTest) {
+      ToastAndroid.show("Invalid Email", ToastAndroid.SHORT)
+      return
+    }
+
+
+    setLoading(true)
+
+
+
+    try {
+      const isUserCreated = await auth().createUserWithEmailAndPassword(
+        signupData.email,
+        signupData.password,
+      );
+
+
+      let { user } = isUserCreated
+
+      let { uid } = user
+
+      let dataToSend = {
+        email: signupData.email,
+        name: signupData.email,
+        id: uid,
+        created_at: new Date()
+      }
+
+      firestore().collection("Users").doc(uid).set(dataToSend).then((res) => {
+        setLoading(false)
+        ToastAndroid.show("Signup Successfully", ToastAndroid.SHORT)
+        navigation.navigate("Login")
+
+      }).catch((error) => {
+        setLoading(false)
+        ToastAndroid.show("Unable to create User")
+
+      })
+
+    } catch (error) {
+
+      setLoading(false)
+      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+    }
+
+  }
 
   const handleTextChange = inputText => {
     const formattedText = inputText.replace(/\s/g, '');
     setEmail(formattedText);
   };
 
+
+  console.log(signupData, "dataa")
+
   return (
-    <KeyboardAvoidingView
+    goggleLoading ? (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color={Colors.main} size="small" />
+      </View>
+    ) : <KeyboardAvoidingView
       behavior="height"
       style={{ flex: 1, backgroundColor: Colors.white }}>
       <ScrollView>
@@ -110,7 +211,13 @@ export default function Signup() {
               borderRadius: 10,
               padding: 10,
               justifyContent: 'center',
-            }}>
+            }}
+            onPress={() =>
+              onGoogleButtonPress()
+                .then(res => afterGoogleLogin(res))
+                .catch(error => setGoogleLoading(false))
+            }
+          >
             <View
               style={{
                 paddingHorizontal: 10,
@@ -168,6 +275,7 @@ export default function Signup() {
                 fontSize: 16,
                 paddingHorizontal: 20,
               }}
+              onChangeText={(e) => setSignupData({ ...signupData, name: e })}
               placeholder="Name"
               placeholderTextColor={Colors.gray}
             />
@@ -184,6 +292,7 @@ export default function Signup() {
                 fontSize: 16,
                 paddingHorizontal: 20,
               }}
+              onChangeText={(e) => setSignupData({ ...signupData, email: e })}
               placeholder="Email"
               placeholderTextColor={Colors.gray}
             />
@@ -211,6 +320,7 @@ export default function Signup() {
                   fontSize: 16,
                   paddingHorizontal: 20,
                 }}
+                onChangeText={(e) => setSignupData({ ...signupData, password: e })}
                 placeholder="Password"
                 placeholderTextColor={Colors.gray}
                 secureTextEntry={secureEntry}
@@ -226,7 +336,7 @@ export default function Signup() {
           </View>
 
           <View style={{ paddingHorizontal: 20, flexDirection: 'row' }}>
-            <View
+            <TouchableOpacity
               style={{
                 width: 25,
                 height: 25,
@@ -235,9 +345,12 @@ export default function Signup() {
                 borderRadius: 5,
                 borderWidth: 1,
                 borderColor: Colors.green,
-              }}>
-              <Icons name="check" color={Colors.black} size={20} />
-            </View>
+              }}
+              onPress={() => setAgree(!agree)}
+            >
+
+              {agree && <Icons name="check" color={Colors.black} size={20} />}
+            </TouchableOpacity>
 
             <Text
               style={{
@@ -253,13 +366,13 @@ export default function Signup() {
           </View>
 
           <CustomButton
-            text="Create Account"
+            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Create Account"}
             styleContainer={{
               alignSelf: 'center',
               marginTop: 30,
               width: '90%',
             }}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => handleSignupUser()}
             btnTextStyle={{ fontSize: 18 }}
           />
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>

@@ -1,18 +1,64 @@
-import React from 'react';
-import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid } from 'react-native';
 import Icons from 'react-native-vector-icons/Ionicons';
 import Colors from '../../Constant/Color';
+import auth from '@react-native-firebase/auth';
 import CustomButton from '../../Components/CustomButton';
+import { useSafeAreaFrame } from 'react-native-safe-area-context';
 
-function ForgotPassword({navigation}) {
+function ForgotPassword({ navigation }) {
+
+
+  const [email, setEmail] = useState("")
+
+  const forgotHandler = async () => {
+    try {
+      // await firebase().auth().sendPasswordResetEmail(email);
+      auth().sendPasswordResetEmail(email);
+      setEmail('');
+      ToastAndroid.show(
+        "Password reset link has been sent to your email",
+        ToastAndroid.SHORT,
+      );
+      navigation.navigate('Login');
+    } catch (err) {
+      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+    }
+  };
+  const ForgotPassValidationHandler = () => {
+
+
+    if (!email) {
+      ToastAndroid.show("Kindly enter email", ToastAndroid.SHORT)
+      return
+    }
+
+    const strongRegex = new RegExp(
+      '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$',
+    );
+
+    if (!strongRegex.test(email)) {
+
+      ToastAndroid.show(
+        "Invalid Email Address",
+        ToastAndroid.SHORT
+      );
+      return false;
+    }
+
+    forgotHandler();
+
+  };
+
+
   return (
-    <View style={{flex: 1, backgroundColor: Colors.white}}>
+    <View style={{ flex: 1, backgroundColor: Colors.white }}>
       <Icons
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
         color={Colors.black}
-        style={{marginLeft: 10, marginTop: 10}}
+        style={{ marginLeft: 10, marginTop: 10 }}
       />
 
       <View
@@ -23,7 +69,7 @@ function ForgotPassword({navigation}) {
         }}>
         <Image
           source={require('../../Images/Wave.png')}
-          style={{width: 100, height: 100}}
+          style={{ width: 100, height: 100 }}
         />
 
         <Text
@@ -50,6 +96,7 @@ function ForgotPassword({navigation}) {
             fontSize: 16,
             paddingHorizontal: 20,
           }}
+          onChangeText={(e) => setEmail(e)}
           placeholder="Email ID"
           placeholderTextColor={Colors.gray}
         />
@@ -61,7 +108,8 @@ function ForgotPassword({navigation}) {
             marginTop: 30,
             width: '90%',
           }}
-          btnTextStyle={{fontSize: 18}}
+          onPress={ForgotPassValidationHandler}
+          btnTextStyle={{ fontSize: 18 }}
         />
       </View>
     </View>

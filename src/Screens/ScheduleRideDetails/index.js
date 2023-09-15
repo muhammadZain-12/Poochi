@@ -1,14 +1,51 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from "react-native"
+import React, { useState } from "react"
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, TextInput } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import MapView, { Marker } from "react-native-maps"
 import MapViewDirection from "react-native-maps-directions"
 import CustomButton from "../../Components/CustomButton"
-
+import Icons from "react-native-vector-icons/Entypo"
 
 function ScheduleRideDetails({ navigation, route }) {
 
     let data = route.params
+
+    const [arrived, setArrived] = useState(true)
+    const [startRide, setStartRide] = useState(true)
+    const [endRide, setEndRide] = useState(true)
+
+
+    const [stars, setStars] = useState([
+        {
+            star: 1,
+            selected: false
+        },
+        {
+            star: 2,
+            selected: false
+        },
+        {
+            star: 3,
+            selected: false
+        },
+        {
+            star: 4,
+            selected: false
+        },
+        {
+            star: 5,
+            selected: false
+        },
+    ])
+
+    const [rating, setRating] = useState(null)
+
+    const selectRating = (rating) => {
+
+        setRating(rating)
+
+    }
 
     return (
 
@@ -44,6 +81,16 @@ function ScheduleRideDetails({ navigation, route }) {
                             }}>
                         </MapView>
                     </View>
+
+                    {
+                        endRide && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
+
+
+                            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Driver Package Deliver Picture</Text>
+                            <Image source={require("../../Images/package.png")} />
+
+                        </View>
+                    }
 
 
                     <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center", marginTop: 20 }}  >
@@ -115,7 +162,7 @@ function ScheduleRideDetails({ navigation, route }) {
 
                     </View>
 
-                    <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", paddingVertical: 15 }} >
+                    <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", paddingVertical: 15, marginBottom: 10 }} >
 
                         <Image source={require("../../Images/master1.png")} />
 
@@ -124,8 +171,40 @@ function ScheduleRideDetails({ navigation, route }) {
                     </View>
 
 
+                    {arrived && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
-                    <CustomButton text={"Ride Cancel"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, marginTop: 30, marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />
+
+                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrive Safely" : startRide ? "Travel time to drop off location-20 min." : arrived ? "Your Driver Arrived" : "Arriving in 15 mins"}</Text>
+
+                    </View>}
+
+                    {endRide && <View style={{ marginTop: 10 }} >
+
+                        <Text style={{ textAlign: "center", fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >Reveiws</Text>
+
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }} >
+                            {stars && stars.length > 0 && stars.map((e, i) => {
+
+
+
+
+                                return (
+                                    <Icons onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
+                                )
+
+                            })}
+
+                        </View>
+                    </View>}
+
+                    {endRide && <TextInput placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
+
+                    {endRide && <CustomButton onPress={()=>navigation.navigate("Tab")} text={"Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
+
+                    {endRide && <CustomButton onPress={()=>navigation.navigate("Tab")} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
+
+                    {!arrived && <CustomButton text={"Ride Cancel"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
+
 
 
 

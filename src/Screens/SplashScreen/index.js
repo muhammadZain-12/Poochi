@@ -11,12 +11,12 @@ import {
 import Colors from '../../Constant/Color';
 import auth from '@react-native-firebase/auth';
 
-export default function SplashScreen({navigation}) {
+export default function SplashScreen({ navigation }) {
   setTimeout(() => {
     const CheckUser = auth().currentUser;
 
     if (CheckUser) {
-      navigation.replace('OnBoardingScreen');
+      navigation.replace('Tab');
     } else {
       navigation.replace('OnBoardingScreen');
     }
