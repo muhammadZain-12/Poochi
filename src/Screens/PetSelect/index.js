@@ -2,10 +2,13 @@ import React, { useState } from "react"
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import Colors from "../../Constant/Color"
+import firestore from "@react-native-firebase/firestore"
+import auth from "@react-native-firebase/auth"
+
+function PetSelect({ navigation, route }) {
 
 
-function PetSelect({ navigation }) {
-
+    let routeData = route.params
 
     const [pets, setPets] = useState([
 
@@ -106,9 +109,37 @@ function PetSelect({ navigation }) {
             injuryOrHealthIssue: "no"
         },
 
-
-
     ])
+
+
+    const getUserPets = async () => {
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("Pets").doc(id).get().then((doc) => {
+            let userPets = doc?.data()
+
+            if (userPets?.pets) {
+
+                setPets(userPets.pets)
+
+
+            }
+            else {
+                setPets([])
+            }
+
+        })
+
+
+
+    }
+
+    React.useEffect(() => {
+
+        getUserPets()
+
+    }, [routeData])
 
 
 
@@ -138,9 +169,9 @@ function PetSelect({ navigation }) {
                         return (
                             <TouchableOpacity onPress={() => navigation.navigate("SinglePetDetails", e)} key={i} style={{ width: "48%", marginTop: 20 }} >
 
-                                <Image source={e.image} style={{ width: "100%" }} />
+                                <Image source={{ uri: e.image1 }} style={{ width: "100%", height: 180, borderRadius: 10 }} resizeMode="cover" />
 
-                                <Text style={{ fontSize: 18, textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black }} >{e.name}</Text>
+                                <Text style={{ fontSize: 18, textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black }} >{e.petName}</Text>
                                 <Text style={{ fontSize: 14, textAlign: "center", fontFamily: "Poppins-Regular", color: Colors.gray }} >{e.breed}</Text>
 
                             </TouchableOpacity>

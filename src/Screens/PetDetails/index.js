@@ -1,4 +1,5 @@
-import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid } from 'react-native';
+import React from "react"
+import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -8,45 +9,28 @@ import Icons from 'react-native-vector-icons/Feather';
 import CustomButton from '../../Components/CustomButton';
 import ModalImg from '../../Components/modalimg';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker"
-import storage from '@react-native-firebase/storage';
+import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
+function PetDetails({ navigation, route }) {
 
-
-function PetDetails({ navigation }) {
+  let petData = route?.params
 
   let { width, height } = Dimensions.get("window")
   const [healthIssue, setHealthIssue] = useState(false)
   const [visible1, setVisible1] = useState(false)
   const [visible2, setVisible2] = useState(false)
   const [visible3, setVisible3] = useState(false)
-
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: 'Dog', value: 'dog' },
     { label: 'Cat', value: 'cat' },
   ]);
-
   const [openGender, setOpenGender] = useState(false)
   const [gender, setGender] = useState(null)
-
   const [genderOptions, setGenderOptions] = useState([
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-  ]);
-
-  const [openWeight, setOpenWeight] = useState(false)
-  const [weight, setWeight] = useState(null)
-
-  const [weightOptions, setWeightOptions] = useState([
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-  ]);
-
-  const [openHeight, setOpenHeight] = useState(false)
-  const [heights, setHeight] = useState(null)
-
-  const [heightOptions, setHeightOptions] = useState([
     { label: 'Male', value: 'male' },
     { label: 'Female', value: 'female' },
   ]);
@@ -59,7 +43,7 @@ function PetDetails({ navigation }) {
   const [image3Url, setImage3Url] = useState("")
 
 
-  const [natureOfPet, setNatureOfPets] = useState([
+  let initialNature = [
 
     {
       label: "Fear",
@@ -78,7 +62,57 @@ function PetDetails({ navigation }) {
       selected: false
     },
 
-  ])
+  ]
+
+  const [natureOfPet, setNatureOfPets] = useState(initialNature)
+  const [otherData, setOtherData] = useState({
+    breed: "",
+    petName: "",
+    weight: "",
+    height: "",
+    additionalDetails: "",
+  })
+  const [loading, setLoading] = useState(false)
+
+
+
+  React.useEffect(() => {
+
+    if (petData && Object.keys(petData).length > 0) {
+
+      setOtherData({
+
+        additionalDetails: petData.additionalDetails,
+        height: petData.height,
+        weight: petData.weight,
+        petName: petData.petName,
+        breed: petData.breed
+      })
+      setGender(petData.gender)
+      setValue(petData.typeOfPet)
+      setImage1(petData.image1)
+      setImage1url(petData.image1)
+      setImage2(petData.image2)
+      setImage2Url(petData.image2)
+      setImage3(petData.image3)
+      setImage3Url(petData.image3)
+      setHealthIssue(petData.healthIssue)
+      setNatureOfPets(natureOfPet.map((e, i) => {
+        if (e.label == petData.natureOfPet) {
+          return {
+            ...e,
+            selected: true
+          }
+        } else {
+          return {
+            ...e,
+            selected: false
+          }
+        }
+      }))
+    }
+
+  }, [petData])
 
 
   const uploadImageToFirebase = async (imageUri, imageName) => {
@@ -123,7 +157,7 @@ function PetDetails({ navigation }) {
       await uploadImageToFirebase(uri, filename);
 
       // Get the download URL of the uploaded image
-      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      const downloadURL = await getDownloadURLFromFirebase(filename);
       console.log('Download URL:', downloadURL);
 
       setImage1(downloadURL)
@@ -158,7 +192,7 @@ function PetDetails({ navigation }) {
         let filename = result.assets[0].fileName
         setImage1url(uri)
         await uploadImageToFirebase(uri, filename);
-        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        const downloadURL = await getDownloadURLFromFirebase(filename);
         setImage1(downloadURL)
 
 
@@ -166,7 +200,6 @@ function PetDetails({ navigation }) {
       }
     }
   };
-
 
 
 
@@ -203,7 +236,7 @@ function PetDetails({ navigation }) {
         await uploadImageToFirebase(uri, filename);
 
         // Get the download URL of the uploaded image
-        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        const downloadURL = await getDownloadURLFromFirebase(filename);
         console.log('Download URL:', downloadURL);
 
         setImage2(downloadURL)
@@ -235,7 +268,7 @@ function PetDetails({ navigation }) {
       let filename = result.assets[0].fileName
       setImage2Url(uri)
       await uploadImageToFirebase(uri, filename);
-      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      const downloadURL = await getDownloadURLFromFirebase(filename);
       setImage2(downloadURL)
 
     }
@@ -274,7 +307,7 @@ function PetDetails({ navigation }) {
         await uploadImageToFirebase(uri, filename);
 
         // Get the download URL of the uploaded image
-        const downloadURL = await getDownloadURLFromFirebase(imageName);
+        const downloadURL = await getDownloadURLFromFirebase(filename);
         console.log('Download URL:', downloadURL);
 
         setImage3(downloadURL)
@@ -307,7 +340,7 @@ function PetDetails({ navigation }) {
       let filename = result.assets[0].fileName
       setImage3Url(uri)
       await uploadImageToFirebase(uri, filename);
-      const downloadURL = await getDownloadURLFromFirebase(imageName);
+      const downloadURL = await getDownloadURLFromFirebase(filename);
       setImage3(downloadURL)
 
     }
@@ -338,7 +371,199 @@ function PetDetails({ navigation }) {
   }
 
 
-  return <View style={{ flex: 1, backgroundColor: Colors.white }} >
+  function generateRandomId(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomId += characters.charAt(randomIndex);
+    }
+
+    return randomId;
+  }
+
+
+
+
+  const handleSubmitData = async () => {
+
+
+    if (petData && Object.keys(petData).length > 0) {
+
+
+      let myData = {
+
+        image1: image1,
+        image2: image2,
+        image3: image3,
+        typeOfPet: value,
+        gender: gender,
+        breed: otherData.breed,
+        petName: otherData.petName,
+        height: otherData.height,
+        weight: otherData.weight,
+        additionalDetails: otherData.additionalDetails,
+        natureOfPet: natureOfPet.filter((e, i) => e.selected),
+        healthIssue: healthIssue,
+        petId: petData.petId
+      }
+
+
+      console.log(myData, "myData")
+
+      console.log(otherData, "otherData")
+
+
+      if (myData.natureOfPet.length > 0) {
+        myData.natureOfPet = myData.natureOfPet[0].label
+      }
+
+      let dataToSend = { ...myData, ...otherData }
+
+      console.log(dataToSend, "dataToSend")
+
+      let checkData = { ...dataToSend }
+
+      delete checkData.healthIssue
+
+
+
+
+
+
+      let flag = Object.values(checkData).some((e, i) => !e)
+
+
+      if (flag) {
+        ToastAndroid.show("Required Fields are missing", ToastAndroid.SHORT)
+        return
+      }
+
+      let currentUser = auth().currentUser
+
+      if (!currentUser) {
+        setLoading(false)
+        return
+      } else {
+
+        setLoading(true)
+
+        firestore().collection("Pets").doc(currentUser.uid).get().then((doc) => {
+          let myData = doc.data()
+
+          myData = myData.pets
+
+          let dataNotMatched = myData && myData.length > 0 && myData.filter((e, i) => e.petId !== petData.petId)
+
+          let mergeData = [...dataNotMatched, dataToSend]
+
+          let sendingData = {
+            pets: mergeData
+          }
+
+
+
+          firestore().collection("Pets").doc(currentUser.uid).set(sendingData).then((res) => {
+            ToastAndroid.show("Pet has been succesfully edited", ToastAndroid.SHORT)
+            setLoading(false)
+            navigation.navigate("PetSelect", mergeData)
+          }).catch((error) => {
+            setLoading(false)
+            ToastAndroid.show(erorr.message, ToastAndroid.SHORT)
+          })
+
+        })
+
+
+
+
+      }
+
+
+
+
+      return
+
+    }
+
+
+    let myData = {
+
+      image1: image1,
+      image2: image2,
+      image3: image3,
+      typeOfPet: value,
+      gender: gender,
+      natureOfPet: natureOfPet.filter((e, i) => e.selected),
+      healthIssue: healthIssue
+    }
+
+    if (myData.natureOfPet.length > 0) {
+      myData.natureOfPet = myData.natureOfPet[0].label
+    }
+
+    let dataToSend = { ...myData, ...otherData }
+
+    let checkData = { ...dataToSend }
+
+    delete checkData.healthIssue
+
+
+    let flag = Object.values(checkData).some((e, i) => !e)
+
+
+    if (flag) {
+      ToastAndroid.show("Required Fields are missing", ToastAndroid.SHORT)
+      return
+    }
+
+    let currentUser = auth().currentUser
+
+    if (!currentUser) {
+      return
+    } else {
+
+      setLoading(true)
+
+      let petId = await generateRandomId(15)
+
+
+      let id = currentUser.uid
+
+      dataToSend.petId = petId
+      dataToSend.userId = currentUser.uid
+
+
+      firestore().collection("Pets").doc(id).set(
+        {
+          pets: firestore.FieldValue.arrayUnion(dataToSend)
+        }, { merge: true }
+      ).then((res) => {
+        setLoading(false)
+        setNatureOfPets(initialNature)
+        setHealthIssue(false)
+        setValue("")
+        setGender("")
+        setImage1url("")
+        setImage1("")
+        setImage2Url("")
+        setImage2("")
+        setImage3("")
+        setImage3Url("")
+        ToastAndroid.show("Pet has been successfully added", ToastAndroid.SHORT)
+      }).catch((error) => {
+        setLoading(false)
+        ToastAndroid.show(error?.message, ToastAndroid.SHORT)
+      })
+    }
+  }
+
+  return loading ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+
+    <ActivityIndicator size={"large"} color={Colors.black} />
+
+  </View> : <View style={{ flex: 1, backgroundColor: Colors.white }} >
     <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true} >
 
       <CustomHeader text={"Enter pet Details"} />
@@ -400,6 +625,8 @@ function PetDetails({ navigation }) {
               fontSize: 16,
               paddingHorizontal: 10,
             }}
+            value={otherData.breed}
+            onChangeText={(e) => setOtherData({ ...otherData, breed: e })}
             placeholder="Breed"
             placeholderTextColor={Colors.gray}
           />
@@ -416,6 +643,8 @@ function PetDetails({ navigation }) {
               fontSize: 16,
               paddingHorizontal: 10,
             }}
+            value={otherData.petName}
+            onChangeText={(e) => setOtherData({ ...otherData, petName: e })}
             placeholder="Pet Name"
             placeholderTextColor={Colors.gray}
           />
@@ -441,16 +670,22 @@ function PetDetails({ navigation }) {
 
             <TextInput
 
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
+              style={{ color: Colors.black, backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
               placeholder={'Weight in lbs'}
               placeholderTextColor={"gray"}
+              keyboardType='number-pad'
+              value={otherData.weight}
+              onChangeText={(e) => setOtherData({ ...otherData, weight: e })}
             />
 
             <TextInput
 
-              style={{ backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
+              style={{ color: Colors.black, backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
               placeholder={'Height in inches'}
               placeholderTextColor={"gray"}
+              keyboardType='number-pad'
+              value={otherData.height}
+              onChangeText={(e) => setOtherData({ ...otherData, height: e })}
             />
 
           </View>
@@ -492,7 +727,8 @@ function PetDetails({ navigation }) {
             style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", }}
             placeholder='tell us more about your pet (Optional)'
             placeholderTextColor={"gray"}
-
+            value={otherData.additionalDetails}
+            onChangeText={(e) => setOtherData({ ...otherData, additionalDetails: e })}
           />
 
 
@@ -541,7 +777,7 @@ function PetDetails({ navigation }) {
 
 
 
-      <CustomButton text="Submit" styleContainer={{ width: "80%", alignSelf: "center", marginBottom: 20, marginTop: 10 }} />
+      <CustomButton onPress={handleSubmitData} text="Submit" styleContainer={{ width: "80%", alignSelf: "center", marginBottom: 20, marginTop: 10 }} />
 
 
       <ModalImg

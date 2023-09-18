@@ -1,9 +1,10 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
+import { View, Text, TouchableOpacity, Image, ScrollView, ToastAndroid } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
-
+import firestore from "@react-native-firebase/firestore"
+import auth from "@react-native-firebase/auth"
 
 
 function SinglePetDetail({ navigation, route }) {
@@ -22,6 +23,39 @@ function SinglePetDetail({ navigation, route }) {
 
     }
 
+    const handleDeletePet = async () => {
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("Pets").doc(id).get().then((doc) => {
+            let petData = doc.data()
+
+            let pets = petData.pets
+
+            let petsToSend = pets && pets.length > 0 && pets.filter((e, i) => e.petId !== data.petId)
+
+            console.log(petsToSend, "petsToSend")
+
+            let sendingData = {
+                pets: petsToSend
+            }
+
+            firestore().collection("Pets").doc(id).set(sendingData).then((res) => {
+                ToastAndroid.show("Pet has been succesfully deleted", ToastAndroid.SHORT)
+                navigation.navigate("PetSelect", petsToSend)
+            }).catch((error) => {
+                ToastAndroid.show(error?.message, ToastAndroid.SHORT)
+            })
+        })
+    }
+
+
+    const handleEditPet = () => {
+
+        navigation.navigate("PetDetails", data)
+
+    }
+
     return <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
         <View style={{ marginTop: 5 }} >
@@ -36,9 +70,12 @@ function SinglePetDetail({ navigation, route }) {
             />
             {
                 openEditOption && <View style={{ position: "absolute", right: 20, top: 30, zIndex: 20, backgroundColor: "green", width: 100 }} >
-
-                    <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black, textAlign: "center", borderWidth: 1, borderColor: "white", padding: 5, zIndex: 10 }} >Edit</Text>
-                    <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black, textAlign: "center", borderWidth: 1, borderColor: "white", padding: 5, zIndex: 10 }} >Delete</Text>
+                    <TouchableOpacity onPress={handleEditPet}  >
+                        <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black, textAlign: "center", borderWidth: 1, borderColor: "white", padding: 5, zIndex: 10 }} >Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleDeletePet} >
+                        <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black, textAlign: "center", borderWidth: 1, borderColor: "white", padding: 5, zIndex: 10 }} >Delete</Text>
+                    </TouchableOpacity>
 
 
                 </View>
@@ -50,17 +87,17 @@ function SinglePetDetail({ navigation, route }) {
             <View style={{ paddingHorizontal: 20, marginTop: 10 }} >
 
 
-                <Image source={data.image} style={{ width: "100%", height: 300, marginTop: 10 }} />
+                <Image source={{ uri: data.image1 }} style={{ width: "100%", height: 300, marginTop: 10, borderRadius: 10 }} />
 
 
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }} >
 
                     <View>
-                        <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase", textAlignVertical: "bottom" }} >{data.name}</Text>
+                        <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase", textAlignVertical: "bottom" }} >{data.petName}</Text>
                         <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.breed}</Text>
                     </View>
 
-                    <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.category}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.typeOfPet}</Text>
                 </View>
 
 
@@ -103,7 +140,7 @@ function SinglePetDetail({ navigation, route }) {
                 </Text>
 
                 <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.gray }} >
-                    {data.details}
+                    {data.additionalDetails ? data.additionalDetails : "No Addtional Details"}
                 </Text>
 
                 <Text style={{ fontSize: 22, fontFamily: "Poppins-SemiBold", color: Colors.black, marginTop: 10, height: 25 }} >
@@ -119,7 +156,7 @@ function SinglePetDetail({ navigation, route }) {
                 </Text>
 
                 <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase", marginBottom: 20 }} >
-                    {data.injuryOrHealthIssue}
+                    {data.healthIssue ? "yes" : "no"}
                 </Text>
 
 

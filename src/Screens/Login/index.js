@@ -67,7 +67,7 @@ export default function Login() {
     let { uid } = user;
 
     setGoogleLoading(false);
-    navigation.replace('Tab');
+    navigation.replace('Location');
 
   };
 
@@ -137,7 +137,7 @@ export default function Login() {
             index: 0,
             routes: [
               {
-                name: 'Tab',
+                name: 'Location',
                 params: {
                   email: user.email,
                 },

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Image,
   Modal,
@@ -9,14 +9,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import Colors from '../../Constant/Color';
 import CustomButton from '../../Components/CustomButton';
 import Geolocation from 'react-native-geolocation-service';
 import { useIsFocused } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import auth from "@react-native-firebase/auth"
+import Geocoder from 'react-native-geocoding';
+import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
 
-function Location({navigation}) {
+
+function Location({ navigation }) {
   const [modalVisible, setModalVisible] = useState(true);
+
+  const [currentLocation, setCurrentLocation] = useState(null)
+
+  Geocoder.init(GOOGLE_MAP_KEY);
 
   const focus = useIsFocused()
 
@@ -50,19 +59,77 @@ function Location({navigation}) {
         });
     });
 
+
+  const getAddressFromCoords = async (latitude, longitude) => {
+    try {
+      const response = await Geocoder.from(latitude, longitude);
+      const address = response.results[0].formatted_address;
+      console.log('Address:', address);
+      return address
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
+
   const getUserPermissionForLocation = async () => {
     locationPermission().then(res => {
       if (res == 'granted') {
-        Geolocation.getCurrentPosition(
-          position => {
-            console.log(position);
-            navigation.navigate('Tab');
-          },
+        Geolocation.getCurrentPosition(async (position) => {
+
+          setCurrentLocation(position.coords)
+
+          let id = auth()?.currentUser?.uid
+
+
+          let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+          console.log(address, "return")
+
+          let data = {
+            currentAddress: address,
+            currentLocation: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          }
+          console.log(id, "iddd")
+
+          firestore().collection("Users").doc(id).update(data).then((res) => {
+
+            let dataToSend = {
+              currentAddress: address,
+              currentLocation: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              }
+            }
+
+            navigation.replace('Tab', {
+              screen: {
+                name: "Home",
+                params: {
+                  data: dataToSend
+                }
+              },
+            });
+
+          }).catch((error) => {
+
+            ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+          })
+
+
+
+        },
           error => {
             // See error code charts below.
             console.log(error.code, error.message);
           },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
         );
       } else {
         ToastAndroid.show(
@@ -113,7 +180,7 @@ function Location({navigation}) {
 
               <CustomButton
                 text={'Use my location'}
-                styleContainer={{width: '100%', marginTop: 10}}
+                styleContainer={{ width: '100%', marginTop: 10 }}
                 onPress={() => getUserPermissionForLocation()}
               />
             </View>
@@ -124,11 +191,11 @@ function Location({navigation}) {
   }, [modalVisible]);
 
   return (
-    <View style={{height: '100%', width: '100%'}}>
+    <View style={{ height: '100%', width: '100%' }}>
       <MapView
         initialRegion={{
-          latitude: 37.152,
-          longitude: 37.202,
+          latitude: currentLocation ? currentLocation.latitude : 37.152,
+          longitude: currentLocation ? currentLocation.longitude : 37.202,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}

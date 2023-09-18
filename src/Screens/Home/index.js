@@ -6,6 +6,7 @@ import Icons from "react-native-vector-icons/Feather"
 function Home({ navigation }) {
 
 
+
   const { height, width } = Dimensions.get('screen');
 
 

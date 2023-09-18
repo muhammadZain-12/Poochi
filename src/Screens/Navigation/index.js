@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../SplashScreen';
 import OnBoardingScreen from '../OnboardingScreen';
@@ -29,6 +29,7 @@ import PetGrooming from '../PetGrooming';
 import FriendsAndFamily from '../FriendsAndFamily';
 import ScheduleRideDate from '../ScheduleRideDate';
 import GooglePlace from '../googlePlaceScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createNativeStackNavigator();
@@ -37,24 +38,29 @@ const Tab = createBottomTabNavigator();
 
 
 
-function CustomTabBar(navigation) {
+function CustomTabBar(navigation, route) {
 
+
+
+  let params = route?.params.screen
+
+  console.log(params)
 
 
   return (
     <View style={{ backgroundColor: '#E6E6E6', height: 80, borderTopEndRadius: 40, borderTopStartRadius: 40, justifyContent: "space-around", alignItems: "center", flexDirection: "row" }}>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Home")} >
+      <TouchableOpacity onPress={() => navigation.navigate("Home",params)} >
 
         <Image source={require("../../Images/home.png")} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("PetDetails")} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+      <TouchableOpacity onPress={() => navigation.navigate("PetDetails", params.name == "PetDetails" && params)} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
 
         <Icon name="plus" size={20} color={Colors.white} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Chats")} >
+      <TouchableOpacity onPress={() => navigation.navigate("Chats", params.name == "Chats" && params)} >
 
         <Image source={require("../../Images/chat.png")} />
 
@@ -69,13 +75,14 @@ function CustomTabBar(navigation) {
 function MyTabs() {
 
   const navigation = useNavigation()
+  const route = useRoute()
 
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
       tabBarLabel: () => null, // Hide tab bar labels
     }}
-      tabBar={() => CustomTabBar(navigation)}
+      tabBar={() => CustomTabBar(navigation, route)}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="PetDetails" component={PetDetails} />
