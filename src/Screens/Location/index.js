@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import {
   Image,
   Modal,
   PermissionsAndroid,
+  ActivityIndicator,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -18,12 +19,18 @@ import firestore from '@react-native-firebase/firestore';
 import auth from "@react-native-firebase/auth"
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
+import LocationContext from '../../Context/locationContext/context';
 
 
 function Location({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(true);
 
+  const locationCont = useContext(LocationContext)
+
+  const { locationData, setLocationData } = locationCont
+
+  const [modalVisible, setModalVisible] = useState(true);
   const [currentLocation, setCurrentLocation] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   Geocoder.init(GOOGLE_MAP_KEY);
 
@@ -64,6 +71,7 @@ function Location({ navigation }) {
     try {
       const response = await Geocoder.from(latitude, longitude);
       const address = response.results[0].formatted_address;
+
       console.log('Address:', address);
       return address
     } catch (error) {
@@ -74,6 +82,9 @@ function Location({ navigation }) {
 
 
   const getUserPermissionForLocation = async () => {
+
+    setLoading(true)
+
     locationPermission().then(res => {
       if (res == 'granted') {
         Geolocation.getCurrentPosition(async (position) => {
@@ -86,7 +97,6 @@ function Location({ navigation }) {
           let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
 
 
-          console.log(address, "return")
 
           let data = {
             currentAddress: address,
@@ -95,7 +105,14 @@ function Location({ navigation }) {
               longitude: position.coords.longitude
             }
           }
-          console.log(id, "iddd")
+
+
+          setLocationData({
+            ...locationData,
+            currentLocation: data.currentLocation,
+            currentAddress: data.currentAddress
+          })
+
 
           firestore().collection("Users").doc(id).update(data).then((res) => {
 
@@ -106,6 +123,7 @@ function Location({ navigation }) {
                 longitude: position.coords.longitude
               }
             }
+            setLoading(false)
 
             navigation.replace('Tab', {
               screen: {
@@ -117,7 +135,7 @@ function Location({ navigation }) {
             });
 
           }).catch((error) => {
-
+            setLoading(false)
             ToastAndroid.show(error.message, ToastAndroid.SHORT)
 
           })
@@ -179,7 +197,7 @@ function Location({ navigation }) {
               </Text>
 
               <CustomButton
-                text={'Use my location'}
+                text={loading ? <ActivityIndicator color="white" size="small" /> : 'Use my location'}
                 styleContainer={{ width: '100%', marginTop: 10 }}
                 onPress={() => getUserPermissionForLocation()}
               />
@@ -188,7 +206,7 @@ function Location({ navigation }) {
         </Modal>
       </View>
     );
-  }, [modalVisible]);
+  }, [modalVisible, loading]);
 
   return (
     <View style={{ height: '100%', width: '100%' }}>

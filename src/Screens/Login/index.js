@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   ImageBackground,
   Text,
@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import LoginContext from '../../Context/loginContext/context';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -37,6 +38,11 @@ export default function Login() {
     password: ""
   })
 
+  const context = useContext(LoginContext)
+
+  const { loginData, setLoginData } = context
+
+  console.log(auth().currentUser, "currentUser")
 
 
   useEffect(() => {
@@ -62,12 +68,54 @@ export default function Login() {
     return auth().signInWithCredential(googleCredential);
   }
   const afterGoogleLogin = res => {
-    let { user } = res;
 
+    let { user } = res;
     let { uid } = user;
 
     setGoogleLoading(false);
-    navigation.replace('Location');
+
+    firestore().collection("Users").doc(uid).get().then((doc) => {
+      let data = doc.data()
+
+      let email = user.email
+
+      let loginAuth = {
+        email: email,
+      };
+
+      loginAuth = JSON.stringify(loginAuth);
+      AsyncStorage.setItem("user", loginAuth);
+
+      if (data) {
+        setLoginData(data)
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Location',
+            },
+          ],
+        });
+
+      }
+      else {
+
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'UserDetails',
+              params: {
+                email: email,
+              },
+            },
+          ],
+        });
+
+      }
+
+
+    })
 
   };
 
@@ -117,7 +165,9 @@ export default function Login() {
       const isUserLogin = await auth()
         .signInWithEmailAndPassword(email, password)
         .then(async res => {
+
           let { user } = res;
+
           let { uid } = user;
 
 
@@ -133,17 +183,48 @@ export default function Login() {
           setLoading(false);
           ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
 
-          navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'Location',
-                params: {
-                  email: user.email,
-                },
-              },
-            ],
-          });
+          firestore().collection("Users").doc(uid).get().then((doc) => {
+            let data = doc.data()
+
+
+            if (data) {
+
+              setLoginData(data)
+
+              navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: 'Location',
+                  },
+                ],
+              });
+
+
+
+            } else {
+
+
+              navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: 'UserDetails',
+                    params: {
+                      email: user.email,
+                    },
+                  },
+                ],
+              });
+
+            }
+
+
+          })
+
+
+
+
         });
 
     } catch (err) {

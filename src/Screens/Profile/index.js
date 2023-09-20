@@ -1,24 +1,38 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid } from "react-native"
-import React from "react"
+import React, { useContext } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import auth from "@react-native-firebase/auth"
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { StackActions } from "@react-navigation/native"
+import LoginContext from "../../Context/loginContext/context"
+import LocationContext from "../../Context/locationContext/context"
 
 
 function Profile({ navigation }) {
 
 
-    const handleLogoutUser = () => {
+    const loginCont = useContext(LoginContext)
+    const locationCont = useContext(LocationContext)
+
+    const { loginData, setLoginData } = loginCont
+    const { locationData, setLocationData } = locationCont
+
+    const handleLogoutUser = async () => {
 
         AsyncStorage.removeItem("user")
 
-        if (GoogleSignin.isSignedIn()) {
 
-            GoogleSignin.signOut()
+        if (GoogleSignin.isSignedIn()) {
+            
+
+            console.log("hello")
+           await GoogleSignin.signOut()
+           await auth().signOut()
             ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+            setLoginData("")
+            setLocationData("")
             navigation.reset({
                 index: 0,
                 routes: [
@@ -40,6 +54,8 @@ function Profile({ navigation }) {
                         },
                     ],
                 });
+                setLoginData("")
+                setLocationData("")
                 ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
 
             }).catch((error) => {

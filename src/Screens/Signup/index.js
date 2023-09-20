@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   ImageBackground,
   Text,
@@ -24,10 +24,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import LoginContext from '../../Context/loginContext/context';
 
 
 export default function Signup() {
   const navigation = useNavigation();
+  const context = useContext(LoginContext)
+
+  const { loginData, setLoginData } = context
+
 
   const [signupData, setSignupData] = useState({
     email: "",
@@ -70,7 +75,18 @@ export default function Signup() {
     let { uid } = user;
 
     setGoogleLoading(false);
-    navigation.replace('Tab');
+
+    firestore().collection("Users").doc(uid).get().then((doc) => {
+      let data = doc.data()
+
+      if (data) {
+        setLoginData(data)
+        navigation.replace('Location');
+      } else {
+        navigation.replace("UserDetails", { email: user.email })
+      }
+    })
+
 
   };
 
@@ -137,23 +153,12 @@ export default function Signup() {
 
       let { uid } = user
 
-      let dataToSend = {
-        email: signupData.email,
-        name: signupData.email,
-        id: uid,
-        created_at: new Date()
-      }
 
-      firestore().collection("Users").doc(uid).set(dataToSend).then((res) => {
-        setLoading(false)
-        ToastAndroid.show("Signup Successfully", ToastAndroid.SHORT)
-        navigation.navigate("Login")
+      setLoading(false)
+      ToastAndroid.show("Signup Successfully", ToastAndroid.SHORT)
+      navigation.navigate("Login")
 
-      }).catch((error) => {
-        setLoading(false)
-        ToastAndroid.show("Unable to create User")
 
-      })
 
     } catch (error) {
 
@@ -169,7 +174,6 @@ export default function Signup() {
   };
 
 
-  console.log(signupData, "dataa")
 
   return (
     goggleLoading ? (
@@ -189,7 +193,6 @@ export default function Signup() {
           <View style={{ alignItems: 'center', marginTop: 50 }}>
             <Image source={require('../../Images/logo.png')} />
           </View>
-
           <Text
             style={{
               fontSize: 32,

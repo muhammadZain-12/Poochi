@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -38,39 +38,38 @@ const slides = [
   },
 ];
 
-export default function OnBoardingScreen({navigation}) {
-  const {width, height} = Dimensions.get('window');
+export default function OnBoardingScreen({ navigation }) {
+  const { width, height } = Dimensions.get('window');
 
   const ref = useRef(null);
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
 
   const updateCurrentSlideIndex = e => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
-    console.log(contentOffsetX,"currnetoffsetx");
+    console.log(contentOffsetX, "currnetoffsetx");
     const currentIndex = Math.floor(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
   };
-
   const goToNext = () => {
     const nextSlideIndex = currentSlideIndex + 1;
     const offset = nextSlideIndex * width;
-    ref?.current?.scrollToOffset({offset});
+    ref?.current?.scrollToOffset({ offset });
     setCurrentSlideIndex(nextSlideIndex);
   };
 
-  const Slide = ({item}) => {
+  const Slide = ({ item }) => {
     // console.log(item)
     return (
       <View style={styles.centerItems}>
         <Image
           source={item.image}
-          style={{height: Dimensions.get('window').height,width:width}}
+          style={{ height: Dimensions.get('window').height, width: width }}
           resizeMode="cover"
         />
         <View
           style={[
             styles.textContainer,
-            {position: 'absolute', bottom: 130, left: 0, width: '85%'},
+            { position: 'absolute', bottom: 130, left: 0, width: '85%' },
           ]}>
           <Text
             style={[
@@ -81,6 +80,7 @@ export default function OnBoardingScreen({navigation}) {
                 fontFamily: 'Poppins-Bold',
                 fontWeight: 'bold',
                 textTransform: 'capitalize',
+
               },
             ]}>
             {item.title}
@@ -104,7 +104,7 @@ export default function OnBoardingScreen({navigation}) {
 
   const Footer = () => {
     return (
-      <View style={[styles.footerContainer, {justifyContent: 'center'}]}>
+      <View style={[styles.footerContainer, { justifyContent: 'center' }]}>
         {currentSlideIndex == slides.length - 1 ? (
           <View
             style={{
@@ -139,7 +139,7 @@ export default function OnBoardingScreen({navigation}) {
             </View>
 
             <View>
-              <TouchableOpacity onPress={()=>navigation.replace("Login")}>
+              <TouchableOpacity onPress={() => navigation.replace("Login")}>
                 <View
                   style={{
                     width: 35,
@@ -215,11 +215,11 @@ export default function OnBoardingScreen({navigation}) {
           ref={ref}
           onMomentumScrollEnd={updateCurrentSlideIndex}
           data={slides}
-          contentContainerStyle={{height: height}}
+          contentContainerStyle={{ height: height }}
           showsHorizontalScrollIndicator={false}
           horizontal
           pagingEnabled
-          renderItem={({item}) => <Slide item={item} />}
+          renderItem={({ item }) => <Slide item={item} />}
         />
       </View>
       <View style={styles.innerBottomContainer}>

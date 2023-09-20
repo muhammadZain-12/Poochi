@@ -1,13 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
+import LoginContext from '../../Context/loginContext/context';
+import LocationContext from '../../Context/locationContext/context';
 
 function Home({ navigation }) {
 
 
 
   const { height, width } = Dimensions.get('screen');
+
+  const context = useContext(LoginContext)
+  const locationCont = useContext(LocationContext)
+
+  const { loginData, setLoginData } = context
+  const {locationData,setLocationData} = locationCont 
+
+
+  console.log(loginData, "loginData")
 
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -153,14 +164,14 @@ function Home({ navigation }) {
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
-          <Image source={require("../../Images/profile.png")} />
+          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40 }} />
         </TouchableOpacity>
 
         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
 
           <Image source={require("../../Images/location.png")} />
 
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.black, fontSize: 16, marginLeft: 5 }} >Chicago, US</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.black, fontSize: 16, marginLeft: 5 }} >{locationData?.currentAddress?.slice(0,10)}...</Text>
 
           <Icons size={20} color="gray" name="chevron-down" />
 
@@ -193,7 +204,7 @@ function Home({ navigation }) {
         <View>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
             <View>
-              <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 16 }} >Hi Smith</Text>
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 16 }} >Hi {loginData.fullName}</Text>
               <Text style={{ color: Colors.gray, fontFamily: "Poppins-Regular", fontSize: 18 }} >Good Morning!</Text>
             </View>
             {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide", scheduleData)} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, height: 50, justifyContent: "center", alignItems: "center" }} >

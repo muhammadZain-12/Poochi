@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -10,13 +10,37 @@ import {
 } from 'react-native';
 import Colors from '../../Constant/Color';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import LoginContext from '../../Context/loginContext/context';
+
+
 
 export default function SplashScreen({ navigation }) {
+
+  let context = useContext(LoginContext)
+
+  let { loginData, setLoginData } = context
+
   setTimeout(() => {
     const CheckUser = auth().currentUser;
 
+    console.log(CheckUser,"Checkusers")
+
     if (CheckUser) {
-      navigation.replace('Tab');
+
+      firestore().collection("Users").doc(CheckUser.uid).get().then((doc) => {
+        let data = doc.data()
+
+        if (data) {
+          setLoginData(data)
+          navigation.replace('Location');
+
+        } else {
+          navigation.replace("UserDetails", { email: CheckUser.email })
+        }
+
+      })
+
     } else {
       navigation.replace('OnBoardingScreen');
     }

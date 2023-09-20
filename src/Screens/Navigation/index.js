@@ -30,6 +30,7 @@ import FriendsAndFamily from '../FriendsAndFamily';
 import ScheduleRideDate from '../ScheduleRideDate';
 import GooglePlace from '../googlePlaceScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserDetails from '../UserDetails';
 
 
 const Stack = createNativeStackNavigator();
@@ -40,27 +41,20 @@ const Tab = createBottomTabNavigator();
 
 function CustomTabBar(navigation, route) {
 
-
-
-  let params = route?.params.screen
-
-  console.log(params)
-
-
   return (
     <View style={{ backgroundColor: '#E6E6E6', height: 80, borderTopEndRadius: 40, borderTopStartRadius: 40, justifyContent: "space-around", alignItems: "center", flexDirection: "row" }}>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Home",params)} >
+      <TouchableOpacity onPress={() => navigation.navigate("Home")} >
 
         <Image source={require("../../Images/home.png")} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("PetDetails", params.name == "PetDetails" && params)} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+      <TouchableOpacity onPress={() => navigation.navigate("PetDetails")} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
 
         <Icon name="plus" size={20} color={Colors.white} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Chats", params.name == "Chats" && params)} >
+      <TouchableOpacity onPress={() => navigation.navigate("Chats")} >
 
         <Image source={require("../../Images/chat.png")} />
 
@@ -75,14 +69,14 @@ function CustomTabBar(navigation, route) {
 function MyTabs() {
 
   const navigation = useNavigation()
-  const route = useRoute()
+
 
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
       tabBarLabel: () => null, // Hide tab bar labels
     }}
-      tabBar={() => CustomTabBar(navigation, route)}
+      tabBar={() => CustomTabBar(navigation)}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="PetDetails" component={PetDetails} />
@@ -117,7 +111,7 @@ export default function Navigation() {
         initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="OnBoardingScreen" component={isAppFirstLaunched ? OnBoardingScreen : Login} />
+        <Stack.Screen name="OnBoardingScreen" component={!isAppFirstLaunched ? OnBoardingScreen : Login} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
@@ -138,6 +132,7 @@ export default function Navigation() {
         <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
         <Stack.Screen name="ScheduleRideDate" component={ScheduleRideDate} />
         <Stack.Screen name="GooglePlace" component={GooglePlace} />
+        <Stack.Screen name="UserDetails" component={UserDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

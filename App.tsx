@@ -25,11 +25,17 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import Navigation from './src/Screens/Navigation';
+import LoginState from './src/Context/loginContext/state';
+import LocationState from './src/Context/locationContext/state';
 
 function App() {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <Navigation />
+      <LoginState>
+        <LocationState>
+          <Navigation />
+        </LocationState>
+      </LoginState>
     </View>
   );
 }
