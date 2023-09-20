@@ -1,20 +1,14 @@
-import React, { useState, useContext } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView, ToastAndroid } from "react-native"
+import React, { useState } from "react"
+import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import Colors from "../../Constant/Color"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
-import SelectedPetContext from "../../Context/SelectedPetContext/context"
 
-function PetSelect({ navigation, route }) {
+function Pets({ navigation, route }) {
 
 
     let routeData = route.params
-
-    const selectedPetsCont = useContext(SelectedPetContext)
-
-    let { selectedPets, setSelectedPets } = selectedPetsCont
-
 
     const [pets, setPets] = useState([
 
@@ -147,22 +141,7 @@ function PetSelect({ navigation, route }) {
 
     }, [routeData])
 
-    console.log(routeData, "routeData")
 
-    const handleSelectPet = (selectedPet) => {
-
-
-        let flag = selectedPets && selectedPets.length > 0 && selectedPets.some((e, i) => e.petId == selectedPet.petId)
-
-        if (flag) {
-            ToastAndroid.show("You have already selected this pet", ToastAndroid.SHORT)
-            return
-        }
-
-        setSelectedPets([...selectedPets, selectedPet])
-        navigation.navigate(route.params)
-
-    }
 
 
     return (
@@ -188,7 +167,7 @@ function PetSelect({ navigation, route }) {
 
                     {pets && pets.length > 0 && pets.map((e, i) => {
                         return (
-                            <TouchableOpacity onPress={() => handleSelectPet(e)} key={i} style={{ width: "48%", marginTop: 20 }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("SinglePetDetails", e)} key={i} style={{ width: "48%", marginTop: 20 }} >
 
                                 <Image source={{ uri: e.image1 }} style={{ width: "100%", height: 180, borderRadius: 10 }} resizeMode="cover" />
 
@@ -212,4 +191,4 @@ function PetSelect({ navigation, route }) {
 
 }
 
-export default PetSelect
+export default Pets

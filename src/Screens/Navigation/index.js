@@ -31,6 +31,7 @@ import ScheduleRideDate from '../ScheduleRideDate';
 import GooglePlace from '../googlePlaceScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserDetails from '../UserDetails';
+import Pets from '../Pets';
 
 
 const Stack = createNativeStackNavigator();
@@ -111,7 +112,7 @@ export default function Navigation() {
         initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="OnBoardingScreen" component={!isAppFirstLaunched ? OnBoardingScreen : Login} />
+        <Stack.Screen name="OnBoardingScreen" component={isAppFirstLaunched ? OnBoardingScreen : Login} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
@@ -133,6 +134,7 @@ export default function Navigation() {
         <Stack.Screen name="ScheduleRideDate" component={ScheduleRideDate} />
         <Stack.Screen name="GooglePlace" component={GooglePlace} />
         <Stack.Screen name="UserDetails" component={UserDetails} />
+        <Stack.Screen name="Pets" component={Pets} />
       </Stack.Navigator>
     </NavigationContainer>
   );

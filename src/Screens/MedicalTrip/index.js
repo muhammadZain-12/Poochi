@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react"
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import React, { useEffect, useState, useContext } from "react"
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
 import CustomButton from "../../Components/CustomButton";
 import Navigation from "../Navigation";
 import DropDownPicker from "react-native-dropdown-picker";
+import SelectedPetContext from "../../Context/SelectedPetContext/context";
 
 function MedicalTrip({ navigation, route }) {
 
 
 
+    const selectedPetsCont = useContext(SelectedPetContext)
 
+    const { selectedPets, setSelectedPets } = selectedPetsCont
+
+    console.log(selectedPets, "selectedPets")
 
 
     const [oneWay, setOneWay] = useState(true)
-
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
@@ -109,7 +113,23 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    console.log(date, time)
+    const renderSelectedPets = ({ item }) => {
+
+        
+
+        return <TouchableOpacity style={{  justifyContent: "center", alignItems: "center", marginRight: 10 }} >
+
+            <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
+
+            <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
+            <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
+
+        </TouchableOpacity>
+
+
+
+
+    }
 
 
     return (
@@ -172,30 +192,46 @@ function MedicalTrip({ navigation, route }) {
 
                         </View>
 
-
-
-
-
-
-
                     </View>
 
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Pet Select</Text>
 
-                    <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
-                        <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
+
+                    {selectedPets && selectedPets.length > 0 ? <View style={{ flexDirection: "row", width: "100%" }} >
+                        <FlatList
+                            data={selectedPets}
+                            renderItem={renderSelectedPets}
+                            scrollEnabled={true}
+                            horizontal={true}
+                        />
+
+
+                        <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "MedicalTrip")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
 
                             <Image source={require("../../Images/add.png")} />
 
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
-                            <Image source={require("../../Images/add.png")} />
 
-                        </TouchableOpacity>
 
-                    </View>
+
+                    </View> :
+                        <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
+
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "MedicalTrip")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
+
+                                <Image source={require("../../Images/add.png")} />
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
+                                <Image source={require("../../Images/add.png")} />
+
+                            </TouchableOpacity>
+
+                        </View>
+
+                    }
 
 
 

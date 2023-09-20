@@ -25,11 +25,11 @@ function Profile({ navigation }) {
 
 
         if (GoogleSignin.isSignedIn()) {
-            
+
 
             console.log("hello")
-           await GoogleSignin.signOut()
-           await auth().signOut()
+            await GoogleSignin.signOut()
+            await auth().signOut()
             ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
             setLoginData("")
             setLocationData("")
@@ -76,8 +76,8 @@ function Profile({ navigation }) {
 
                 <Icons onPress={() => navigation.goBack()} name="arrow-back-outline" color={Colors.black} size={25} />
                 <View>
-                    <Image source={require("../../Images/profile2.png")} style={{ alignSelf: "center" }} />
-                    <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18 }} >James Smith</Text>
+                    <Image source={{ uri: loginData.profile }} resizeMode="contain" style={{ alignSelf: "center", height: 130, width: 130, borderRadius: 10 }} />
+                    <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18 }} >{loginData.fullName}</Text>
                 </View>
 
             </View>
@@ -86,7 +86,7 @@ function Profile({ navigation }) {
 
                 <View style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
-                    <TouchableOpacity style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("Pets")} style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 

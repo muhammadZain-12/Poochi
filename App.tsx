@@ -27,15 +27,18 @@ import {
 import Navigation from './src/Screens/Navigation';
 import LoginState from './src/Context/loginContext/state';
 import LocationState from './src/Context/locationContext/state';
+import SelectedPetState from './src/Context/SelectedPetContext/state';
 
 function App() {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <LoginState>
-        <LocationState>
-          <Navigation />
-        </LocationState>
-      </LoginState>
+      <SelectedPetState>
+        <LoginState>
+          <LocationState>
+            <Navigation />
+          </LocationState>
+        </LoginState>
+      </SelectedPetState>
     </View>
   );
 }
