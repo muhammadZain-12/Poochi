@@ -22,6 +22,7 @@
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
+    "@stripe/stripe-react-native": "^0.32.0",
     "axios": "^1.5.0",
     "geolib": "^3.3.4",
     "moment": "^2.29.4",

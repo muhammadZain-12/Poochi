@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList } from "react-native"
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, ActivityIndicator } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
@@ -11,6 +11,10 @@ import LoginContext from "../../Context/loginContext/context";
 import LocationContext from "../../Context/locationContext/context";
 import { getPreciseDistance } from "geolib";
 import AntDesign from "react-native-vector-icons/AntDesign"
+import { firebase } from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import cardDetailsContext from "../../Context/CardDetailsContext/context";
+import BookingContext from "../../Context/bookingContext/context";
 
 
 function MedicalTrip({ navigation, route }) {
@@ -21,8 +25,19 @@ function MedicalTrip({ navigation, route }) {
     const { loginData, setLoginData } = loginCont
     const { locationData, setLocationData } = locationCont
 
+
+    const bookingCont = useContext(BookingContext)
+
+    const { bookingData, setBookingData } = bookingCont
+
     const selectedPetsCont = useContext(SelectedPetContext)
     const { selectedPets, setSelectedPets } = selectedPetsCont
+
+    const cardCont = useContext(cardDetailsContext)
+    const { cardDetails, setCardDetails } = cardCont
+
+    console.log(cardDetails, "cardDetails")
+
 
     const [oneWay, setOneWay] = useState(true)
     const [open, setOpen] = useState(false);
@@ -55,7 +70,8 @@ function MedicalTrip({ navigation, route }) {
     const [returnDropoffAddress, setReturnDropoffAddress] = useState("")
     const [distance, setDistance] = useState("")
     const [fare, setFare] = useState(null)
-
+    const [comment, setComment] = useState("")
+    const [loading, setLoading] = useState(false)
 
 
 
@@ -130,12 +146,24 @@ function MedicalTrip({ navigation, route }) {
         setDistance(mileDistance)
 
 
-        let fare = 2.50 * Number(mileDistance)
+        firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
 
-        setFare(fare.toFixed(2))
+            let data = doc.data()
+
+            let mileCharge = Number(data.mileCharge)
+            let serviceCharge = Number(data.serviceCharge)
+            let creditCardCharge = Number(data.creditCardCharge)
+
+            let fare = mileCharge * Number(mileDistance)
+            fare = fare + serviceCharge + creditCardCharge
+            setFare(fare.toFixed(2))
+
+        }).catch((error) => {
+
+            ToastAndroid.show(error.message, ToastAndroid.SHORT)
 
 
-
+        })
 
 
     }
@@ -177,21 +205,74 @@ function MedicalTrip({ navigation, route }) {
 
             <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
             <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
-                <AntDesign name="close" color={Colors.white} size={20}  />
+                <AntDesign name="close" color={Colors.white} size={20} />
             </TouchableOpacity>
             <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
             <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
-
         </View>
 
+    }
 
+
+    const handleFindDriver = () => {
+
+
+        if (oneWay) {
+
+            if (!pickupAddress) {
+                ToastAndroid.show("Kindly Enter Pickup Point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!dropoffAddress) {
+                ToastAndroid.show("kindly enter dropoff point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (selectedPets.length == 0) {
+                ToastAndroid.show("Kindly select pet", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!cardDetails) {
+                ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
+                return
+            }
+
+            let dataToSend = {
+                pickupAddress: pickupAddress,
+                dropoffAddress: dropoffAddress,
+                pickupCords: pickup,
+                dropoffCoords: dropoff,
+                selectedPets: selectedPets,
+                comment: comment,
+                cardDetails: cardDetails,
+                userData: loginData,
+                fare: fare,
+                distance: distance,
+                bookingType: "oneWay",
+                requestDate: new Date()
+            }
+
+
+            setLoading(true)
+
+            firestore().collection("Request").doc(loginData.id).set(dataToSend).then((res) => {
+                setLoading(false)
+                setBookingData(dataToSend)
+                navigation.navigate("Drivers")
+
+            }).catch((error) => {
+                setLoading(false)
+                ToastAndroid.show(error.message, ToastAndroid, SHORT)
+            })
+
+        }
 
 
     }
 
 
-    console.log(fare, "fareee")
-    console.log(distance, "miles")
 
 
     return (
@@ -397,22 +478,35 @@ function MedicalTrip({ navigation, route }) {
                         style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", paddingVertical: 15 }}
                         placeholder='Comment'
                         placeholderTextColor={"gray"}
-
+                        onChangeText={(e) => setComment(e)}
                     />
-
-                    <TouchableOpacity onPress={() => navigation.navigate("PaymentMethod")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
-
-
-                        <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
-
-                        <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center", width: "100%" }} >Add a Payment Method</Text>
+                    {!cardDetails ?
+                        <TouchableOpacity onPress={() => navigation.navigate("PaymentMethod", "MedicalTrip")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 
 
-                    </TouchableOpacity>
+                            <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
+
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center", width: "100%" }} >Add a Payment Method</Text>
+
+
+                        </TouchableOpacity> :
+
+                        <TouchableOpacity onPress={() => navigation.navigate("PaymentMethod", "MedicalTrip")} style={{ flexDirection: "row", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+
+
+                            <Image source={require("../../Images/master1.png")} />
+
+                            <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium", width: "100%", marginLeft: 10 }} >**** **** **** {cardDetails?.otherDetails?.card?.last4}</Text>
+
+
+                        </TouchableOpacity>
+
+                    }
 
                 </View>
 
-                <CustomButton onPress={() => navigation.navigate("Drivers")} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text="Find a Driver" />
+                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Find a Driver"} />
+
 
 
             </ScrollView>

@@ -28,18 +28,30 @@ import Navigation from './src/Screens/Navigation';
 import LoginState from './src/Context/loginContext/state';
 import LocationState from './src/Context/locationContext/state';
 import SelectedPetState from './src/Context/SelectedPetContext/state';
+import {StripeProvider} from '@stripe/stripe-react-native';
+import CardDetailsState from './src/Context/CardDetailsContext/state';
+import BookingState from './src/Context/bookingContext/state';
 
 function App() {
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <SelectedPetState>
-        <LoginState>
-          <LocationState>
-            <Navigation />
-          </LocationState>
-        </LoginState>
-      </SelectedPetState>
-    </View>
+    <StripeProvider
+      publishableKey={
+        'pk_test_51Ns5qjEIzbD1XxPEyV0X99pxj7tfmuq409BG0so0rlEOBy8YwGsVUhBrAt3vBiukTHt9lGwI3qBmoKA1XL3hNsrt007AxKXaFm'
+      }>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <SelectedPetState>
+          <BookingState>
+            <CardDetailsState>
+              <LoginState>
+                <LocationState>
+                  <Navigation />
+                </LocationState>
+              </LoginState>
+            </CardDetailsState>
+          </BookingState>
+        </SelectedPetState>
+      </View>
+    </StripeProvider>
   );
 }
 
