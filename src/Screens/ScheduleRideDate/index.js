@@ -10,7 +10,6 @@ function ScheduleRideDate({ navigation, route }) {
 
     let screen = route.params
 
-    console.log(screen, "screen")
 
     const [date, setDate] = useState(new Date());
 
@@ -38,8 +37,6 @@ function ScheduleRideDate({ navigation, route }) {
     };
 
 
-    console.log(time.toLocaleTimeString(), "timePicker")
-    console.log(typeof time, "timeee")
 
 
     return (

@@ -147,7 +147,6 @@ function PetSelect({ navigation, route }) {
 
     }, [routeData])
 
-    console.log(routeData, "routeData")
 
     const handleSelectPet = (selectedPet) => {
 

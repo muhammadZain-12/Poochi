@@ -7,17 +7,22 @@ import CustomButton from "../../Components/CustomButton";
 import Navigation from "../Navigation";
 import DropDownPicker from "react-native-dropdown-picker";
 import SelectedPetContext from "../../Context/SelectedPetContext/context";
+import LoginContext from "../../Context/loginContext/context";
+import LocationContext from "../../Context/locationContext/context";
+import { getPreciseDistance } from "geolib";
+import AntDesign from "react-native-vector-icons/AntDesign"
+
 
 function MedicalTrip({ navigation, route }) {
 
+    const loginCont = useContext(LoginContext)
+    const locationCont = useContext(LocationContext)
 
+    const { loginData, setLoginData } = loginCont
+    const { locationData, setLocationData } = locationCont
 
     const selectedPetsCont = useContext(SelectedPetContext)
-
     const { selectedPets, setSelectedPets } = selectedPetsCont
-
-    console.log(selectedPets, "selectedPets")
-
 
     const [oneWay, setOneWay] = useState(true)
     const [open, setOpen] = useState(false);
@@ -30,39 +35,29 @@ function MedicalTrip({ navigation, route }) {
         { label: 'Custom', value: 'custom' },
     ]);
 
-
     let data = route.params
 
     const [date, setDate] = useState("")
     const [time, setTime] = useState("")
-
-    const [pickup, setPickup] = useState({
-        lat: "",
-        lng: ""
-    })
-
+    const [pickup, setPickup] = useState({})
     const [pickupAddress, setPickupAddress] = useState("")
-
-    const [dropoff, setDropoff] = useState({
-        lat: "",
-        lng: ""
-    })
-
+    const [dropoff, setDropoff] = useState({})
     const [dropoffAddress, setDropoffAddress] = useState("")
-
-
     const [returnPickup, setReturnPickup] = useState({
         lat: "",
         lng: ""
     })
-
     const [returnPickupAddress, setReturnPickupAddress] = useState("")
-
     const [returnDropoff, setReturnDropoff] = useState({
         lat: "",
         lng: ""
     })
     const [returnDropoffAddress, setReturnDropoffAddress] = useState("")
+    const [distance, setDistance] = useState("")
+    const [fare, setFare] = useState(null)
+
+
+
 
     useEffect(() => {
 
@@ -113,23 +108,90 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    const renderSelectedPets = ({ item }) => {
 
-        
 
-        return <TouchableOpacity style={{  justifyContent: "center", alignItems: "center", marginRight: 10 }} >
+    const handleCalculateDistanceAndFare = () => {
 
-            <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
 
-            <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
-            <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
+        const dis = getPreciseDistance(
+            {
+                latitude: pickup.lat,
+                longitude: pickup.lng,
+            },
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+        );
 
-        </TouchableOpacity>
+        mileDistance = (dis / 1609.34)?.toFixed(2);
+
+
+        setDistance(mileDistance)
+
+
+        let fare = 2.50 * Number(mileDistance)
+
+        setFare(fare.toFixed(2))
+
 
 
 
 
     }
+
+    useEffect(() => {
+
+
+
+        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0) {
+
+
+            handleCalculateDistanceAndFare()
+
+
+        }
+
+
+
+
+    }, [pickup, dropoff])
+
+
+    const removeSelectedPet = (ind) => {
+
+        setSelectedPets(selectedPets && selectedPets.length > 0 && selectedPets.filter((e, i) => {
+
+            return i !== ind
+
+        }))
+
+
+    }
+
+    const renderSelectedPets = ({ item, index }) => {
+
+
+
+        return <View style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
+
+            <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
+            <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
+                <AntDesign name="close" color={Colors.white} size={20}  />
+            </TouchableOpacity>
+            <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
+            <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
+
+        </View>
+
+
+
+
+    }
+
+
+    console.log(fare, "fareee")
+    console.log(distance, "miles")
 
 
     return (
@@ -321,10 +383,10 @@ function MedicalTrip({ navigation, route }) {
 
                     <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, borderWidth: 1, marginTop: 15, borderRadius: 10, paddingVertical: 15, backgroundColor: "#21263D" }} >
 
-                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ Fare</Text>
+                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >Fare</Text>
 
 
-                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ 23.00</Text>
+                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ {fare ? fare : 0.00}</Text>
 
                     </TouchableOpacity>
 

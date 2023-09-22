@@ -58,10 +58,8 @@ function Location({ navigation }) {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             resolve('granted');
           }
-          return reject('Location Permission denied');
         })
         .catch(error => {
-          console.log('Ask Location permission error: ', error);
           return reject(error);
         });
     });
@@ -72,7 +70,6 @@ function Location({ navigation }) {
       const response = await Geocoder.from(latitude, longitude);
       const address = response.results[0].formatted_address;
 
-      console.log('Address:', address);
       return address
     } catch (error) {
       console.error('Error:', error);
@@ -144,8 +141,7 @@ function Location({ navigation }) {
 
         },
           error => {
-            // See error code charts below.
-            console.log(error.code, error.message);
+          
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
         );

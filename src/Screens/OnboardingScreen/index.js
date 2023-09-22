@@ -46,7 +46,7 @@ export default function OnBoardingScreen({ navigation }) {
 
   const updateCurrentSlideIndex = e => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
-    console.log(contentOffsetX, "currnetoffsetx");
+    
     const currentIndex = Math.floor(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
   };

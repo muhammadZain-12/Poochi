@@ -42,7 +42,6 @@ export default function Login() {
 
   const { loginData, setLoginData } = context
 
-  console.log(auth().currentUser, "currentUser")
 
 
   useEffect(() => {

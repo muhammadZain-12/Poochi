@@ -158,7 +158,6 @@ function PetDetails({ navigation, route }) {
 
       // Get the download URL of the uploaded image
       const downloadURL = await getDownloadURLFromFirebase(filename);
-      console.log('Download URL:', downloadURL);
 
       setImage1(downloadURL)
 
@@ -237,7 +236,6 @@ function PetDetails({ navigation, route }) {
 
         // Get the download URL of the uploaded image
         const downloadURL = await getDownloadURLFromFirebase(filename);
-        console.log('Download URL:', downloadURL);
 
         setImage2(downloadURL)
 
@@ -308,7 +306,6 @@ function PetDetails({ navigation, route }) {
 
         // Get the download URL of the uploaded image
         const downloadURL = await getDownloadURLFromFirebase(filename);
-        console.log('Download URL:', downloadURL);
 
         setImage3(downloadURL)
 
@@ -410,9 +407,6 @@ function PetDetails({ navigation, route }) {
       }
 
 
-      console.log(myData, "myData")
-
-      console.log(otherData, "otherData")
 
 
       if (myData.natureOfPet.length > 0) {
@@ -421,7 +415,6 @@ function PetDetails({ navigation, route }) {
 
       let dataToSend = { ...myData, ...otherData }
 
-      console.log(dataToSend, "dataToSend")
 
       let checkData = { ...dataToSend }
 

@@ -14,9 +14,6 @@ function SinglePetDetail({ navigation, route }) {
     let data = route.params
 
 
-    console.log(data, "data")
-
-
     const OpenEditAndDelete = () => {
 
         setOpenEditOption(!openEditOption)
@@ -34,7 +31,6 @@ function SinglePetDetail({ navigation, route }) {
 
             let petsToSend = pets && pets.length > 0 && pets.filter((e, i) => e.petId !== data.petId)
 
-            console.log(petsToSend, "petsToSend")
 
             let sendingData = {
                 pets: petsToSend

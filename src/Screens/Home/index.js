@@ -4,6 +4,11 @@ import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
 import LoginContext from '../../Context/loginContext/context';
 import LocationContext from '../../Context/locationContext/context';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
+
+
 
 function Home({ navigation }) {
 
@@ -15,10 +20,8 @@ function Home({ navigation }) {
   const locationCont = useContext(LocationContext)
 
   const { loginData, setLoginData } = context
-  const {locationData,setLocationData} = locationCont 
+  const { locationData, setLocationData } = locationCont
 
-
-  console.log(loginData, "loginData")
 
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -158,20 +161,73 @@ function Home({ navigation }) {
   }, [currentIndex]);
 
 
+
+
+  const sendDeviceTokenToDatabase = () => {
+    messaging()
+      .requestPermission()
+      .then(() => {
+        // Retrieve the FCM token
+        return messaging().getToken();
+      })
+      .then(token => {
+        messaging()
+          .subscribeToTopic('all_devices')
+          .then(() => {
+
+            let id = auth().currentUser?.uid
+
+            firestore().collection("Users").doc(id).update({
+              token: token
+            }).then(() => {
+
+              console.log("token has been successfully send to database")
+
+            }).catch((error) => {
+
+              console.log(error, "error")
+
+            })
+
+
+          })
+          .catch(error => {
+            console.error('Failed to subscribe to topic: all_devices', error);
+          });
+      })
+      .catch(error => {
+        console.error(
+          'Error requesting permission or retrieving token:',
+          error,
+        );
+      });
+  };
+
+
+
+
+  useEffect(() => {
+
+
+    sendDeviceTokenToDatabase()
+
+  }, [])
+
+
   return <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
     <ScrollView>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
-          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40 }} />
+          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40,borderRadius:10 }} />
         </TouchableOpacity>
 
         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
 
           <Image source={require("../../Images/location.png")} />
 
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.black, fontSize: 16, marginLeft: 5 }} >{locationData?.currentAddress?.slice(0,10)}...</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.black, fontSize: 16, marginLeft: 5 }} >{locationData?.currentAddress?.slice(0, 10)}...</Text>
 
           <Icons size={20} color="gray" name="chevron-down" />
 

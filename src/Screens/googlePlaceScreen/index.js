@@ -17,7 +17,6 @@ function GooglePlace({ navigation, route }) {
         const lat = details.geometry.location.lat;
         const lng = details.geometry.location.lng;
 
-        console.log(details, "details")
 
 
         let dataToSend = {
@@ -34,7 +33,6 @@ function GooglePlace({ navigation, route }) {
     };
 
 
-    console.log(GOOGLE_MAP_KEY, "googleMAPkEY")
 
     return (
 

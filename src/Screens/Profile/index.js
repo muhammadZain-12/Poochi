@@ -27,7 +27,6 @@ function Profile({ navigation }) {
         if (GoogleSignin.isSignedIn()) {
 
 
-            console.log("hello")
             await GoogleSignin.signOut()
             await auth().signOut()
             ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)

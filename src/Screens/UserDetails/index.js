@@ -38,13 +38,11 @@ export default function UserDetails({ route }) {
 
     let email = route?.params?.email ? route?.params?.email : route.params
 
-    console.log(email, "email")
 
     const context = useContext(LoginContext)
 
     let { loginData, setLoginData } = context
 
-    console.log(loginData, "loginData")
 
 
     const [goggleLoading, setGoogleLoading] = useState(false);
@@ -115,7 +113,6 @@ export default function UserDetails({ route }) {
 
             // Get the download URL of the uploaded image
             const downloadURL = await getDownloadURLFromFirebase(filename);
-            console.log('Download URL:', downloadURL);
 
             setImage1(downloadURL)
 
@@ -169,6 +166,7 @@ export default function UserDetails({ route }) {
 
     const signInValidation = async () => {
 
+        let uid = auth().currentUser.uid
 
         let dataToSend = {
 
@@ -180,7 +178,9 @@ export default function UserDetails({ route }) {
             profile: image1,
             gender: gender,
             email: email,
-            created_at: new Date()
+            created_at: new Date(),
+            id: uid
+
         }
 
 
@@ -193,7 +193,7 @@ export default function UserDetails({ route }) {
             return
         }
 
-        let uid = auth().currentUser.uid
+
 
         setLoading(true)
 

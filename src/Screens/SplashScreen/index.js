@@ -24,8 +24,6 @@ export default function SplashScreen({ navigation }) {
   setTimeout(() => {
     const CheckUser = auth().currentUser;
 
-    console.log(CheckUser,"Checkusers")
-
     if (CheckUser) {
 
       firestore().collection("Users").doc(CheckUser.uid).get().then((doc) => {

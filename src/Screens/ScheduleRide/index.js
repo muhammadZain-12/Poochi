@@ -8,7 +8,6 @@ function ScheduleRide({ navigation, route }) {
 
     let data = route.params
 
-    console.log(data, "dataaaa")
 
     const renderScheduleData = ({ item }) => {
 
