@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -31,12 +31,23 @@ import SelectedPetState from './src/Context/SelectedPetContext/state';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import CardDetailsState from './src/Context/CardDetailsContext/state';
 import BookingState from './src/Context/bookingContext/state';
+import IdleTimerManager from 'react-native-idle-timer';
 
 function App() {
+  useEffect(() => {
+    // Disable screen timeout when the component mounts
+    IdleTimerManager.setIdleTimerDisabled(true);
+
+    // Re-enable screen timeout when the component unmounts
+    return () => {
+      IdleTimerManager.setIdleTimerDisabled(false);
+    };
+  }, []);
+
   return (
     <StripeProvider
       publishableKey={
-        'pk_test_51Ns5qjEIzbD1XxPEyV0X99pxj7tfmuq409BG0so0rlEOBy8YwGsVUhBrAt3vBiukTHt9lGwI3qBmoKA1XL3hNsrt007AxKXaFm'
+        'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP'
       }>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SelectedPetState>

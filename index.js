@@ -17,6 +17,16 @@ messaging().getInitialNotification(async remoteMessage => {
 })
 
 
+messaging().onMessage(async remoteMessage => {
+    // console.log('Message handled in the background!', remoteMessage);
+    DisplayNotification(remoteMessage);
+})
+
+
+
+
+
+
 async function DisplayNotification(remoteMessage) {
     // Create a channel
     const channelId = await notifee.createChannel({

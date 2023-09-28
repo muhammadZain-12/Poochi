@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView } from 'react-native';
+import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView, ToastAndroid } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
 import LoginContext from '../../Context/loginContext/context';
@@ -7,6 +7,10 @@ import LocationContext from '../../Context/locationContext/context';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import BookingContext from '../../Context/bookingContext/context';
+import cardDetailsContext from '../../Context/CardDetailsContext/context';
+import SelectedPetContext from '../../Context/SelectedPetContext/context';
+import { useIsFocused } from '@react-navigation/native';
 
 
 
@@ -18,10 +22,19 @@ function Home({ navigation }) {
 
   const context = useContext(LoginContext)
   const locationCont = useContext(LocationContext)
+  const bookingCont = useContext(BookingContext)
+  const cardDetailCont = useContext(cardDetailsContext)
+  const selectedPetCont = useContext(SelectedPetContext)
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
+  const { bookingData, setBookingData } = bookingCont
+  const { cardDetails, setCardDetails } = cardDetailCont
+  const { selectedPets, setSelectedPets } = selectedPetCont
 
+
+
+  const focus = useIsFocused()
 
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -145,6 +158,18 @@ function Home({ navigation }) {
   })
 
 
+  useEffect(() => {
+
+    if (bookingData?.bookingStatus !== "running") {
+
+      setCardDetails("")
+      setSelectedPets("")
+
+    }
+
+  }, [focus])
+
+
   const nextImage = () => {
     const nextIndex = (currentIndex + 1) % HomePageBanner.length;
     setCurrentIndex(nextIndex);
@@ -159,8 +184,6 @@ function Home({ navigation }) {
     // Cleanup function to clear interval on unmount
     return () => clearInterval(intervalId);
   }, [currentIndex]);
-
-
 
 
   const sendDeviceTokenToDatabase = () => {
@@ -181,6 +204,11 @@ function Home({ navigation }) {
               token: token
             }).then(() => {
 
+              setLoginData({
+                ...loginData,
+                token: token
+              })
+
               console.log("token has been successfully send to database")
 
             }).catch((error) => {
@@ -188,7 +216,6 @@ function Home({ navigation }) {
               console.log(error, "error")
 
             })
-
 
           })
           .catch(error => {
@@ -214,13 +241,84 @@ function Home({ navigation }) {
   }, [])
 
 
+  const handleNavigateToBooking = (routeName) => {
+
+
+    if (!bookingData) {
+      navigation.navigate(routeName)
+      return
+    }
+
+    firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+
+      let data = doc.data()
+
+      if (data?.bookingStatus !== "running") {
+
+        navigation.navigate(routeName)
+      }
+
+      else {
+
+
+        setBookingData(data)
+        ToastAndroid.show("Your booking is in process you cannot make another booking", ToastAndroid.SHORT)
+
+
+
+      }
+
+    })
+
+
+
+
+
+
+  }
+
+  const handleRouteToTrackScreen = () => {
+
+
+    if (!bookingData) {
+      ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+      return
+    }
+
+    firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+
+      let data = doc.data()
+
+      if (data?.bookingStatus !== "running" && data?.userReponse) {
+        ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+      }
+
+      else {
+
+
+        setBookingData(data)
+        navigation.navigate("PassengerRideDetail")
+
+
+
+      }
+
+    })
+
+
+    // bookingData && bookingData?.bookingStatus == "running" ? 
+
+
+  }
+
+
   return <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
     <ScrollView>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
-          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40,borderRadius:10 }} />
+          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40, borderRadius: 10 }} />
         </TouchableOpacity>
 
         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
@@ -235,7 +333,7 @@ function Home({ navigation }) {
 
         <View style={{ flexDirection: "row" }} >
 
-          <TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10 }} >
 
             <Image source={require("../../Images/notification.png")} />
 
@@ -243,9 +341,8 @@ function Home({ navigation }) {
           </TouchableOpacity>
 
 
-          <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => navigation.navigate("Track", trackData)} >
+          <TouchableOpacity style={{ marginLeft: 5, padding: 10 }} onPress={() => handleRouteToTrackScreen()} >
             <Image source={require("../../Images/tracking.png")} />
-
           </TouchableOpacity>
         </View>
 
@@ -317,7 +414,7 @@ function Home({ navigation }) {
 
           <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >
 
-            <TouchableOpacity style={{ width: "49%" }} onPress={() => navigation.navigate("MedicalTrip")} >
+            <TouchableOpacity style={{ width: "49%" }} onPress={() => handleNavigateToBooking("MedicalTrip")} >
 
               <Image source={require("../../Images/medical.png")} style={{ width: "100%", borderRadius: 10 }} />
 
@@ -327,12 +424,12 @@ function Home({ navigation }) {
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Walk</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("FriendsAndFamily")} style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("MedicalTrip")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Friends & Family</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("PetGrooming")} style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("MedicalTrip")} style={{ width: "49%" }} >
               <Image source={require("../../Images/grooming.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Grooming</Text>

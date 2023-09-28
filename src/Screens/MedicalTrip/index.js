@@ -33,10 +33,9 @@ function MedicalTrip({ navigation, route }) {
     const selectedPetsCont = useContext(SelectedPetContext)
     const { selectedPets, setSelectedPets } = selectedPetsCont
 
+
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
-
-    console.log(cardDetails, "cardDetails")
 
 
     const [oneWay, setOneWay] = useState(true)
@@ -57,6 +56,7 @@ function MedicalTrip({ navigation, route }) {
     const [pickup, setPickup] = useState({})
     const [pickupAddress, setPickupAddress] = useState("")
     const [dropoff, setDropoff] = useState({})
+    const [minutes, setMinutes] = useState("")
     const [dropoffAddress, setDropoffAddress] = useState("")
     const [returnPickup, setReturnPickup] = useState({
         lat: "",
@@ -72,7 +72,47 @@ function MedicalTrip({ navigation, route }) {
     const [fare, setFare] = useState(null)
     const [comment, setComment] = useState("")
     const [loading, setLoading] = useState(false)
+    const [walletAmount, setWalletAmount] = useState(0)
+    const [deductedFromWallet, setDeductedFromWallet] = useState(false)
 
+
+
+    const getWalletAmount = () => {
+
+
+        firestore().collection("UserWallet").doc(loginData.id).get().then((doc) => {
+
+            let walletData = doc.data()
+
+            if (walletData?.wallet) {
+
+                let { wallet } = walletData
+
+
+
+                let amount = wallet.length > 0 && wallet.reduce((a, b) => {
+
+                    return Number(a.remainingWallet ?? a) + Number(b.remainingWallet ?? b)
+                })
+
+
+                setWalletAmount(amount.toFixed(2))
+
+            }
+
+        })
+
+
+
+    }
+
+
+
+    useEffect(() => {
+
+        getWalletAmount()
+
+    }, [])
 
 
     useEffect(() => {
@@ -125,7 +165,6 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-
     const handleCalculateDistanceAndFare = () => {
 
 
@@ -142,8 +181,13 @@ function MedicalTrip({ navigation, route }) {
 
         mileDistance = (dis / 1609.34)?.toFixed(2);
 
+        let averageMilePetMinutes = 0.40
 
         setDistance(mileDistance)
+
+        let totalMinutes = Math.ceil(mileDistance / averageMilePetMinutes)
+
+        setMinutes(totalMinutes)
 
 
         firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
@@ -234,7 +278,7 @@ function MedicalTrip({ navigation, route }) {
                 return
             }
 
-            if (!cardDetails) {
+            if (!cardDetails && !deductedFromWallet) {
                 ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
                 return
             }
@@ -250,8 +294,11 @@ function MedicalTrip({ navigation, route }) {
                 userData: loginData,
                 fare: fare,
                 distance: distance,
+                minutes: minutes,
                 bookingType: "oneWay",
-                requestDate: new Date()
+                requestDate: new Date(),
+                type: "MedicalTrip",
+                deductedFromWallet: deductedFromWallet
             }
 
 
@@ -271,6 +318,29 @@ function MedicalTrip({ navigation, route }) {
 
 
     }
+
+
+    const handleNavigateToPayment = () => {
+
+
+        if (!pickupAddress || !dropoffAddress) {
+            ToastAndroid.show("First add pickup and dropoff location", ToastAndroid.SHORT)
+            return
+        }
+
+        let dataToSend = {
+
+            amount: fare,
+            type: "MedicalTrip"
+
+        }
+
+
+        navigation.navigate("PaymentMethod", dataToSend)
+
+
+    }
+
 
 
 
@@ -480,8 +550,21 @@ function MedicalTrip({ navigation, route }) {
                         placeholderTextColor={"gray"}
                         onChangeText={(e) => setComment(e)}
                     />
+
+
+                    {walletAmount && (walletAmount > Number(fare)) && fare ? <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+
+                        <TouchableOpacity onPress={() => setDeductedFromWallet(!deductedFromWallet)} style={{ width: 30, height: 30, borderWidth: 1, borderRadius: 5, borderColor: Colors.black, alignItems: "center", justifyContent: "center" }} >
+
+                            {deductedFromWallet && <AntDesign name={"check"} size={20} color={Colors.black} />}
+
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deducted from wallet</Text>
+
+                    </View> : ""}
+
                     {!cardDetails ?
-                        <TouchableOpacity onPress={() => navigation.navigate("PaymentMethod", "MedicalTrip")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
@@ -491,7 +574,7 @@ function MedicalTrip({ navigation, route }) {
 
                         </TouchableOpacity> :
 
-                        <TouchableOpacity onPress={() => navigation.navigate("PaymentMethod", "MedicalTrip")} style={{ flexDirection: "row", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 
 
                             <Image source={require("../../Images/master1.png")} />

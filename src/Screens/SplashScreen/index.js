@@ -12,13 +12,16 @@ import Colors from '../../Constant/Color';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import LoginContext from '../../Context/loginContext/context';
+import BookingContext from '../../Context/bookingContext/context';
 
 
 
 export default function SplashScreen({ navigation }) {
 
   let context = useContext(LoginContext)
+  let bookingCont = useContext(BookingContext)
 
+  let { bookingData, setBookingData } = bookingCont
   let { loginData, setLoginData } = context
 
   setTimeout(() => {
@@ -31,7 +34,41 @@ export default function SplashScreen({ navigation }) {
 
         if (data) {
           setLoginData(data)
-          navigation.replace('Location');
+
+
+          firestore().collection("Request").doc(CheckUser.uid).get().then((doc) => {
+
+            let data = doc.data()
+
+
+            if (data && data?.bookingStatus == "complete" && !data?.userResponse) {
+
+              setBookingData(data)
+              navigation.replace("PassengerRideDetail")
+              return
+
+            }
+
+
+
+            if (data && data.bookingStatus == "running") {
+
+              setBookingData(data)
+              navigation.replace('Tab');
+
+            } else {
+              navigation.replace('Location');
+            }
+
+          }).catch((error) => {
+
+            console.log(error, "error")
+
+          })
+
+
+
+          // navigation.replace('Location');
 
         } else {
           navigation.replace("UserDetails", { email: CheckUser.email })

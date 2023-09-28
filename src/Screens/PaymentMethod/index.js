@@ -6,17 +6,28 @@ import Colors from "../../Constant/Color"
 import { useStripe, CardField } from '@stripe/stripe-react-native';
 import { initStripe } from '@stripe/stripe-react-native';
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
-
+import axios from "axios"
+import { Base_Uri } from "../../Constant/BaseUri"
+import LoginContext from "../../Context/loginContext/context"
+import firestore from "@react-native-firebase/firestore"
+import auth from "@react-native-firebase/auth"
 
 function PaymentMethod({ navigation, route }) {
 
 
     let data = route.params
 
+
+    const loginCont = useContext(LoginContext)
+
+    const { loginData } = loginCont
+
     const [cardSelected, setCardSelected] = useState("master")
     const [cardDetail, setCardDetail] = useState("")
     const [cardHolderName, setCardHolderName] = useState("")
     const [loading, setLoading] = useState(false)
+
+
 
 
     const cardCont = useContext(cardDetailsContext)
@@ -26,7 +37,7 @@ function PaymentMethod({ navigation, route }) {
         async function initialize() {
             await initStripe({
                 publishableKey:
-                    'pk_test_51Ns5qjEIzbD1XxPEyV0X99pxj7tfmuq409BG0so0rlEOBy8YwGsVUhBrAt3vBiukTHt9lGwI3qBmoKA1XL3hNsrt007AxKXaFm',
+                    'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP',
             });
         }
         initialize().catch(console.error);
@@ -41,8 +52,6 @@ function PaymentMethod({ navigation, route }) {
     const handlePayment = async () => {
 
 
-
-        console.log(cardDetail, "cardDetails")
 
         if (!cardHolderName) {
             ToastAndroid.show("Enter Card holder name", ToastAndroid.SHORT)
@@ -76,20 +85,117 @@ function PaymentMethod({ navigation, route }) {
             card: cardDetail,
         })
             .then(res => {
-                setLoading(false)
+
                 let token = res?.token;
 
+                let dataToSend = {
 
-                let cardData = {
-                    cardHolderName: cardHolderName,
-                    token: token.id,
-                    last4: token?.card?.last4,
-                    otherDetails: token
+                    amount: data?.amount,
+                    cardToken: token.id
                 }
 
-                setCardDetails(cardData)
 
-                navigation.navigate(route.params)
+                axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
+
+
+                    let walletData = {
+                        deposit: data.amount,
+                        spent: 0,
+                        remainingWallet: data.amount
+                    }
+
+                    let id = auth()?.currentUser?.uid
+
+                    firestore().collection("UserWallet").doc(id).set({
+                        wallet: firestore.FieldValue.arrayUnion(walletData)
+                    }, { merge: true }).then((res) => {
+
+
+                        if (loginData.token) {
+                            var notificationData = JSON.stringify({
+                                notification: {
+                                    body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
+                                    title: `Hi ${loginData?.fullName} `,
+                                },
+                                to: loginData.token,
+                            });
+                            let config = {
+                                method: 'post',
+                                url: 'https://fcm.googleapis.com/fcm/send',
+                                headers: {
+                                    Authorization:
+                                        'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                    'Content-Type': 'application/json',
+                                },
+                                data: notificationData,
+                            };
+                            axios(config)
+                                .then(res => {
+
+                                    console.log("notification succesfully send")
+
+
+                                    let notification = JSON.parse(notificationData)
+
+
+
+                                    let notificationToSend = {
+
+                                        title: notification.notification.title,
+                                        body: notification.notification.body,
+                                        date: new Date()
+
+
+                                    }
+
+                                    firestore().collection("Notification").doc(loginData.id).set({
+                                        notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                    }, { merge: true }).then(() => {
+
+                                        console.log("Notification has been send successfully")
+
+                                    })
+
+
+
+                                })
+                                .catch(error => {
+                                    console.log(error, "errorsssss")
+                                });
+                        }
+
+
+                        let cardData = {
+                            cardHolderName: cardHolderName,
+                            token: token.id,
+                            last4: token?.card?.last4,
+                            otherDetails: token
+                        }
+
+                        setCardDetails(cardData)
+                        setLoading(false)
+                        navigation.navigate(data.type)
+
+
+
+                    }).catch((error) => {
+
+                        setLoading(false)
+                        console.log(error, "eerrrororor")
+
+                    })
+
+
+
+
+
+                }).catch((error) => {
+                    setLoading(false)
+                    console.log(error, "error")
+
+                })
+
+
 
 
 
@@ -134,9 +240,6 @@ function PaymentMethod({ navigation, route }) {
                         <Image source={require("../../Images/Visa.png")} style={{ borderWidth: 2, borderColor: cardSelected == "visa" ? Colors.buttonColor : "gray", borderRadius: 10, marginLeft: 15 }} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setCardSelected("paypal")} >
-                        <Image source={require("../../Images/paypal.png")} style={{ borderWidth: 2, borderColor: cardSelected == "paypal" ? Colors.buttonColor : "gray", borderRadius: 10, marginLeft: 15 }} />
-                    </TouchableOpacity>
                 </View>
 
 

@@ -1,0 +1,1 @@
+export const Base_Uri = "https://fine-pear-mite-yoke.cyclic.cloud/api/"

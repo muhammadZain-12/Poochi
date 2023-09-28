@@ -127,7 +127,9 @@ export default function Navigation() {
         <Stack.Screen name="ScheduleRide" component={ScheduleRide} />
         <Stack.Screen name="ScheduleRideDetails" component={ScheduleRideDetails} />
         <Stack.Screen name="RideCancel" component={RideCancel} />
-        <Stack.Screen name="PassengerRideDetail" component={PassengerRideDetail} />
+        <Stack.Screen options={{
+          unmountOnBlur: true
+        }} name="PassengerRideDetail" component={PassengerRideDetail} />
         <Stack.Screen name="Track" component={Track} />
         <Stack.Screen name="PetGrooming" component={PetGrooming} />
         <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
