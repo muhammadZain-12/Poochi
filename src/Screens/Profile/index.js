@@ -13,6 +13,8 @@ import LocationContext from "../../Context/locationContext/context"
 function Profile({ navigation }) {
 
 
+    GoogleSignin.configure({});
+
     const loginCont = useContext(LoginContext)
     const locationCont = useContext(LocationContext)
 
@@ -98,6 +100,39 @@ function Profile({ navigation }) {
 
 
                 </View>
+
+
+                <TouchableOpacity onPress={() => navigation.navigate("History")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+                            <Image source={require("../../Images/201.png")} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >History</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate("wallet")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+                            <Image source={require("../../Images/201.png")} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Wallet</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
                 <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >

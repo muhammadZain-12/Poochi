@@ -32,6 +32,9 @@ import GooglePlace from '../googlePlaceScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserDetails from '../UserDetails';
 import Pets from '../Pets';
+import Wallet from '../wallet';
+import Notification from '../Notification';
+import History from '../History';
 
 
 const Stack = createNativeStackNavigator();
@@ -137,6 +140,9 @@ export default function Navigation() {
         <Stack.Screen name="GooglePlace" component={GooglePlace} />
         <Stack.Screen name="UserDetails" component={UserDetails} />
         <Stack.Screen name="Pets" component={Pets} />
+        <Stack.Screen name="wallet" component={Wallet} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="History" component={History} />
       </Stack.Navigator>
     </NavigationContainer>
   );

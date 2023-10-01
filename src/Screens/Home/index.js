@@ -11,6 +11,7 @@ import BookingContext from '../../Context/bookingContext/context';
 import cardDetailsContext from '../../Context/CardDetailsContext/context';
 import SelectedPetContext from '../../Context/SelectedPetContext/context';
 import { useIsFocused } from '@react-navigation/native';
+import NotificationContext from '../../Context/NotificationContext/context';
 
 
 
@@ -25,12 +26,14 @@ function Home({ navigation }) {
   const bookingCont = useContext(BookingContext)
   const cardDetailCont = useContext(cardDetailsContext)
   const selectedPetCont = useContext(SelectedPetContext)
+  const notificationCont = useContext(NotificationContext)
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
   const { bookingData, setBookingData } = bookingCont
   const { cardDetails, setCardDetails } = cardDetailCont
   const { selectedPets, setSelectedPets } = selectedPetCont
+  const { notification, setNotification, unseenNotification, setUnseenNotifications } = notificationCont
 
 
 
@@ -166,6 +169,51 @@ function Home({ navigation }) {
       setSelectedPets("")
 
     }
+
+  }, [focus])
+
+
+
+  const getNotifications = () => {
+
+    let id = auth().currentUser?.uid
+
+    const unsubscribe = firestore().collection("Notification").doc(id).onSnapshot(querySnapshot => {
+
+      if (querySnapshot.exists) {
+
+
+        let data = querySnapshot.data()
+
+        let allNotification = data?.notification
+
+        let unseenNotification = allNotification && allNotification.length > 0 && allNotification.filter((e, i) => !e.seen)
+
+        setUnseenNotifications(unseenNotification)
+
+
+        let sorting = allNotification && allNotification.length > 0 && allNotification.sort((a, b) => b?.date?.toDate() - a?.date.toDate())
+        setNotification(sorting)
+
+      }
+
+    })
+
+
+    return () => {
+      unsubscribe()
+    }
+
+
+
+  }
+
+
+  useEffect(() => {
+
+
+    getNotifications()
+
 
   }, [focus])
 
@@ -333,8 +381,14 @@ function Home({ navigation }) {
 
         <View style={{ flexDirection: "row" }} >
 
-          <TouchableOpacity style={{ padding: 10 }} >
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 10 }} >
 
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center" }} >
+
+              <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
+
+
+            </View>}
             <Image source={require("../../Images/notification.png")} />
 
 

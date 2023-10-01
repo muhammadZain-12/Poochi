@@ -32,6 +32,7 @@ import {StripeProvider} from '@stripe/stripe-react-native';
 import CardDetailsState from './src/Context/CardDetailsContext/state';
 import BookingState from './src/Context/bookingContext/state';
 import IdleTimerManager from 'react-native-idle-timer';
+import NotificationState from './src/Context/NotificationContext/state';
 
 function App() {
   useEffect(() => {
@@ -51,15 +52,17 @@ function App() {
       }>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SelectedPetState>
-          <BookingState>
-            <CardDetailsState>
-              <LoginState>
-                <LocationState>
-                  <Navigation />
-                </LocationState>
-              </LoginState>
-            </CardDetailsState>
-          </BookingState>
+          <NotificationState>
+            <BookingState>
+              <CardDetailsState>
+                <LoginState>
+                  <LocationState>
+                    <Navigation />
+                  </LocationState>
+                </LoginState>
+              </CardDetailsState>
+            </BookingState>
+          </NotificationState>
         </SelectedPetState>
       </View>
     </StripeProvider>
