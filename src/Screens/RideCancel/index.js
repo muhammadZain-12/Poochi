@@ -1,9 +1,15 @@
-import React, { useState } from "react"
-import { View, Text, TouchableOpacity, TextInput, ScrollView } from "react-native"
+import React, { useContext, useState } from "react"
+import { View, Text, TouchableOpacity, TextInput, ScrollView, ToastAndroid, ActivityIndicator } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomButton from "../../Components/CustomButton"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from "react-native-vector-icons/Feather"
+import firestore from "@react-native-firebase/firestore"
+import auth from "@react-native-firebase/auth"
+import BookingContext from "../../Context/bookingContext/context"
+import SelectedPetContext from "../../Context/SelectedPetContext/context"
+import cardDetailsContext from "../../Context/CardDetailsContext/context"
+
 
 function RideCancel({ navigation }) {
 
@@ -14,6 +20,142 @@ function RideCancel({ navigation }) {
     const [wrongAddress, setWrongAddress] = useState(false)
     const [priceNotReasonable, setPriceNotReasonable] = useState(false)
     const [other, setOther] = useState("")
+    const [loading, setLoading] = useState(false)
+
+
+    const bookingCont = useContext(BookingContext)
+    const selectedPetCont = useContext(SelectedPetContext)
+    const cardCont = useContext(cardDetailsContext)
+
+    const { bookingData, setBookingData } = bookingCont
+    const { selectedPets, setSelectedPets } = selectedPetCont
+    const { cardDetails, setCardDetails } = cardCont
+
+
+
+    const handleCancelRide = () => {
+
+
+        let cancelReason = {}
+
+        if (waiting) {
+            cancelReason.waiting = true
+        }
+        if (contactDriver) {
+            cancelReason.contactDriver = true
+        }
+        if (deniedDestination) {
+            cancelReason.deniedDestination = true
+        }
+        if (deniedPickup) {
+            cancelReason.deniedPickup = true
+        }
+        if (wrongAddress) {
+            cancelReason.wrongAddress = true
+        }
+
+        if (priceNotReasonable) {
+            cancelReason.priceNotReasonable = true
+        }
+        if (other) {
+            cancelReason.other = true
+        }
+
+
+        setLoading(true)
+
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("Request").doc(id).update({
+            requestStatus: "cancelled",
+            rideCancelByPassenger: true,
+            bookingStatus: "cancelled",
+            driverData: ""
+        }).then((res) => {
+
+            let cancelRideData = {
+
+                ...bookingData,
+                rideCancelByPassenger: true,
+                cancelledTime: new Date(),
+                cancelReason: cancelReason
+            }
+
+            firestore().collection("CancelRides").doc(id).set({
+                cancelledBookings: firestore.FieldValue.arrayUnion(cancelRideData)
+            }, { merge: true }).then((res) => {
+
+                let dataToSend = {
+
+                    date: new Date(),
+                    deposit: 0,
+                    cancellationCharges: (Number(bookingData?.fare) * 10) / 100,
+                    spent: 0,
+                    remainingWallet: -(Number(bookingData?.fare) * 10) / 100
+
+                }
+
+                firestore().collection("UserWallet").doc(id).set({
+                    wallet: firestore.FieldValue.arrayUnion(dataToSend)
+                }, { merge: true }).then(() => {
+
+                    let walletToAdd = {
+                        date: new Date(),
+                        earning: (Number(bookingData?.fare) * 10) / 100,
+                        withdraw: 0,
+                        remainingWallet: (Number(bookingData?.fare) * 10) / 100
+                    }
+
+                    firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
+                        wallet: firestore.FieldValue.arrayUnion(walletToAdd)
+                    }, { merge: true }).then((res) => {
+
+                        setLoading(false)
+                        setSelectedPets("")
+                        setCardDetails("")
+                        setBookingData("")
+
+                        ToastAndroid.show("Ride has been succesfully cancelled", ToastAndroid.SHORT)
+                        navigation.replace("Tab")
+
+
+                    }).catch((error) => {
+
+                        setLoading(false)
+                        console.log(error, "error")
+
+                    })
+
+
+
+                }).catch((error) => {
+
+                    setLoading(false)
+                    console.log(error)
+
+                })
+
+
+
+            }).catch((error) => {
+
+                setLoading(false)
+                console.log(error)
+
+            })
+
+
+        }).catch((error) => {
+
+            setLoading(false)
+            console.log(error)
+        })
+
+
+
+    }
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -103,7 +245,7 @@ function RideCancel({ navigation }) {
                         textAlignVertical="top"
                     />
 
-                    <CustomButton styleContainer={{ width: "100%", marginVertical: 20, marginBottom: 30 }} text={"Submit"} />
+                    <CustomButton onPress={() => handleCancelRide()} styleContainer={{ width: "100%", marginVertical: 20, marginBottom: 30 }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit"} />
 
                 </View>
 

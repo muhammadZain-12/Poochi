@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react"
-import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator } from "react-native"
+import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator, ScrollView } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
@@ -11,6 +11,7 @@ import { Base_Uri } from "../../Constant/BaseUri"
 import LoginContext from "../../Context/loginContext/context"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
+import CustomCard from "../../Components/customCards"
 
 function PaymentMethod({ navigation, route }) {
 
@@ -33,6 +34,14 @@ function PaymentMethod({ navigation, route }) {
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
 
+
+    const [savedCards, setSavedCards] = useState([])
+    const [selectedCards, setSelectedCards] = useState("")
+
+
+
+
+
     useEffect(() => {
         async function initialize() {
             await initStripe({
@@ -42,14 +51,172 @@ function PaymentMethod({ navigation, route }) {
         }
         initialize().catch(console.error);
     }, []);
-
-
     const { createToken } = useStripe();
 
 
 
 
+    const getSavedCards = () => {
+
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("PassengerCards").doc(id).get().then((doc) => {
+
+            let data = doc?.data()
+
+            if (data && data?.cards) {
+
+
+                let cards = data.cards
+
+
+                setSavedCards(cards)
+
+
+
+            }
+
+
+
+        })
+
+
+    }
+
+
+
+    useEffect(() => {
+
+        getSavedCards()
+    }, [])
+
+
+    console.log(data, "dataaa")
+
+
     const handlePayment = async () => {
+
+
+        if (selectedCards) {
+
+
+            let dataToSend = {
+
+                amount: data?.amount,
+                customerId: selectedCards?.customerId
+            }
+
+            setLoading(true)
+            axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
+
+                let responseData = res.data
+
+                if (!responseData.status) {
+
+                    ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                    setLoading(false)
+
+                    return
+
+                }
+
+
+
+                let walletData = {
+                    deposit: data.amount,
+                    spent: 0,
+                    remainingWallet: data.amount,
+                    date: new Date()
+                }
+
+                let id = auth()?.currentUser?.uid
+
+                firestore().collection("UserWallet").doc(id).set({
+                    wallet: firestore.FieldValue.arrayUnion(walletData)
+                }, { merge: true }).then((res) => {
+
+                    if (loginData?.token) {
+                        var notificationData = JSON.stringify({
+                            notification: {
+                                body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
+                                title: `Hi ${loginData?.fullName} `,
+                            },
+                            to: loginData.token,
+                        });
+                        let config = {
+                            method: 'post',
+                            url: 'https://fcm.googleapis.com/fcm/send',
+                            headers: {
+                                Authorization:
+                                    'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                'Content-Type': 'application/json',
+                            },
+                            data: notificationData,
+                        };
+                        axios(config)
+                            .then(res => {
+
+                                console.log("notification succesfully send")
+
+
+                                let notification = JSON.parse(notificationData)
+
+
+
+                                let notificationToSend = {
+
+                                    title: notification.notification.title,
+                                    body: notification.notification.body,
+                                    date: new Date()
+
+
+                                }
+
+                                firestore().collection("Notification").doc(loginData.id).set({
+                                    notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                }, { merge: true }).then(() => {
+
+                                    console.log("Notification has been send successfully")
+
+                                })
+
+
+
+                            })
+                            .catch(error => {
+                                console.log(error, "errorsssss")
+                            });
+                    }
+
+
+                    setCardDetails(selectedCards)
+                    setLoading(false)
+                    navigation.navigate(data.type)
+
+
+                }).catch((error) => {
+
+                    setLoading(false)
+                    console.log(error, "eerrrororor")
+
+
+                })
+
+
+
+
+
+            }).catch((error) => {
+                setLoading(false)
+                console.log(error, "error")
+
+            })
+
+
+            return
+
+        }
 
 
 
@@ -86,6 +253,9 @@ function PaymentMethod({ navigation, route }) {
         })
             .then(res => {
 
+                console.log(res, "resss")
+
+
                 let token = res?.token;
 
 
@@ -97,10 +267,26 @@ function PaymentMethod({ navigation, route }) {
                 axios.post(`${Base_Uri}createCustomer`, tokenToSend).then((res) => {
 
 
+
+
                     let response = res.data
+
+
+                    if (!response?.status) {
+
+                        ToastAndroid.show(response?.error?.raw?.message, ToastAndroid.SHORT)
+                        setLoading(false)
+
+                        return
+                    }
+
+
+                    console.log(response, "response")
 
                     let customerId = response.customerId
 
+
+                    console.log(customerId, "customerId")
 
                     let dataToSend = {
 
@@ -114,6 +300,7 @@ function PaymentMethod({ navigation, route }) {
 
                         if (!responseData.status) {
 
+                            console.log(responseData, "responseData")
 
                             ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
                             setLoading(false)
@@ -257,8 +444,28 @@ function PaymentMethod({ navigation, route }) {
             })
     };
 
+    console.log(selectedCards, "selectedCards")
 
-
+    const getSelectedCard = (card, ind) => {
+        setSelectedCards(card)
+        setSavedCards(
+            savedCards &&
+            savedCards.length > 0 &&
+            savedCards.map((e, i) => {
+                if (ind == i) {
+                    return {
+                        ...e,
+                        default: true,
+                    };
+                } else {
+                    return {
+                        ...e,
+                        default: false,
+                    };
+                }
+            }),
+        );
+    };
 
 
     return (
@@ -276,46 +483,72 @@ function PaymentMethod({ navigation, route }) {
             </View>
 
 
-            <View style={{ paddingHorizontal: 15, marginTop: 10 }} >
-
-                <Text style={{ fontSize: 18, color: Colors.black, fontFamily: "Poppins-SemiBold" }} >Choose Payment Method</Text>
-
-                <View style={{ flexDirection: "row", marginTop: 10 }} >
-
-
-                    <TouchableOpacity onPress={() => setCardSelected("master")} >
-                        <Image source={require("../../Images/master.png")} style={{ borderWidth: 2, borderColor: cardSelected == "master" ? Colors.buttonColor : "gray", borderRadius: 10 }} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setCardSelected("visa")} >
-                        <Image source={require("../../Images/Visa.png")} style={{ borderWidth: 2, borderColor: cardSelected == "visa" ? Colors.buttonColor : "gray", borderRadius: 10, marginLeft: 15 }} />
-                    </TouchableOpacity>
-
-                </View>
+            <View style={{ flexDirection: "row", height: 270, marginTop: 20, padding: 10 }} >
+                <ScrollView horizontal={true} style={{ marginTop: 20 }}>
+                    {savedCards &&
+                        savedCards.length > 0 &&
+                        savedCards.map((e, i) => {
 
 
+                            return (
+                                <CustomCard
+                                    PaymentMethod="Credit Card"
+                                    source={e?.otherDetails?.card?.brand == "MasterCard" ? require('../../Images/master1.png') : e?.otherDetails?.card?.brand == "Visa" ? require("../../Images/Visa.png") : ""}
+                                    cardHolderName={e.cardHolderName}
+                                    cardNumber={`*** **** **** ${e.last4}`}
+                                    cardDate={`${e?.otherDetails?.card?.expMonth}/${e?.otherDetails?.card?.expYear}`}
+                                    selected={e?.default}
+                                    onPress={() => getSelectedCard(e, i)}
+                                />
+                            );
+                        })}
+                </ScrollView>
+            </View>
 
-                <View style={{ marginTop: 20 }} >
 
-                    <TextInput
-                        style={{
-                            backgroundColor: Colors.white,
-                            borderRadius: 5,
-                            borderWidth: 1,
-                            borderColor: Colors.gray,
-                            marginTop: 10,
-                            width: '100%',
-                            padding: 15,
-                            fontFamily: "Poppins-Medium",
-                            color: Colors.black,
-                            fontSize: 16,
-                            paddingHorizontal: 20,
-                        }}
-                        placeholder="Name of the card holder"
-                        onChangeText={(e) => setCardHolderName(e)}
-                        placeholderTextColor={Colors.gray}
-                    />
+            <ScrollView>
 
-                    {/* <TextInput
+
+                <View style={{ paddingHorizontal: 15 }} >
+
+                    <Text style={{ fontSize: 18, color: Colors.black, fontFamily: "Poppins-SemiBold" }} >Choose Payment Method</Text>
+
+                    <View style={{ flexDirection: "row", marginTop: 10 }} >
+
+
+                        <TouchableOpacity onPress={() => setCardSelected("master")} >
+                            <Image source={require("../../Images/master.png")} style={{ borderWidth: 2, borderColor: cardSelected == "master" ? Colors.buttonColor : "gray", borderRadius: 10 }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setCardSelected("visa")} >
+                            <Image source={require("../../Images/Visa.png")} style={{ borderWidth: 2, borderColor: cardSelected == "visa" ? Colors.buttonColor : "gray", borderRadius: 10, marginLeft: 15 }} />
+                        </TouchableOpacity>
+
+                    </View>
+
+
+
+                    <View style={{ marginTop: 20 }} >
+
+                        <TextInput
+                            style={{
+                                backgroundColor: Colors.white,
+                                borderRadius: 5,
+                                borderWidth: 1,
+                                borderColor: Colors.gray,
+                                marginTop: 10,
+                                width: '100%',
+                                padding: 15,
+                                fontFamily: "Poppins-Medium",
+                                color: Colors.black,
+                                fontSize: 16,
+                                paddingHorizontal: 20,
+                            }}
+                            placeholder="Name of the card holder"
+                            onChangeText={(e) => setCardHolderName(e)}
+                            placeholderTextColor={Colors.gray}
+                        />
+
+                        {/* <TextInput
                         style={{
                             backgroundColor: Colors.white,
                             borderRadius: 5,
@@ -334,41 +567,41 @@ function PaymentMethod({ navigation, route }) {
                     /> */}
 
 
-                    <CardField
-                        postalCodeEnabled={false}
-                        cardStyle={{
-                            backgroundColor: '#FFFFFF',
-                            textColor: '#000000',
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            placeholderColor: "gray"
+                        <CardField
+                            postalCodeEnabled={false}
+                            cardStyle={{
+                                backgroundColor: '#FFFFFF',
+                                textColor: '#000000',
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                placeholderColor: "gray"
 
-                        }}
+                            }}
 
 
-                        style={{
-                            width: '100%',
-                            color: "black",
-                            borderWidth: 1,
-                            height: 60,
-                            marginTop: 15,
+                            style={{
+                                width: '100%',
+                                color: "black",
+                                borderWidth: 1,
+                                height: 60,
+                                marginTop: 15,
 
-                            borderColor: Colors.black,
-                            padding: 15,
-                            fontSize: 16,
-                            paddingHorizontal: 20,
-                            borderRadius: 10
-                        }}
-                        onCardChange={(cardDetails) => {
-                            setCardDetail(cardDetails)
-                        }}
-                        onFocus={(focusedField) => {
-                            console.log('focusField', focusedField);
-                        }}
-                    />
-                    <View style={{ marginTop: 20, flexDirection: "row", width: "100%", justifyContent: "space-between", alignItems: "center" }} >
+                                borderColor: Colors.black,
+                                padding: 15,
+                                fontSize: 16,
+                                paddingHorizontal: 20,
+                                borderRadius: 10
+                            }}
+                            onCardChange={(cardDetails) => {
+                                setCardDetail(cardDetails)
+                            }}
+                            onFocus={(focusedField) => {
+                                console.log('focusField', focusedField);
+                            }}
+                        />
+                        <View style={{ marginTop: 20, flexDirection: "row", width: "100%", justifyContent: "space-between", alignItems: "center" }} >
 
-                        {/* <TextInput
+                            {/* <TextInput
                             style={{
                                 backgroundColor: Colors.white,
                                 borderRadius: 5,
@@ -402,19 +635,21 @@ function PaymentMethod({ navigation, route }) {
                         /> */}
 
 
+                        </View>
+
+
+                        <CustomButton
+                            text={loading ? <ActivityIndicator color={Colors.white} size="small" /> : "Next"}
+                            onPress={() => handlePayment()}
+                            styleContainer={{ alignSelf: "center", marginTop: 30, width: "90%" }}
+
+                        />
+
                     </View>
-
-
-                    <CustomButton
-                        text={loading ? <ActivityIndicator color={Colors.white} size="small" /> : "Next"}
-                        onPress={() => handlePayment()}
-                        styleContainer={{ alignSelf: "center", marginTop: 30, width: "90%" }}
-
-                    />
 
                 </View>
 
-            </View>
+            </ScrollView>
 
 
         </View>

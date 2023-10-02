@@ -48,16 +48,10 @@ function Notification({ navigation }) {
                 }).then(() => {
                     console.log("seen property succesfully send")
                 }).catch((error) => {
-
                     console.log(error, "error")
-
                 })
 
-
-
             }
-
-
 
         })
 

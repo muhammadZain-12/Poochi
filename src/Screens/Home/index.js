@@ -185,12 +185,15 @@ function Home({ navigation }) {
 
         let data = querySnapshot.data()
 
+
         let allNotification = data?.notification
+
+
+        console.log(allNotification.length, "length")
 
         let unseenNotification = allNotification && allNotification.length > 0 && allNotification.filter((e, i) => !e.seen)
 
         setUnseenNotifications(unseenNotification)
-
 
         let sorting = allNotification && allNotification.length > 0 && allNotification.sort((a, b) => b?.date?.toDate() - a?.date.toDate())
         setNotification(sorting)
@@ -337,7 +340,7 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-      if (data?.bookingStatus !== "running" && data?.userReponse) {
+      if ((data?.bookingStatus !== "running" && data?.userReponse) || data.bookingStatus == "cancelled") {
         ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
       }
 

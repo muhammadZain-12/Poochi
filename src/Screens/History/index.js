@@ -9,6 +9,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     FlatList,
+    Linking,
     ScrollView,
     Image,
     ActivityIndicator,

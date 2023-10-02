@@ -50,12 +50,12 @@ function Drivers({ navigation }) {
 
                             const dis = getPreciseDistance(
                                 {
-                                    latitude: bookingData.pickupCords.lat,
-                                    longitude: bookingData.pickupCords.lng,
+                                    latitude: bookingData?.pickupCords?.lat,
+                                    longitude: bookingData?.pickupCords?.lng,
                                 },
                                 {
-                                    latitude: data.currentLocation.latitude,
-                                    longitude: data.currentLocation.longitude,
+                                    latitude: data?.currentLocation?.latitude,
+                                    longitude: data?.currentLocation?.longitude,
                                 },
                             );
 

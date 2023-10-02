@@ -96,7 +96,7 @@ function MedicalTrip({ navigation, route }) {
                 })
 
 
-                setWalletAmount(amount.toFixed(2))
+                setWalletAmount(Number(amount)?.toFixed(2))
 
             }
 
@@ -552,7 +552,7 @@ function MedicalTrip({ navigation, route }) {
                     />
 
 
-                    {walletAmount && (walletAmount > Number(fare)) && fare ? <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+                    {walletAmount && (walletAmount > Number(fare)) && fare && !cardDetails ? <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
 
                         <TouchableOpacity onPress={() => setDeductedFromWallet(!deductedFromWallet)} style={{ width: 30, height: 30, borderWidth: 1, borderRadius: 5, borderColor: Colors.black, alignItems: "center", justifyContent: "center" }} >
 

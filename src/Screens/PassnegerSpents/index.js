@@ -61,7 +61,7 @@ function PassengerSpents({ route, navigation }) {
                                 { paddingTop: 5, marginBottom: 5, fontSize: 18, fontFamily: "Poppins-Medium" },
                             ]}>
                             Fare:{' '}
-                            <Text style={{ color: "#080808", fontFamily: "Poppins-Medium" }}> &#x20AC;{item.spent} </Text>
+                            <Text style={{ color: "#080808", fontFamily: "Poppins-Medium" }}> ${item.spent} </Text>
                         </Text>
 
                         {item.cancellationCharges && (
@@ -73,7 +73,7 @@ function PassengerSpents({ route, navigation }) {
                                 Cancellation Charges:{' '}
                                 <Text style={{ color: "#080808", fontFamily: "Poppins-Medium" }}>
                                     {' '}
-                                    &#x20AC;
+                                    $
                                     {item.cancellationCharges
                                         ? Number(item?.cancellationCharges).toFixed(2)
                                         : 0}

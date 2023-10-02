@@ -51,7 +51,7 @@ export default function SplashScreen({ navigation }) {
 
 
 
-            if (data && data.bookingStatus == "running") {
+            if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
 
               setBookingData(data)
               navigation.replace('Tab');

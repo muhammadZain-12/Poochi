@@ -51,16 +51,16 @@ function PassengerDeposits({ route, navigation }) {
                             paddingVertical: 5,
                             borderBottomWidth: 1,
                             borderColor: Colors.primary,
-                            
+
                         }}>
                         {/* Date is mentioned Here */}
-                        <Text style={[styles.text, { marginTop: 5,fontFamily:"Poppins-Medium" }]}>{date}</Text>
+                        <Text style={[styles.text, { marginTop: 5, fontFamily: "Poppins-Medium" }]}>{date}</Text>
                         <Text
                             style={[
                                 styles.text,
-                                { paddingTop: 5, marginBottom: 5, fontSize: 18,fontFamily:"Poppins-Medium" },
+                                { paddingTop: 5, marginBottom: 5, fontSize: 18, fontFamily: "Poppins-Medium" },
                             ]}>
-                            Deposit: <Text style={{ color: "#080808" }} > &#x20AC;{item?.deposit} </Text>
+                            Deposit: <Text style={{ color: "#080808" }} > ${item?.deposit} </Text>
                         </Text>
 
 

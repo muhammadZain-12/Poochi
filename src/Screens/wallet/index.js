@@ -63,7 +63,7 @@ const Wallet = ({ navigation, route }) => {
                         walletData &&
                         walletData.length > 0 &&
                         walletData.filter((e, i) => {
-                            let walletDate = e.date.toDate();
+                            let walletDate = e?.date?.toDate();
                             let walletMonth = walletDate.getMonth();
                             let walletYear = walletDate.getFullYear();
                             if (walletMonth == currentMonth && walletYear == currentYear) {
@@ -359,7 +359,7 @@ const Wallet = ({ navigation, route }) => {
                                         color: COLORS.black,
                                     }}
                                 >
-                                    &#x20AC;{currentwallet ?? 0}
+                                    ${currentwallet ?? 0}
                                 </Text>
                             </View>
                         </View>
@@ -474,7 +474,7 @@ const Wallet = ({ navigation, route }) => {
                                                 fontSize: 13,
                                                 textAlign: 'center',
                                             }}>
-                                            &#x20AC;
+                                            $
                                             {allWalletData
                                                 ? (deposit.total ? deposit.total.toFixed(2) : 0) : allMonthlyData ? (deposit.monthly ? deposit.monthly.toFixed(2) : 0)
                                                     : deposit.daily ? (deposit.daily.toFixed(2)) : 0}
@@ -536,7 +536,7 @@ const Wallet = ({ navigation, route }) => {
                                             fontSize: 13,
                                             textAlign: 'center',
                                         }}>
-                                        &#x20AC;
+                                        $
                                         {allWalletData
                                             ? spent.total
                                                 ? (spent.total).toFixed(2)

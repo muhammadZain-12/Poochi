@@ -82,10 +82,34 @@ function PassengerRideDetail({ navigation, route }) {
     const getDriverRideStatus = () => {
 
 
+        let id = auth().currentUser.uid
+
 
         const unsubscribe = firestore().collection("Request").doc(bookingData?.userData?.id).onSnapshot(querySnapshot => {
 
             let data = querySnapshot.data()
+
+
+            if (data?.rideCancelByDriver && data?.bookingStatus == "cancelled" && data?.requestStatus == "cancelled") {
+
+
+
+                firestore().collection("Request").doc(id).update({
+                    rideCancelByDriver: false,
+                    requestStatus: ""
+                }).then(() => {
+
+                    navigation.replace("Drivers")
+                    ToastAndroid.show("Ride has been cancelled by driver", ToastAndroid.SHORT)
+                }).catch((error) => {
+
+                    console.log(error)
+
+                })
+
+
+
+            }
 
 
 
