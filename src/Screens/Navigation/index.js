@@ -35,6 +35,8 @@ import Pets from '../Pets';
 import Wallet from '../wallet';
 import Notification from '../Notification';
 import History from '../History';
+import PassengerDeposits from '../PassengerEarning';
+import PassengerSpents from '../PassnegerSpents';
 
 
 const Stack = createNativeStackNavigator();
@@ -143,6 +145,8 @@ export default function Navigation() {
         <Stack.Screen name="wallet" component={Wallet} />
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="History" component={History} />
+        <Stack.Screen name="Deposits" component={PassengerDeposits} />
+        <Stack.Screen name="Spents" component={PassengerSpents} />
       </Stack.Navigator>
     </NavigationContainer>
   );

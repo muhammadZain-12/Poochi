@@ -110,6 +110,8 @@ function Location({ navigation }) {
             currentAddress: data.currentAddress
           })
 
+          setCurrentLocation(position?.coords)
+
 
           firestore().collection("Users").doc(id).update(data).then((res) => {
 
@@ -121,6 +123,7 @@ function Location({ navigation }) {
               }
             }
             setLoading(false)
+            setModalVisible(false)
 
             navigation.replace('Tab', {
               screen: {
@@ -141,7 +144,7 @@ function Location({ navigation }) {
 
         },
           error => {
-          
+
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
         );
@@ -152,7 +155,10 @@ function Location({ navigation }) {
         );
       }
     });
+
   };
+
+  console.log(currentLocation,"currentLocation")
 
   const ShowLocationModal = useCallback(() => {
     return (
@@ -206,7 +212,7 @@ function Location({ navigation }) {
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
-      <MapView
+      {currentLocation && currentLocation.latitude && <MapView
         initialRegion={{
           latitude: currentLocation ? currentLocation.latitude : 37.152,
           longitude: currentLocation ? currentLocation.longitude : 37.202,
@@ -214,7 +220,7 @@ function Location({ navigation }) {
           longitudeDelta: 0.0421,
         }}
         style={StyleSheet.absoluteFill}
-      />
+      />}
 
       {modalVisible && focus && ShowLocationModal()}
     </View>

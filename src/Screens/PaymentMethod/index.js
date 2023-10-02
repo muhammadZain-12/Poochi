@@ -88,100 +88,149 @@ function PaymentMethod({ navigation, route }) {
 
                 let token = res?.token;
 
-                let dataToSend = {
 
-                    amount: data?.amount,
-                    cardToken: token.id
+                let tokenToSend = {
+                    token: token.id
                 }
 
 
-                axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
+                axios.post(`${Base_Uri}createCustomer`, tokenToSend).then((res) => {
 
 
-                    let walletData = {
-                        deposit: data.amount,
-                        spent: 0,
-                        remainingWallet: data.amount
+                    let response = res.data
+
+                    let customerId = response.customerId
+
+
+                    let dataToSend = {
+
+                        amount: data?.amount,
+                        customerId: customerId
                     }
 
-                    let id = auth()?.currentUser?.uid
+                    axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
 
-                    firestore().collection("UserWallet").doc(id).set({
-                        wallet: firestore.FieldValue.arrayUnion(walletData)
-                    }, { merge: true }).then((res) => {
+                        let responseData = res.data
 
-
-                        if (loginData.token) {
-                            var notificationData = JSON.stringify({
-                                notification: {
-                                    body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
-                                    title: `Hi ${loginData?.fullName} `,
-                                },
-                                to: loginData.token,
-                            });
-                            let config = {
-                                method: 'post',
-                                url: 'https://fcm.googleapis.com/fcm/send',
-                                headers: {
-                                    Authorization:
-                                        'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
-                                    'Content-Type': 'application/json',
-                                },
-                                data: notificationData,
-                            };
-                            axios(config)
-                                .then(res => {
-
-                                    console.log("notification succesfully send")
+                        if (!responseData.status) {
 
 
-                                    let notification = JSON.parse(notificationData)
+                            ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                            setLoading(false)
+
+                            return
+
+                        }
 
 
 
-                                    let notificationToSend = {
+                        let walletData = {
+                            deposit: data.amount,
+                            spent: 0,
+                            remainingWallet: data.amount,
+                            date: new Date()
+                        }
 
-                                        title: notification.notification.title,
-                                        body: notification.notification.body,
-                                        date: new Date()
+                        let id = auth()?.currentUser?.uid
+
+                        firestore().collection("UserWallet").doc(id).set({
+                            wallet: firestore.FieldValue.arrayUnion(walletData)
+                        }, { merge: true }).then((res) => {
+
+                            if (loginData?.token) {
+                                var notificationData = JSON.stringify({
+                                    notification: {
+                                        body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
+                                        title: `Hi ${loginData?.fullName} `,
+                                    },
+                                    to: loginData.token,
+                                });
+                                let config = {
+                                    method: 'post',
+                                    url: 'https://fcm.googleapis.com/fcm/send',
+                                    headers: {
+                                        Authorization:
+                                            'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                        'Content-Type': 'application/json',
+                                    },
+                                    data: notificationData,
+                                };
+                                axios(config)
+                                    .then(res => {
+
+                                        console.log("notification succesfully send")
 
 
-                                    }
+                                        let notification = JSON.parse(notificationData)
 
-                                    firestore().collection("Notification").doc(loginData.id).set({
-                                        notification: firestore.FieldValue.arrayUnion(notificationToSend)
-                                    }, { merge: true }).then(() => {
 
-                                        console.log("Notification has been send successfully")
+
+                                        let notificationToSend = {
+
+                                            title: notification.notification.title,
+                                            body: notification.notification.body,
+                                            date: new Date()
+
+
+                                        }
+
+                                        firestore().collection("Notification").doc(loginData.id).set({
+                                            notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                        }, { merge: true }).then(() => {
+
+                                            console.log("Notification has been send successfully")
+
+                                        })
+
+
 
                                     })
+                                    .catch(error => {
+                                        console.log(error, "errorsssss")
+                                    });
+                            }
+
+
+                            let cardData = {
+                                cardHolderName: cardHolderName,
+                                token: token?.id,
+                                customerId: response?.customerId,
+                                last4: token?.card?.last4,
+                                otherDetails: token
+                            }
+
+
+                            firestore().collection("PassengerCards").doc(id).set({
+                                cards: firestore.FieldValue.arrayUnion(cardData)
+                            }, { merge: true }).then((res) => {
+
+                                console.log("successfully add card")
+                                setCardDetails(cardData)
+                                setLoading(false)
+                                navigation.navigate(data.type)
+
+                            }).catch((error) => {
+                                setLoading(false)
+                                console.log(error)
+                            })
 
 
 
-                                })
-                                .catch(error => {
-                                    console.log(error, "errorsssss")
-                                });
-                        }
+
+                        }).catch((error) => {
+
+                            setLoading(false)
+                            console.log(error, "eerrrororor")
+
+                        })
 
 
-                        let cardData = {
-                            cardHolderName: cardHolderName,
-                            token: token.id,
-                            last4: token?.card?.last4,
-                            otherDetails: token
-                        }
-
-                        setCardDetails(cardData)
-                        setLoading(false)
-                        navigation.navigate(data.type)
 
 
 
                     }).catch((error) => {
-
                         setLoading(false)
-                        console.log(error, "eerrrororor")
+                        console.log(error, "error")
 
                     })
 
@@ -190,12 +239,13 @@ function PaymentMethod({ navigation, route }) {
 
 
                 }).catch((error) => {
-                    setLoading(false)
-                    console.log(error, "error")
 
+                    console.log(error)
+                    setLoading(false)
                 })
 
 
+                return
 
 
 

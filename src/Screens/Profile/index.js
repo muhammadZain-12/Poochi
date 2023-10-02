@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid } from "react-native"
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,8 +12,14 @@ import LocationContext from "../../Context/locationContext/context"
 
 function Profile({ navigation }) {
 
-
-    GoogleSignin.configure({});
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId:
+                '889265375440-76ihli23dk6ulbuamsujt41t0t3gvdcs.apps.googleusercontent.com',
+            androidClientId:
+                '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
+        });
+    }, []);
 
     const loginCont = useContext(LoginContext)
     const locationCont = useContext(LocationContext)

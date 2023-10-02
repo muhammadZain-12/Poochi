@@ -50,7 +50,7 @@ const Wallet = ({ navigation, route }) => {
 
                     let data = querySnapshot.data()
                     walletData = data?.wallet
-                    walletData = walletData.length > 0 && walletData.sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
+                    walletData = walletData.length > 0 && walletData.sort((a, b) => a?.date?.toDate()?.getTime() - b.date.toDate().getTime())
                     walletData = walletData.reverse()
 
                     setAllData(walletData);
@@ -423,7 +423,7 @@ const Wallet = ({ navigation, route }) => {
                                     width: '49%',
                                 }}
                                 onPress={() =>
-                                    navigation.navigate('passengerDepositDataScreen', {
+                                    navigation.navigate('Deposits', {
                                         data: {
                                             allData: allData,
                                             monthlyData: monthlyWalletData,
@@ -485,7 +485,7 @@ const Wallet = ({ navigation, route }) => {
 
                             <TouchableOpacity
                                 onPress={() =>
-                                    navigation.navigate('passengerSpentDataScreen', {
+                                    navigation.navigate('Spents', {
                                         data: {
                                             allData: allData,
                                             monthlyData: monthlyWalletData,

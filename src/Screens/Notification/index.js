@@ -145,7 +145,7 @@ function Notification({ navigation }) {
             <View style={{ paddingHorizontal: 20, marginVertical: 20, marginBottom: 20 }} >
 
 
-                <FlatList
+                {notification && notification.length > 0 ? <FlatList
 
                     data={notification}
                     renderItem={renderNotificationData}
@@ -154,7 +154,13 @@ function Notification({ navigation }) {
                     }}
                     style={{ marginBottom: 20 }}
 
-                />
+                /> : <View style={{ width: "100%", height: "90%", justifyContent: "center", alignItems: "center" }} >
+
+                    <Text style={{ fontSize: 24, fontFamily: "Poppins-SemiBold", color: "#080808" }} >No Notifications</Text>
+
+                </View>
+
+                }
 
 
             </View>
