@@ -228,7 +228,7 @@ function Drivers({ navigation }) {
 
 
                 }
-            }, 60000);
+            }, 6000000);
         }
 
         // Clear the timeout if driverData becomes available before 5 seconds

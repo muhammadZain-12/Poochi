@@ -36,6 +36,8 @@ function PassengerRideDetail({ navigation, route }) {
     const [arrived, setArrived] = useState(false)
     const [startRide, setStartRide] = useState(false)
     const [endRide, setEndRide] = useState(false)
+    const [rideStartToDropoff, setRideStartToDropoff] = useState(false)
+    const [reachDropoff, setReachDropoff] = useState(false)
     const [petImage, setPetImage] = useState("")
     const [driverLocation, setDriverLocation] = useState({
         latitude: "",
@@ -195,6 +197,26 @@ function PassengerRideDetail({ navigation, route }) {
                     })
                 }
 
+                if (data?.rideStartToDropoff) {
+
+                    setRideStartToDropoff(true)
+                    setBookingData({
+                        ...bookingData,
+                        rideStartToDropoff: true
+                    })
+
+                }
+
+                if (data?.reachDropoff) {
+
+                    setReachDropoff(true)
+                    setBookingData({
+                        ...bookingData,
+                        reactDropoff: true
+                    })
+
+                }
+
                 if (data.startRide) {
                     setBookingData({
                         ...bookingData,
@@ -236,10 +258,35 @@ function PassengerRideDetail({ navigation, route }) {
 
 
 
+
     const showDirection = useCallback(() => {
 
         return (
-            arrived ? <MapViewDirections
+            reachDropoff ? <MapViewDirections
+                origin={{
+                    latitude: bookingData?.dropoffCoords?.lat,
+                    longitude: bookingData?.dropoffCoords?.lng,
+                }}
+                destination={{
+                    latitude: bookingData?.returnDropoffCords.lat,
+                    longitude: bookingData?.returnDropoffCords.lng,
+                }}
+                apikey={GOOGLE_MAP_KEY}
+                strokeColor={"black"}
+                strokeWidth={3}
+                optimizeWayPoints={true}
+                onReady={result => {
+                    //   getMinutesAndDistance(result);
+                    mapRef.current.fitToCoordinates(result.coordinates, {
+                        edgePadding: {
+                            right: 30,
+                            bottom: 100,
+                            left: 30,
+                            top: 100,
+                        },
+                    });
+                }}
+            /> : arrived ? <MapViewDirections
                 origin={{
                     latitude: bookingData?.driverData?.currentLocation?.latitude,
                     longitude: bookingData?.driverData?.currentLocation?.longitude,
@@ -291,7 +338,7 @@ function PassengerRideDetail({ navigation, route }) {
                 />
         )
 
-    }, [arrived])
+    }, [arrived, reachDropoff])
 
 
     const handleBackToHome = () => {
@@ -424,9 +471,6 @@ function PassengerRideDetail({ navigation, route }) {
 
     }, []);
 
-
-
-
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -464,8 +508,8 @@ function PassengerRideDetail({ navigation, route }) {
 
                                 coordinate={{
 
-                                    latitude: arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
-                                    longitude: arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
+                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
+                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
 
                                 }}
                                 title={bookingData?.pickupAddress}
@@ -587,7 +631,7 @@ function PassengerRideDetail({ navigation, route }) {
                     <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrive Safely" : startRide ? `Travel time to drop off location-${arriveDropoffMin} min.` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
+                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrive Safely" : startRide ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
                     </View>
 

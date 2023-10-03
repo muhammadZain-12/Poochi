@@ -41,11 +41,12 @@ function MedicalTrip({ navigation, route }) {
     const [oneWay, setOneWay] = useState(true)
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    const [customWaitingTime, setCustomWaitingTime] = useState(null)
     const [items, setItems] = useState([
-        { label: '30 min', value: '30 min' },
-        { label: '60 min', value: '60 min' },
-        { label: '1 hr', value: '1 hr' },
-        { label: '2 hr', value: '1 hr' },
+        { label: '30 min', value: 30 },
+        { label: '60 min', value: 60 },
+        { label: '90 min', value: 90 },
+        { label: '120 min', value: 120 },
         { label: 'Custom', value: 'custom' },
     ]);
 
@@ -58,15 +59,9 @@ function MedicalTrip({ navigation, route }) {
     const [dropoff, setDropoff] = useState({})
     const [minutes, setMinutes] = useState("")
     const [dropoffAddress, setDropoffAddress] = useState("")
-    const [returnPickup, setReturnPickup] = useState({
-        lat: "",
-        lng: ""
-    })
+    const [returnPickup, setReturnPickup] = useState({})
     const [returnPickupAddress, setReturnPickupAddress] = useState("")
-    const [returnDropoff, setReturnDropoff] = useState({
-        lat: "",
-        lng: ""
-    })
+    const [returnDropoff, setReturnDropoff] = useState({})
     const [returnDropoffAddress, setReturnDropoffAddress] = useState("")
     const [distance, setDistance] = useState("")
     const [fare, setFare] = useState(null)
@@ -74,8 +69,15 @@ function MedicalTrip({ navigation, route }) {
     const [loading, setLoading] = useState(false)
     const [walletAmount, setWalletAmount] = useState(0)
     const [deductedFromWallet, setDeductedFromWallet] = useState(false)
+    const [pickupToDropoffDistance, setPickupToDropoffDistance] = useState(null)
+    const [dropoffToPickupDistance, setDropoffToPickupDistance] = useState(null)
+    const [pickupToDropoffMinutes, setPickupToDropoffMinutes] = useState(null)
+    const [dropoffToPickupMinutes, setDropoffToPickupMinutes] = useState(null)
 
 
+
+
+    console.log(returnPickup, "PICKUP")
 
     const getWalletAmount = () => {
 
@@ -138,6 +140,13 @@ function MedicalTrip({ navigation, route }) {
                 lng: data.lng
             })
             setDropoffAddress(data.name)
+
+            setReturnPickup({
+                lat: data.lat,
+                lng: data.lng
+            })
+            setReturnPickupAddress(data.name)
+
         }
 
         if (data?.type == "returnPick") {
@@ -212,14 +221,137 @@ function MedicalTrip({ navigation, route }) {
 
     }
 
+
+    const handleCalculateTwoWayDistanceAndFare = () => {
+
+
+        const pickupToDropoffDis = getPreciseDistance(
+            {
+                latitude: pickup.lat,
+                longitude: pickup.lng,
+            },
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+        );
+
+        const dropoffToReturnPickupDis = getPreciseDistance(
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+            {
+                latitude: returnPickup.lat,
+                longitude: returnPickup.lng,
+            },
+        );
+
+
+        console.log(dropoffToReturnPickupDis, "dissstancesss")
+
+
+        const returnPickupToReturnDropoffDis = getPreciseDistance(
+            {
+                latitude: returnPickup.lat,
+                longitude: returnPickup.lng,
+            },
+            {
+                latitude: returnDropoff.lat,
+                longitude: returnDropoff.lng,
+            },
+        );
+
+
+        let totalDis = pickupToDropoffDis + dropoffToReturnPickupDis + returnPickupToReturnDropoffDis
+
+
+        let pickupToDropoffMileDistance = (pickupToDropoffDis / 1609.34)?.toFixed(2);
+
+        setPickupToDropoffDistance(pickupToDropoffMileDistance)
+
+
+
+
+
+        let dropoffToPickupMileDistance = (returnPickupToReturnDropoffDis / 1609.34)?.toFixed(2);
+
+        setDropoffToPickupDistance(dropoffToPickupMileDistance)
+
+
+        let mileDistance = (totalDis / 1609.34)?.toFixed(2);
+
+        let averageMilePetMinutes = 0.40
+
+
+        setDistance(mileDistance)
+
+
+        let totalMinutes = Math.ceil(mileDistance / averageMilePetMinutes)
+
+        let pickupToDropffMin = Math.ceil(pickupToDropoffMileDistance / averageMilePetMinutes)
+
+
+        let dropoffToPickupMin = Math.ceil(dropoffToPickupMileDistance / averageMilePetMinutes)
+
+
+        setMinutes(totalMinutes)
+        setDropoffToPickupMinutes(dropoffToPickupMin)
+        setPickupToDropoffMinutes(pickupToDropffMin)
+
+        firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
+
+            let data = doc.data()
+
+            let mileCharge = Number(data.mileCharge)
+            let serviceCharge = Number(data.serviceCharge)
+            let creditCardCharge = Number(data.creditCardCharge)
+            let waitingCharges = Number(data?.waitingCharges)
+
+
+            let totalWaitingCharges = 0
+
+            if (!customWaitingTime && value !== "custom") {
+                totalWaitingCharges = waitingCharges * Number(value)
+            }
+
+            else if (customWaitingTime) {
+                totalWaitingCharges = waitingCharges * Number(customWaitingTime)
+            }
+
+
+            console.log(totalWaitingCharges, "waitingCharges")
+
+            let fare = mileCharge * Number(mileDistance)
+            fare = fare + serviceCharge + creditCardCharge + totalWaitingCharges
+            setFare(fare.toFixed(2))
+
+        }).catch((error) => {
+
+            ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+
+        })
+
+
+
+    }
+
     useEffect(() => {
 
 
 
-        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0) {
+        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && oneWay) {
 
 
             handleCalculateDistanceAndFare()
+
+            return
+        }
+
+        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && Object.keys(returnPickup).length > 0 && Object.keys(returnDropoff).length > 0 && !oneWay && (value || customWaitingTime)) {
+
+            handleCalculateTwoWayDistanceAndFare()
 
 
         }
@@ -227,8 +359,10 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    }, [pickup, dropoff])
+    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime])
 
+
+    console.log(value, "value")
 
     const removeSelectedPet = (ind) => {
 
@@ -240,6 +374,10 @@ function MedicalTrip({ navigation, route }) {
 
 
     }
+
+
+
+
 
     const renderSelectedPets = ({ item, index }) => {
 
@@ -259,6 +397,91 @@ function MedicalTrip({ navigation, route }) {
 
 
     const handleFindDriver = () => {
+
+
+        if (!oneWay) {
+
+            if (!pickupAddress) {
+                ToastAndroid.show("Kindly Enter Pickup Point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!dropoffAddress) {
+                ToastAndroid.show("kindly enter dropoff point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!returnPickupAddress) {
+                ToastAndroid.show("Kindly enter return pickup point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!returnDropoffAddress) {
+                ToastAndroid.show("Kindly enter return dropoff point", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!value || (value == "custom" && !customWaitingTime)) {
+
+                ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
+
+            }
+
+            if (selectedPets.length == 0) {
+                ToastAndroid.show("Kindly select pet", ToastAndroid.SHORT)
+                return
+            }
+
+            if (!cardDetails && !deductedFromWallet) {
+                ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
+                return
+            }
+
+
+            let dataToSend = {
+                pickupAddress: pickupAddress,
+                dropoffAddress: dropoffAddress,
+                returnPickupAddress: returnPickupAddress,
+                returnDropoffAddress: returnDropoffAddress,
+                pickupCords: pickup,
+                dropoffCoords: dropoff,
+                returnPickupCords: returnPickup,
+                returnDropoffCords: returnDropoff,
+                selectedPets: selectedPets,
+                comment: comment,
+                cardDetails: cardDetails,
+                userData: loginData,
+                fare: fare,
+                distance: distance,
+                pickupToDropDis: pickupToDropoffDistance,
+                dropoffToPickupDis: dropoffToPickupDistance,
+                minutes: minutes,
+                pickupToDropoffMinutes: pickupToDropoffMinutes,
+                dropoffToPickupMinutes: dropoffToPickupMinutes,
+                waitingTime: customWaitingTime ? customWaitingTime : value,
+                bookingType: "twoWay",
+                requestDate: new Date(),
+                type: "MedicalTrip",
+                deductedFromWallet: deductedFromWallet
+            }
+
+            setLoading(true)
+
+            firestore().collection("Request").doc(loginData.id).set(dataToSend).then((res) => {
+                setLoading(false)
+                setBookingData(dataToSend)
+                navigation.navigate("Drivers")
+
+            }).catch((error) => {
+                setLoading(false)
+                ToastAndroid.show(error.message, ToastAndroid, SHORT)
+            })
+
+
+        }
+
+
+
 
 
         if (oneWay) {
@@ -462,7 +685,7 @@ function MedicalTrip({ navigation, route }) {
                     {!oneWay && <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10, marginTop: 20, marginBottom: 10 }} >
                         <View style={{ marginTop: 5 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", 'Return Pickup')} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -520,12 +743,12 @@ function MedicalTrip({ navigation, route }) {
                     />
                     }
 
-                    {value == "custom" && <TextInput placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
+                    {value == "custom" && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
 
 
                     {!oneWay && <View style={{ borderRadius: 30, backgroundColor: Colors.buttonColor, padding: 10, marginTop: 15 }} >
 
-                        <Text style={{ fontSize: 14, color: Colors.white, fontFamily: "Poppins-Medium", textAlign: "center" }} >Travel time to drop off location-20min</Text>
+                        <Text style={{ fontSize: 14, color: Colors.white, fontFamily: "Poppins-Medium", textAlign: "center" }} >Travel time to drop off location-{pickupToDropoffMinutes}min</Text>
 
                     </View>
 

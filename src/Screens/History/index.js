@@ -145,7 +145,7 @@ function History({ navigation }) {
 
         return (
 
-            <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDetails", item)} style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 }} >
+            <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
                     {stringDate}
@@ -212,6 +212,14 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType}</Text>
+
+                    </View>
+
+                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Address: {item.pickupAddress}</Text>
 
                     </View>
@@ -224,6 +232,23 @@ function History({ navigation }) {
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Address: {item.dropoffAddress}</Text>
 
                     </View>
+
+                    {item?.bookingType == "twoWay" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Return Address: {item.returnPickupAddress}</Text>
+
+                    </View>}
+
+
+                    {item?.bookingType == "twoWay" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Return Address: {item.returnDropoffAddress}</Text>
+
+                    </View>}
 
                 </View>
 
