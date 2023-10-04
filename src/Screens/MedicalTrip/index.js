@@ -77,7 +77,6 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    console.log(returnPickup, "PICKUP")
 
     const getWalletAmount = () => {
 
@@ -109,11 +108,8 @@ function MedicalTrip({ navigation, route }) {
     }
 
 
-
     useEffect(() => {
-
         getWalletAmount()
-
     }, [])
 
 
@@ -593,7 +589,7 @@ function MedicalTrip({ navigation, route }) {
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", 'Pickup Location')} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "MedicalTrip" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -611,7 +607,7 @@ function MedicalTrip({ navigation, route }) {
                         </View>
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", 'Dropoff Location')} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Dropoff Location', route: "MedicalTrip" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -705,7 +701,7 @@ function MedicalTrip({ navigation, route }) {
 
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", 'Return Dropoff')} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Dropoff', route: "MedicalTrip" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
                                     <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>

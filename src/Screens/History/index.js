@@ -198,7 +198,7 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Address: {item.dropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Address: {item?.type == "PetWalk" ? item?.pickupAddress : item?.dropoffAddress}</Text>
 
                     </View>
 
@@ -237,7 +237,7 @@ function History({ navigation }) {
 
         return (
 
-            <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 ,alignSelf:"center"}} >
+            <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10, alignSelf: "center" }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
                     {stringDate}

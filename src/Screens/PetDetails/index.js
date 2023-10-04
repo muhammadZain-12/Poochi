@@ -33,6 +33,7 @@ function PetDetails({ navigation, route }) {
   const [genderOptions, setGenderOptions] = useState([
     { label: 'Male', value: 'male' },
     { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
   ]);
 
   const [image1, setImage1] = useState("")
@@ -506,6 +507,7 @@ function PetDetails({ navigation, route }) {
     let flag = Object.values(checkData).some((e, i) => !e)
 
 
+
     if (flag) {
       ToastAndroid.show("Required Fields are missing", ToastAndroid.SHORT)
       return
@@ -545,6 +547,9 @@ function PetDetails({ navigation, route }) {
         setImage3("")
         setImage3Url("")
         ToastAndroid.show("Pet has been successfully added", ToastAndroid.SHORT)
+        navigation.navigate("Tab", {
+          screen: "Home"
+        })
       }).catch((error) => {
         setLoading(false)
         ToastAndroid.show(error?.message, ToastAndroid.SHORT)

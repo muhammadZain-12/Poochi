@@ -23,13 +23,13 @@ function GooglePlace({ navigation, route }) {
             name: details.address_components[0].long_name,
             lat: lat,
             lng: lng,
-            type: data == ("Pickup Location") ? "pickup" : data == ("Dropoff Location") ? "dropoff" : data == ("Return Pickup") ? "returnPick" : "returnDrop"
+            type: data?.name == ("Pickup Location") ? "pickup" : data?.name == ("Dropoff Location") ? "dropoff" : data?.name == ("Return Pickup") ? "returnPick" : "returnDrop"
         }
 
 
-        navigation.navigate("MedicalTrip", dataToSend)
+        navigation.navigate(data?.route, dataToSend)
 
-        
+
     };
 
 
@@ -40,7 +40,7 @@ function GooglePlace({ navigation, route }) {
 
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
-                    text={data}
+                    text={data.name}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.goBack()}
@@ -48,7 +48,7 @@ function GooglePlace({ navigation, route }) {
             </View>
             <View style={{ flex: 1 }} >
                 <GooglePlacesAutocomplete
-                    placeholder={data}
+                    placeholder={data.name}
 
                     textInputProps={{
                         placeholderTextColor: 'gray', // Replace with the desired color code

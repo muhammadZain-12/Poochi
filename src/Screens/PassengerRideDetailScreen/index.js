@@ -95,7 +95,6 @@ function PassengerRideDetail({ navigation, route }) {
             if (data?.rideCancelByDriver && data?.bookingStatus == "cancelled" && data?.requestStatus == "cancelled") {
 
 
-
                 firestore().collection("Request").doc(id).update({
                     rideCancelByDriver: false,
                     requestStatus: ""
@@ -155,7 +154,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                     }
 
-                    if (data?.rideStatus == "dropoff") {
+                    if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk") {
 
                         const dis = getPreciseDistance(
                             {
@@ -163,8 +162,8 @@ function PassengerRideDetail({ navigation, route }) {
                                 longitude: data.driverLocation.longitude,
                             },
                             {
-                                latitude: data.dropoffCoords.lat,
-                                longitude: data.dropoffCoords.lng,
+                                latitude: data?.dropoffCoords?.lat,
+                                longitude: data?.dropoffCoords?.lng,
                             },
                         );
 
@@ -286,14 +285,14 @@ function PassengerRideDetail({ navigation, route }) {
                         },
                     });
                 }}
-            /> : arrived ? <MapViewDirections
+            /> : arrived && bookingData?.type !== "PetWalk" ? <MapViewDirections
                 origin={{
                     latitude: bookingData?.driverData?.currentLocation?.latitude,
                     longitude: bookingData?.driverData?.currentLocation?.longitude,
                 }}
                 destination={{
-                    latitude: bookingData?.dropoffCoords.lat,
-                    longitude: bookingData?.dropoffCoords.lng,
+                    latitude: bookingData?.dropoffCoords?.lat,
+                    longitude: bookingData?.dropoffCoords?.lng,
                 }}
                 apikey={GOOGLE_MAP_KEY}
                 strokeColor={"black"}
@@ -373,10 +372,10 @@ function PassengerRideDetail({ navigation, route }) {
             return
         }
 
-        if (!comment) {
-            ToastAndroid.show("Kindly Enter Comment", ToastAndroid.SHORT)
-            return
-        }
+        // if (!comment) {
+        //     ToastAndroid.show("Kindly Enter Comment", ToastAndroid.SHORT)
+        //     return
+        // }
 
         let id = auth()?.currentUser?.uid
 
@@ -385,6 +384,45 @@ function PassengerRideDetail({ navigation, route }) {
         firestore().collection("Booking").doc(id).get().then((doc) => {
 
             let data = doc?.data()
+
+            console.log(data, "dataaa")
+
+            if (!data?.booking) {
+
+
+                bookingData.UserRating = rating;
+                bookingData.userComment = comment;
+
+                console.log(bookingData, "bookingDatadata,")
+
+                firestore().collection("Booking").doc(id).set({
+                    Bookings: [bookingData]
+                }).then((res) => {
+
+
+                    firestore().collection("Request").doc(id).update({
+                        userResponse: true
+                    }).then(() => {
+
+                        setFinalLoader(false)
+                        setBookingData("")
+                        setCardDetails("")
+                        setSelectedPets("")
+                        setRating(0)
+                        setComment("")
+                        ToastAndroid.show("Successfully Submitted Reveiew", ToastAndroid.SHORT)
+                        navigation.replace("Tab")
+                    }).catch((error) => {
+                        setFinalLoader(false)
+
+                        console.log(error, "error")
+
+                    })
+                })
+
+
+            }
+
 
             if (data && data?.Bookings) {
 
@@ -399,6 +437,8 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                 let myCurrentBooking = currentBooking[0]
+
+                console.log(myCurrentBooking, "MYcURRENTbOOKING")
 
                 myCurrentBooking.UserRating = rating,
                     myCurrentBooking.userComment = comment
@@ -508,8 +548,8 @@ function PassengerRideDetail({ navigation, route }) {
 
                                 coordinate={{
 
-                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
-                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
+                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : (arrived && bookingData?.type !== "PetWalk") ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
+                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : (arrived && bookingData?.type !== "PetWalk") ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
 
                                 }}
                                 title={bookingData?.pickupAddress}
@@ -617,7 +657,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                             <Image source={require("../../Images/Location3.png")} />
 
-                            <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
+                            <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData?.type == "PetWalk" ? bookingData?.pickupAddress : bookingData.dropoffAddress}</Text>
 
                         </View>
 
@@ -631,7 +671,7 @@ function PassengerRideDetail({ navigation, route }) {
                     <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrive Safely" : startRide ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
+                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
                     </View>
 
@@ -650,12 +690,11 @@ function PassengerRideDetail({ navigation, route }) {
                     </View>}
                     {endRide && <TextInput onChangeText={(e) => setComment(e)} value={comment} placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
 
-                    {endRide && <CustomButton onPress={() => !finalLoader && handleSubmitReview()} text={finalLoader ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
+                    {endRide && <CustomButton onPress={() => handleSubmitReview()} text={finalLoader ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
 
                     {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
 
                     {!arrived && <CustomButton text={"Ride Cancel"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
-
 
 
 

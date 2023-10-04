@@ -294,6 +294,8 @@ function Home({ navigation }) {
 
   const handleNavigateToBooking = (routeName) => {
 
+    console.log(routeName,"route")
+
 
     if (!bookingData) {
       navigation.navigate(routeName)
@@ -304,8 +306,14 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-      if (data?.bookingStatus !== "running") {
+      if (!data) {
 
+        navigation.navigate(routeName)
+        return
+
+      }
+
+      if (data?.bookingStatus !== "running") {
         navigation.navigate(routeName)
       }
 
@@ -477,7 +485,7 @@ function Home({ navigation }) {
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Medical Trip</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Walk</Text>
             </TouchableOpacity>

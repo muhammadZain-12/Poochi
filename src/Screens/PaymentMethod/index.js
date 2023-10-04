@@ -284,6 +284,7 @@ function PaymentMethod({ navigation, route }) {
                     console.log(response, "response")
 
                     let customerId = response.customerId
+                    console.log(data?.amout,"amount")
 
 
                     console.log(customerId, "customerId")
@@ -483,7 +484,7 @@ function PaymentMethod({ navigation, route }) {
             </View>
 
 
-            <View style={{ flexDirection: "row", height: 270, marginTop: 20, padding: 10 }} >
+            {savedCards && savedCards.length>0 && <View style={{ flexDirection: "row", height: 270, marginTop: 20, padding: 10 }} >
                 <ScrollView horizontal={true} style={{ marginTop: 20 }}>
                     {savedCards &&
                         savedCards.length > 0 &&
@@ -503,7 +504,7 @@ function PaymentMethod({ navigation, route }) {
                             );
                         })}
                 </ScrollView>
-            </View>
+            </View>}
 
 
             <ScrollView>

@@ -37,6 +37,7 @@ import Notification from '../Notification';
 import History from '../History';
 import PassengerDeposits from '../PassengerEarning';
 import PassengerSpents from '../PassnegerSpents';
+import PetWalk from '../PetWalk';
 
 
 const Stack = createNativeStackNavigator();
@@ -137,6 +138,7 @@ export default function Navigation() {
         }} name="PassengerRideDetail" component={PassengerRideDetail} />
         <Stack.Screen name="Track" component={Track} />
         <Stack.Screen name="PetGrooming" component={PetGrooming} />
+        <Stack.Screen name="PetWalk" component={PetWalk} />
         <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
         <Stack.Screen name="ScheduleRideDate" component={ScheduleRideDate} />
         <Stack.Screen name="GooglePlace" component={GooglePlace} />

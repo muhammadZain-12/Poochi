@@ -228,7 +228,7 @@ function Drivers({ navigation }) {
 
 
                 }
-            }, 6000000);
+            }, 60000);
         }
 
         // Clear the timeout if driverData becomes available before 5 seconds
@@ -342,13 +342,13 @@ function Drivers({ navigation }) {
 
                 {driverData && driverData.length > 0 && driverData.map((e, i) => {
                     return (
-                        <TouchableOpacity style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", marginTop: 20, borderRadius: 10, alignItems: "center", paddingHorizontal: 10 }}  >
+                        <TouchableOpacity key={i} style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", marginTop: 20, borderRadius: 10, alignItems: "center", paddingHorizontal: 10 }}  >
                             <View style={{ flexDirection: "row", alignItems: "center" }} >
                                 <Image source={{ uri: e.profile }} style={{ width: 60, height: 60, borderRadius: 50 }} />
 
                                 <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                     <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{e.fullName}</Text>
+                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 25 }} >{e.fullName}</Text>
                                         <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                         <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({e.rating})</Text>
 

@@ -39,6 +39,8 @@ const Wallet = ({ navigation, route }) => {
 
     let routeData = route.params;
 
+    console.log(auth().currentUser.uid, "idddd")
+
     const getWalletData = async () => {
         const userId = auth().currentUser.uid;
 
@@ -46,6 +48,7 @@ const Wallet = ({ navigation, route }) => {
             .collection('UserWallet')
             .doc(userId)
             .onSnapshot(querySnapshot => {
+
                 if (querySnapshot.exists) {
 
                     let data = querySnapshot.data()
