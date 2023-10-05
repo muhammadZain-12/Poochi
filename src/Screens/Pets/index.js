@@ -12,102 +12,7 @@ function Pets({ navigation, route }) {
 
     const [pets, setPets] = useState([
 
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Capri",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Lucy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet3.png"),
-            name: "Raddy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Tito",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Jacki",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet3.png"),
-            name: "Argos",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Capri",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Raddy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
+        // {
 
     ])
 
@@ -117,6 +22,7 @@ function Pets({ navigation, route }) {
         let id = auth().currentUser?.uid
 
         firestore().collection("Pets").doc(id).get().then((doc) => {
+
             let userPets = doc?.data()
 
             if (userPets?.pets) {
@@ -148,22 +54,22 @@ function Pets({ navigation, route }) {
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
-            <View style={{ marginTop: 5 }} >
+            <View style={{ marginTop: 10 }} >
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Pet Select"
+                    text="Pets"
                     color={Colors.black}
-                    image={require("../../Images/plus.png")}
-                    imageFunc={() => navigation.navigate('Tab', {
-                        screen: 'PetDetails',
-                    })}
+                    // image={require("../../Images/plus.png")}
+                    // imageFunc={() => navigation.navigate('Tab', {
+                    //     screen: 'PetDetails',
+                    // })}
                 />
             </View>
 
             <ScrollView>
 
-                <View style={{ marginTop: 10, paddingHorizontal: 15, width: "100%", flexWrap: "wrap", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View style={{ marginTop: 10, paddingHorizontal: 15, width: "100%", flexWrap: "wrap", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
 
                     {pets && pets.length > 0 && pets.map((e, i) => {
                         return (
@@ -177,6 +83,18 @@ function Pets({ navigation, route }) {
                             </TouchableOpacity>
                         )
                     })}
+
+                    <TouchableOpacity onPress={() => navigation.navigate("Tab", {
+                        screen: "PetDetails",
+                        params: {
+                            screen: "Pets"
+                        }
+                    })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center",marginTop:20}} >
+
+                        <Image source={require("../../Images/add.png")} />
+
+                    </TouchableOpacity>
+
 
 
                 </View>

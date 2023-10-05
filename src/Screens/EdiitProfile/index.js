@@ -31,9 +31,8 @@ import storage from '@react-native-firebase/storage';
 import LoginContext from '../../Context/loginContext/context';
 
 
-export default function UserDetails({ route }) {
+export default function EditProfile({ route }) {
     const navigation = useNavigation();
-
 
 
     let email = route?.params?.email ? route?.params?.email : route.params
@@ -49,22 +48,22 @@ export default function UserDetails({ route }) {
     const [secureEntry, setSecureEntry] = useState(true);
     const [loading, setLoading] = useState(false);
     const [signinData, setSigninData] = useState({
-        fullName: "",
-        mobileNumber: "",
-        country: "",
-        city: "",
-        address: ""
+        fullName: loginData.fullName,
+        mobileNumber: loginData.mobileNumber,
+        country: loginData.country,
+        city: loginData.city,
+        address: loginData.address
     })
 
 
     const [openGender, setOpenGender] = useState(false)
-    const [gender, setGender] = useState(null)
+    const [gender, setGender] = useState(loginData.gender)
     const [genderOptions, setGenderOptions] = useState([
         { label: 'Male', value: 'male' },
         { label: 'Female', value: 'female' },
     ]);
-    const [image1, setImage1] = useState("")
-    const [image1url, setImage1url] = useState("")
+    const [image1, setImage1] = useState(loginData.profile)
+    const [image1url, setImage1url] = useState(loginData.profile)
     const [visible1, setVisible1] = useState(false)
 
 
@@ -177,9 +176,6 @@ export default function UserDetails({ route }) {
             address: signinData.address,
             profile: image1,
             gender: gender,
-            email: email,
-            created_at: new Date(),
-            id: uid
 
         }
 
@@ -199,13 +195,20 @@ export default function UserDetails({ route }) {
 
 
 
-        firestore().collection("Users").doc(uid).set(dataToSend).then((res) => {
+        firestore().collection("Users").doc(uid).update(dataToSend).then((res) => {
 
-            ToastAndroid.show("Details has been submitted Succesfully", ToastAndroid.SHORT)
-            setLoginData(dataToSend)
+            ToastAndroid.show("Details has been edited Succesfully", ToastAndroid.SHORT)
+            setLoginData({
+                ...loginData,
+                fullName: signinData.fullName,
+                mobileNumber: signinData.mobileNumber,
+                country: signinData.country,
+                city: signinData.city,
+                address: signinData.address,
+                profile: image1,
+                gender: gender,
+            })
             setLoading(false)
-            navigation.navigate("Location")
-
 
         }).catch((error) => {
             setLoading(false)
@@ -223,7 +226,7 @@ export default function UserDetails({ route }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Complete Your Profile"
+                    text="Edit Profile"
                     color={Colors.black}
                 />
             </View>
@@ -377,7 +380,7 @@ export default function UserDetails({ route }) {
 
 
                         <CustomButton
-                            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Next"}
+                            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Save Changes"}
                             styleContainer={{
                                 alignSelf: 'center',
                                 marginTop: 30,
@@ -400,3 +403,5 @@ export default function UserDetails({ route }) {
         </View>
     );
 }
+
+

@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
+  PermissionsAndroid,
+  ToastAndroid,
   View,
   useWindowDimensions,
   Image,
@@ -13,16 +15,68 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import LoginContext from '../../Context/loginContext/context';
 import BookingContext from '../../Context/bookingContext/context';
-
-
+import LocationContext from '../../Context/locationContext/context';
+import Geocoder from 'react-native-geocoding';
+import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
+import Geolocation from 'react-native-geolocation-service';
 
 export default function SplashScreen({ navigation }) {
 
+
+  Geocoder.init(GOOGLE_MAP_KEY);
+
+
+
   let context = useContext(LoginContext)
   let bookingCont = useContext(BookingContext)
+  let locationCont = useContext(LocationContext)
 
   let { bookingData, setBookingData } = bookingCont
   let { loginData, setLoginData } = context
+  let { locationData, setLocationData } = locationCont
+
+
+
+  const locationPermission = () =>
+    new Promise(async (resolve, reject) => {
+      if (Platform.OS === 'ios') {
+        try {
+          const permissionStatus = await Geolocation.requestAuthorization(
+            'whenInUse',
+          );
+          if (permissionStatus === 'granted') {
+            return resolve('granted');
+          }
+          reject('Permission not granted');
+        } catch (error) {
+          return reject(error);
+        }
+      }
+      return PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      )
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            resolve('granted');
+          }
+        })
+        .catch(error => {
+          return reject(error);
+        });
+    });
+
+
+  const getAddressFromCoords = async (latitude, longitude) => {
+    try {
+      const response = await Geocoder.from(latitude, longitude);
+      const address = response.results[0].formatted_address;
+
+      return address
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
 
   setTimeout(() => {
     const CheckUser = auth().currentUser;
@@ -44,7 +98,77 @@ export default function SplashScreen({ navigation }) {
             if (data && data?.bookingStatus == "complete" && !data?.userResponse) {
 
               setBookingData(data)
-              navigation.replace("PassengerRideDetail")
+              locationPermission().then(res => {
+                if (res == 'granted') {
+                  Geolocation.getCurrentPosition(async (position) => {
+
+
+                    let id = CheckUser.uid
+
+                    let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                    let data = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+
+
+                    setLocationData({
+                      ...locationData,
+                      currentLocation: data.currentLocation,
+                      currentAddress: data.currentAddress
+                    })
+
+
+                    firestore().collection("Users").doc(id).update({
+
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+
+                    }).then((res) => {
+
+                      let dataToSend = {
+                        currentAddress: address,
+                        currentLocation: {
+                          latitude: position.coords.latitude,
+                          longitude: position.coords.longitude
+                        }
+                      }
+                      navigation.replace('PassengerRideDetail');
+
+                    }).catch((error) => {
+                      setLoading(false)
+                      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                    })
+
+
+
+                  },
+                    error => {
+
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                  );
+                } else {
+
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'Location',
+                      },
+                    ],
+                  });
+                }
+              });
               return
 
             }
@@ -54,10 +178,167 @@ export default function SplashScreen({ navigation }) {
             if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
 
               setBookingData(data)
-              navigation.replace('Tab');
+              locationPermission().then(res => {
+                if (res == 'granted') {
+                  Geolocation.getCurrentPosition(async (position) => {
+
+
+                    let id = CheckUser.uid
+
+                    let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                    let data = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+
+
+                    setLocationData({
+                      ...locationData,
+                      currentLocation: data.currentLocation,
+                      currentAddress: data.currentAddress
+                    })
+
+
+                    firestore().collection("Users").doc(id).update({
+
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+
+                    }).then((res) => {
+
+                      let dataToSend = {
+                        currentAddress: address,
+                        currentLocation: {
+                          latitude: position.coords.latitude,
+                          longitude: position.coords.longitude
+                        }
+                      }
+                      navigation.replace('Tab', {
+                        screen: {
+                          name: "Home",
+                          params: {
+                            data: dataToSend
+                          }
+                        },
+                      });
+
+                    }).catch((error) => {
+                      setLoading(false)
+                      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                    })
+
+
+
+                  },
+                    error => {
+
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                  );
+                } else {
+
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'Location',
+                      },
+                    ],
+                  });
+                }
+              });
 
             } else {
-              navigation.replace('Location');
+
+
+              locationPermission().then(res => {
+                if (res == 'granted') {
+                  Geolocation.getCurrentPosition(async (position) => {
+
+
+                    let id = CheckUser.uid
+
+                    let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                    let data = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+
+
+                    setLocationData({
+                      ...locationData,
+                      currentLocation: data.currentLocation,
+                      currentAddress: data.currentAddress
+                    })
+
+
+                    firestore().collection("Users").doc(id).update({
+
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+
+                    }).then((res) => {
+
+                      let dataToSend = {
+                        currentAddress: address,
+                        currentLocation: {
+                          latitude: position.coords.latitude,
+                          longitude: position.coords.longitude
+                        }
+                      }
+                      navigation.replace('Tab', {
+                        screen: {
+                          name: "Home",
+                          params: {
+                            data: dataToSend
+                          }
+                        },
+                      });
+
+                    }).catch((error) => {
+                      setLoading(false)
+                      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                    })
+
+
+
+                  },
+                    error => {
+
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                  );
+                } else {
+
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'Location',
+                      },
+                    ],
+                  });
+                }
+              });
+
             }
 
           }).catch((error) => {

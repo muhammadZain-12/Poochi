@@ -12,6 +12,7 @@ import {
   Image,
   StatusBar,
   KeyboardAvoidingView,
+  PermissionsAndroid,
 } from 'react-native';
 import CustomButton from '../../Components/CustomButton';
 import CustomHeader from '../../Components/CustomHeader';
@@ -25,9 +26,17 @@ import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import LoginContext from '../../Context/loginContext/context';
+import Geolocation from 'react-native-geolocation-service';
+import Geocoder from 'react-native-geocoding';
+import LocationContext from '../../Context/locationContext/context';
+import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
+
 
 export default function Login() {
   const navigation = useNavigation();
+
+  Geocoder.init(GOOGLE_MAP_KEY);
+
 
 
   const [goggleLoading, setGoogleLoading] = useState(false);
@@ -39,8 +48,10 @@ export default function Login() {
   })
 
   const context = useContext(LoginContext)
+  const locationCont = useContext(LocationContext)
 
   const { loginData, setLoginData } = context
+  const { locationData, setLocationData } = locationCont
 
 
 
@@ -52,6 +63,48 @@ export default function Login() {
         '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
     });
   }, []);
+
+
+  const locationPermission = () =>
+    new Promise(async (resolve, reject) => {
+      if (Platform.OS === 'ios') {
+        try {
+          const permissionStatus = await Geolocation.requestAuthorization(
+            'whenInUse',
+          );
+          if (permissionStatus === 'granted') {
+            return resolve('granted');
+          }
+          reject('Permission not granted');
+        } catch (error) {
+          return reject(error);
+        }
+      }
+      return PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      )
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            resolve('granted');
+          }
+        })
+        .catch(error => {
+          return reject(error);
+        });
+    });
+
+
+  const getAddressFromCoords = async (latitude, longitude) => {
+    try {
+      const response = await Geocoder.from(latitude, longitude);
+      const address = response.results[0].formatted_address;
+
+      return address
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
 
   async function onGoogleButtonPress() {
     setGoogleLoading(true);
@@ -87,13 +140,77 @@ export default function Login() {
 
       if (data) {
         setLoginData(data)
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'Location',
+
+        locationPermission().then(res => {
+          if (res == 'granted') {
+            Geolocation.getCurrentPosition(async (position) => {
+
+
+              let id = auth()?.currentUser?.uid
+              let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+              let data = {
+                currentAddress: address,
+                currentLocation: {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                }
+              }
+
+
+              setLocationData({
+                ...locationData,
+                currentLocation: data.currentLocation,
+                currentAddress: data.currentAddress
+              })
+
+
+              firestore().collection("Users").doc(id).update(data).then((res) => {
+
+                let dataToSend = {
+                  currentAddress: address,
+                  currentLocation: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                  }
+                }
+                setLoading(false)
+
+                navigation.replace('Tab', {
+                  screen: {
+                    name: "Home",
+                    params: {
+                      data: dataToSend
+                    }
+                  },
+                });
+
+              }).catch((error) => {
+                setLoading(false)
+                ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+              })
+
+
+
             },
-          ],
+              error => {
+
+              },
+              { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+            );
+          } else {
+
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'Location',
+                },
+              ],
+            });
+          }
         });
 
       }

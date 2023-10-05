@@ -45,6 +45,7 @@ function PetWalk({ navigation, route }) {
     const [date, setDate] = useState("")
     const [time, setTime] = useState("")
     const [fare, setFare] = useState(null)
+    const [serviceCharge, setServiceCharge] = useState(null)
     const [comment, setComment] = useState("")
     const [loading, setLoading] = useState(false)
     const [deductedFromWallet, setDeductedFromWallet] = useState(false)
@@ -184,9 +185,9 @@ function PetWalk({ navigation, route }) {
 
 
 
-    const renderSelectedPets = ({ item, index }) => {
+    const renderSelectedPets = ({ item }, index) => {
 
-
+        console.log(index, "index")
 
         return <View style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
 
@@ -222,10 +223,9 @@ function PetWalk({ navigation, route }) {
 
     }
 
-    console.log(selectedTimeDuration, "selectee")
+
 
     const handleSelectDuration = (e, ind) => {
-
 
         setSelectedTimeDuration(e.value)
 
@@ -262,6 +262,7 @@ function PetWalk({ navigation, route }) {
                 let totalFare = selectedTimeDuration * Number(data?.walkFare)
 
                 setFare(totalFare)
+                setServiceCharge(data?.serviceCharge)
 
 
             }
@@ -351,6 +352,7 @@ function PetWalk({ navigation, route }) {
             cardDetails: cardDetails,
             userData: loginData,
             fare: fare,
+            serviceCharge: serviceCharge,
             duration: selectedTimeDuration,
             bookingType: "oneWay",
             requestDate: new Date(),
@@ -426,11 +428,11 @@ function PetWalk({ navigation, route }) {
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Option</Text>
 
-                    <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
+                    <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "space-between" }} >
                         {option && option.length > 0 && option.map((e, i) => {
                             return (
-                                <View style={{ width: Dimensions.get("window").width / 3.3, height: 110 }} >
-                                    <TouchableOpacity onPress={() => handleSelectOptions(i)} style={{ borderWidth: e.selected ? 1 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
+                                <View style={{ width: 110, height: 110 }} >
+                                    <TouchableOpacity onPress={() => handleSelectOptions(i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
                                         <Image source={e?.source} style={{ width: 40, height: 40 }} />
                                     </TouchableOpacity>
                                     <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.name}</Text>
@@ -442,13 +444,24 @@ function PetWalk({ navigation, route }) {
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Pet Select</Text>
 
-                    {selectedPets && selectedPets.length > 0 ? <View style={{ flexDirection: "row", width: "100%" }} >
-                        <FlatList
+                    {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
+
+                        {selectedPets.map((e, i) => {
+
+                            return (
+
+                                renderSelectedPets({ item: e }, i)
+
+                            )
+
+                        })}
+
+                        {/* <FlatList
                             data={selectedPets}
                             renderItem={renderSelectedPets}
                             scrollEnabled={true}
                             horizontal={true}
-                        />
+                        /> */}
 
 
                         <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetWalk")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
@@ -459,7 +472,7 @@ function PetWalk({ navigation, route }) {
 
 
 
-                    </View> :
+                    </ScrollView> :
                         <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
                             <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetWalk")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
@@ -477,11 +490,9 @@ function PetWalk({ navigation, route }) {
                     }
 
 
-                    <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row" }} >
+                    <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
                         <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Walking Duration</Text>
-                        <TouchableOpacity onPress={() => setCustomTime(true)} >
-                            <Text style={{ fontSize: 14, color: Colors.buttonColor, fontFamily: "Poppins-Medium", marginTop: 30 }} >Custom Time</Text>
-                        </TouchableOpacity>
+
                     </View>
 
                     <View style={{ flexDirection: "row", alignItems: "center" }} >
@@ -494,6 +505,9 @@ function PetWalk({ navigation, route }) {
                             )
                         })}
 
+                        <TouchableOpacity onPress={() => setCustomTime(!customTime)} style={{ justifyContent: "center", alignItems: "center", width: 70, height: 40, borderRadius: 20, backgroundColor: customTime ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5 }} >
+                            <Icons name="plus" size={25} color={"#777"} />
+                        </TouchableOpacity>
 
                     </View>
 
@@ -554,12 +568,11 @@ function PetWalk({ navigation, route }) {
 
 
                     {!cardDetails ?
-                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "center", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 
 
-                            <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center", width: "100%" }} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center"}} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

@@ -38,7 +38,7 @@ function SinglePetDetail({ navigation, route }) {
 
             firestore().collection("Pets").doc(id).set(sendingData).then((res) => {
                 ToastAndroid.show("Pet has been succesfully deleted", ToastAndroid.SHORT)
-                navigation.navigate("PetSelect", petsToSend)
+                navigation.navigate("Pets", petsToSend)
             }).catch((error) => {
                 ToastAndroid.show(error?.message, ToastAndroid.SHORT)
             })
@@ -86,14 +86,14 @@ function SinglePetDetail({ navigation, route }) {
                 <Image source={{ uri: data.image1 }} style={{ width: "100%", height: 300, marginTop: 10, borderRadius: 10 }} />
 
 
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }} >
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10,width:"90%",alignSelf:"center" }} >
 
                     <View>
                         <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase", textAlignVertical: "bottom" }} >{data.petName}</Text>
                         <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.breed}</Text>
                     </View>
 
-                    <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.typeOfPet}</Text>
+                    <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase"}} >{data.typeOfPet}</Text>
                 </View>
 
 

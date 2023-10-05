@@ -73,6 +73,7 @@ function MedicalTrip({ navigation, route }) {
     const [dropoffToPickupDistance, setDropoffToPickupDistance] = useState(null)
     const [pickupToDropoffMinutes, setPickupToDropoffMinutes] = useState(null)
     const [dropoffToPickupMinutes, setDropoffToPickupMinutes] = useState(null)
+    const [serviceCharge, setServiceCharge] = useState(null)
 
 
 
@@ -204,8 +205,9 @@ function MedicalTrip({ navigation, route }) {
             let creditCardCharge = Number(data.creditCardCharge)
 
             let fare = mileCharge * Number(mileDistance)
-            fare = fare + serviceCharge + creditCardCharge
+
             setFare(fare.toFixed(2))
+            setServiceCharge(serviceCharge)
 
         }).catch((error) => {
 
@@ -244,7 +246,6 @@ function MedicalTrip({ navigation, route }) {
         );
 
 
-        console.log(dropoffToReturnPickupDis, "dissstancesss")
 
 
         const returnPickupToReturnDropoffDis = getPreciseDistance(
@@ -316,11 +317,11 @@ function MedicalTrip({ navigation, route }) {
             }
 
 
-            console.log(totalWaitingCharges, "waitingCharges")
 
             let fare = mileCharge * Number(mileDistance)
-            fare = fare + serviceCharge + creditCardCharge + totalWaitingCharges
+            fare = fare + totalWaitingCharges
             setFare(fare.toFixed(2))
+            setServiceCharge(serviceCharge)
 
         }).catch((error) => {
 
@@ -358,8 +359,6 @@ function MedicalTrip({ navigation, route }) {
     }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime])
 
 
-    console.log(value, "value")
-
     const removeSelectedPet = (ind) => {
 
         setSelectedPets(selectedPets && selectedPets.length > 0 && selectedPets.filter((e, i) => {
@@ -375,7 +374,7 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    const renderSelectedPets = ({ item, index }) => {
+    const renderSelectedPets = ({ item }, index) => {
 
 
 
@@ -448,6 +447,7 @@ function MedicalTrip({ navigation, route }) {
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
+                serviceCharge: serviceCharge,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
                 dropoffToPickupDis: dropoffToPickupDistance,
@@ -512,6 +512,7 @@ function MedicalTrip({ navigation, route }) {
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
+                serviceCharge: serviceCharge,
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",
@@ -631,13 +632,17 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-                    {selectedPets && selectedPets.length > 0 ? <View style={{ flexDirection: "row", width: "100%" }} >
-                        <FlatList
-                            data={selectedPets}
-                            renderItem={renderSelectedPets}
-                            scrollEnabled={true}
-                            horizontal={true}
-                        />
+                    {selectedPets && selectedPets.length > 0 ? <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%" }} >
+
+                        {selectedPets.map((e, i) => {
+
+                            return (
+
+                                renderSelectedPets({ item: e }, i)
+
+                            )
+
+                        })}
 
 
                         <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "MedicalTrip")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
@@ -647,8 +652,14 @@ function MedicalTrip({ navigation, route }) {
                         </TouchableOpacity>
 
 
+                        {/* <FlatList
+                            data={selectedPets}
+                            renderItem={renderSelectedPets}
+                            scrollEnabled={true}
+                            horizontal={true}
+                        /> */}
 
-                    </View> :
+                    </ScrollView> :
                         <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
                             <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "MedicalTrip")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
@@ -715,11 +726,11 @@ function MedicalTrip({ navigation, route }) {
                     </View>}
 
 
-                    {!oneWay && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "medical")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
+                    {!oneWay && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "medical")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
 
-                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Schedule Ride</Text>
+                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Soon you will also be able to schedule rides</Text>
 
-                        <Image source={require("../../Images/calender.png")} />
+                        {/* <Image source={require("../../Images/calender.png")} /> */}
 
                     </TouchableOpacity>}
 

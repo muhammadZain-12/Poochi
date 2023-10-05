@@ -50,11 +50,11 @@ function Home({ navigation }) {
     },
     {
       id: 2,
-      image: require('../../Images/banner.png'),
+      image: require('../../Images/banner2.jpg'),
     },
     {
       id: 3,
-      image: require('../../Images/banner.png'),
+      image: require('../../Images/banner3.jpg'),
     },
   ];
 
@@ -189,8 +189,6 @@ function Home({ navigation }) {
         let allNotification = data?.notification
 
 
-        console.log(allNotification.length, "length")
-
         let unseenNotification = allNotification && allNotification.length > 0 && allNotification.filter((e, i) => !e.seen)
 
         setUnseenNotifications(unseenNotification)
@@ -294,7 +292,6 @@ function Home({ navigation }) {
 
   const handleNavigateToBooking = (routeName) => {
 
-    console.log(routeName,"route")
 
 
     if (!bookingData) {
@@ -377,10 +374,10 @@ function Home({ navigation }) {
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
-          <Image source={{ uri: loginData.profile }} style={{ width: 40, height: 40, borderRadius: 10 }} />
+          <Image source={{ uri: loginData.profile }} style={{ width: 70, height: 70, borderRadius: 100 }} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
+        {/* <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
 
           <Image source={require("../../Images/location.png")} />
 
@@ -388,13 +385,18 @@ function Home({ navigation }) {
 
           <Icons size={20} color="gray" name="chevron-down" />
 
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        <View>
+          <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 18 }} >Hi {loginData.fullName}</Text>
+        </View>
+
 
         <View style={{ flexDirection: "row" }} >
 
           <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 10 }} >
 
-            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center" }} >
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center",top:-10 }} >
 
               <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
 
@@ -421,13 +423,10 @@ function Home({ navigation }) {
 
         <View>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
-            <View>
-              <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 16 }} >Hi {loginData.fullName}</Text>
-              <Text style={{ color: Colors.gray, fontFamily: "Poppins-Regular", fontSize: 18 }} >Good Morning!</Text>
-            </View>
-            {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide", scheduleData)} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, height: 50, justifyContent: "center", alignItems: "center" }} >
+
+            {/* {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide", scheduleData)} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, height: 50, justifyContent: "center", alignItems: "center" }} >
               <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Schedule Ride <Image source={require("../../Images/callender.png")} style={{ width: 20, height: 20 }} /> </Text>
-            </TouchableOpacity>}
+            </TouchableOpacity>} */}
           </View>
 
 
@@ -474,7 +473,7 @@ function Home({ navigation }) {
 
         <View style={{ paddingHorizontal: 20 }} >
 
-          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 24, marginTop: 20 }} >Our Services</Text>
+          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20,marginBottom:20 }} >Where would you like to go?</Text>
 
 
           <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >
@@ -489,12 +488,12 @@ function Home({ navigation }) {
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Walk</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigateToBooking("MedicalTrip")} style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Friends & Family</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigateToBooking("MedicalTrip")} style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("PetGrooming")} style={{ width: "49%" }} >
               <Image source={require("../../Images/grooming.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Grooming</Text>

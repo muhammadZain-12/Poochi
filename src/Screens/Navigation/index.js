@@ -38,6 +38,10 @@ import History from '../History';
 import PassengerDeposits from '../PassengerEarning';
 import PassengerSpents from '../PassnegerSpents';
 import PetWalk from '../PetWalk';
+import AccountSetting from '../AccountSetting';
+import UpdatePassword from '../updatePassword';
+import EditProfile from '../EdiitProfile';
+import PrivacyPolicy from '../PrivacyPolicy';
 
 
 const Stack = createNativeStackNavigator();
@@ -46,24 +50,58 @@ const Tab = createBottomTabNavigator();
 
 
 
-function CustomTabBar(navigation, route) {
+function CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHomeScreen, petScreen, setPetScreen) {
+
+
+  const handleNavigateToChat = () => {
+
+
+    setChatScreen(true)
+    setHomeScreen(false)
+    setPetScreen(false)
+
+    navigation.navigate("Chats")
+
+  }
+
+  const handleNavigateToHome = () => {
+
+
+    setChatScreen(false)
+    setHomeScreen(true)
+    setPetScreen(false)
+
+    navigation.navigate("Home")
+
+  }
+
+  const handleNavigateToPet = () => {
+
+
+    setChatScreen(false)
+    setHomeScreen(false)
+    setPetScreen(true)
+
+    navigation.navigate("PetDetails")
+
+  }
 
   return (
     <View style={{ backgroundColor: '#E6E6E6', height: 80, borderTopEndRadius: 40, borderTopStartRadius: 40, justifyContent: "space-around", alignItems: "center", flexDirection: "row" }}>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Home")} >
+      <TouchableOpacity onPress={() => handleNavigateToHome()} >
 
-        <Image source={require("../../Images/home.png")} />
+        <Image source={homeScreen ? require("../../Images/home.png") : require("../../Images/home1.png")} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("PetDetails")} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+      <TouchableOpacity onPress={() => handleNavigateToPet()} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: petScreen ? Colors.buttonColor : Colors.gray, justifyContent: "center", alignItems: "center" }} >
 
         <Icon name="plus" size={20} color={Colors.white} />
 
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Chats")} >
+      <TouchableOpacity onPress={() => handleNavigateToChat()} >
 
-        <Image source={require("../../Images/chat.png")} />
+        <Image source={chatScreen ? require("../../Images/chat1.png") : require("../../Images/chat.png")} style={{ width: 40, height: 40 }} />
 
       </TouchableOpacity>
 
@@ -77,13 +115,18 @@ function MyTabs() {
 
   const navigation = useNavigation()
 
+  const [chatScreen, setChatScreen] = useState(false)
+  const [homeScreen, setHomeScreen] = useState(false)
+  const [petScreen, setPetScreen] = useState(false)
+
+
 
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
       tabBarLabel: () => null, // Hide tab bar labels
     }}
-      tabBar={() => CustomTabBar(navigation)}
+      tabBar={() => CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHomeScreen, petScreen, setPetScreen)}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="PetDetails" component={PetDetails} />
@@ -149,6 +192,10 @@ export default function Navigation() {
         <Stack.Screen name="History" component={History} />
         <Stack.Screen name="Deposits" component={PassengerDeposits} />
         <Stack.Screen name="Spents" component={PassengerSpents} />
+        <Stack.Screen name="AccountSetting" component={AccountSetting} />
+        <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
       </Stack.Navigator>
     </NavigationContainer>
   );

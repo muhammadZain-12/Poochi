@@ -18,102 +18,102 @@ function PetSelect({ navigation, route }) {
 
     const [pets, setPets] = useState([
 
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Capri",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Lucy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet3.png"),
-            name: "Raddy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Tito",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Jacki",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet3.png"),
-            name: "Argos",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet1.png"),
-            name: "Capri",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
-        {
-            image: require("../../Images/pet2.png"),
-            name: "Raddy",
-            breed: "Ragdoll",
-            category: "dog",
-            gender: "male",
-            height: "20",
-            weight: "20",
-            details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
-            natureOfPet: "angry",
-            injuryOrHealthIssue: "no"
-        },
+        // {
+        //     image: require("../../Images/pet1.png"),
+        //     name: "Capri",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet2.png"),
+        //     name: "Lucy",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet3.png"),
+        //     name: "Raddy",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet1.png"),
+        //     name: "Tito",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet2.png"),
+        //     name: "Jacki",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet3.png"),
+        //     name: "Argos",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet1.png"),
+        //     name: "Capri",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
+        // {
+        //     image: require("../../Images/pet2.png"),
+        //     name: "Raddy",
+        //     breed: "Ragdoll",
+        //     category: "dog",
+        //     gender: "male",
+        //     height: "20",
+        //     weight: "20",
+        //     details: "Collection systems for PET products are well established so that recycling of PET can be practiced on a large scale.",
+        //     natureOfPet: "angry",
+        //     injuryOrHealthIssue: "no"
+        // },
 
     ])
 

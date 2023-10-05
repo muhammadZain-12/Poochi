@@ -271,7 +271,7 @@ function PassengerRideDetail({ navigation, route }) {
                     longitude: bookingData?.returnDropoffCords.lng,
                 }}
                 apikey={GOOGLE_MAP_KEY}
-                strokeColor={"black"}
+                strokeColor={Colors.buttonColor}
                 strokeWidth={3}
                 optimizeWayPoints={true}
                 onReady={result => {
@@ -295,7 +295,7 @@ function PassengerRideDetail({ navigation, route }) {
                     longitude: bookingData?.dropoffCoords?.lng,
                 }}
                 apikey={GOOGLE_MAP_KEY}
-                strokeColor={"black"}
+                strokeColor={Colors.buttonColor}
                 strokeWidth={3}
                 optimizeWayPoints={true}
                 onReady={result => {
@@ -320,7 +320,7 @@ function PassengerRideDetail({ navigation, route }) {
                         longitude: bookingData?.driverData?.currentLocation?.longitude,
                     }}
                     apikey={GOOGLE_MAP_KEY}
-                    strokeColor={"black"}
+                    strokeColor={Colors.buttonColor}
                     strokeWidth={3}
                     optimizeWayPoints={true}
                     onReady={result => {
@@ -385,8 +385,6 @@ function PassengerRideDetail({ navigation, route }) {
 
             let data = doc?.data()
 
-            console.log(data, "dataaa")
-
             if (!data?.booking) {
 
 
@@ -438,7 +436,6 @@ function PassengerRideDetail({ navigation, route }) {
 
                 let myCurrentBooking = currentBooking[0]
 
-                console.log(myCurrentBooking, "MYcURRENTbOOKING")
 
                 myCurrentBooking.UserRating = rating,
                     myCurrentBooking.userComment = comment
@@ -559,8 +556,8 @@ function PassengerRideDetail({ navigation, route }) {
                             <Marker
 
                                 coordinate={{
-                                    latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData.driverData.currentLocation.latitude,
-                                    longitude: driverLocation?.longitude ? driverLocation?.longitude : bookingData.driverData.currentLocation.longitude,
+                                    latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData?.driverData?.currentLocation?.latitude,
+                                    longitude: driverLocation?.longitude ? driverLocation?.longitude : bookingData?.driverData?.currentLocation?.longitude,
                                 }}
                                 title={"Drivers Location"}
                             >
@@ -608,7 +605,7 @@ function PassengerRideDetail({ navigation, route }) {
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{bookingData.driverData?.VehicleDetails?.vehicleName}</Text>
+                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleModelNum}</Text>
 
                             </View>

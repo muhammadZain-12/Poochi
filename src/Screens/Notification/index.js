@@ -18,7 +18,6 @@ function Notification({ navigation }) {
     const { notification, setNotification, unseenNotification } = notificationCont
 
 
-
     const sendSeenProperty = () => {
 
         let id = auth()?.currentUser?.uid
@@ -29,10 +28,7 @@ function Notification({ navigation }) {
 
             if (data && data?.notification) {
 
-
                 let allNotifications = data?.notification
-
-
                 allNotifications = allNotifications && allNotifications.length > 0 && allNotifications.map((e, i) => {
                     return {
                         ...e,

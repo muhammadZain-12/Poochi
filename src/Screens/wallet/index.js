@@ -39,7 +39,6 @@ const Wallet = ({ navigation, route }) => {
 
     let routeData = route.params;
 
-    console.log(auth().currentUser.uid, "idddd")
 
     const getWalletData = async () => {
         const userId = auth().currentUser.uid;

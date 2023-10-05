@@ -33,7 +33,6 @@ function PetDetails({ navigation, route }) {
   const [genderOptions, setGenderOptions] = useState([
     { label: 'Male', value: 'male' },
     { label: 'Female', value: 'female' },
-    { label: 'Other', value: 'other' },
   ]);
 
   const [image1, setImage1] = useState("")
@@ -47,11 +46,11 @@ function PetDetails({ navigation, route }) {
   let initialNature = [
 
     {
-      label: "Fear",
+      label: "Fearful",
       selected: false
     },
     {
-      label: "Anger",
+      label: "Angry",
       selected: false
     },
     {
@@ -59,7 +58,7 @@ function PetDetails({ navigation, route }) {
       selected: false
     },
     {
-      label: "Anxiety",
+      label: "Anxious",
       selected: false
     },
 
@@ -77,9 +76,11 @@ function PetDetails({ navigation, route }) {
 
 
 
+  console.log(otherData, "otherData")
+
   React.useEffect(() => {
 
-    if (petData && Object.keys(petData).length > 0) {
+    if (petData && Object.keys(petData).length > 0 && !petData?.screen) {
 
       setOtherData({
 
@@ -198,6 +199,8 @@ function PetDetails({ navigation, route }) {
 
 
       }
+    } else {
+      ToastAndroid.show("Permission not granted", ToastAndroid.SHORT)
     }
   };
 
@@ -243,6 +246,8 @@ function PetDetails({ navigation, route }) {
 
 
       }
+    } else {
+      ToastAndroid.show("Permission not granted", ToastAndroid.SHORT)
     }
   };
   const openGallery2 = async () => {
@@ -313,6 +318,8 @@ function PetDetails({ navigation, route }) {
 
 
       }
+    } else {
+      ToastAndroid.show("Permission not granted", ToastAndroid.SHORT)
     }
   };
   const openGallery3 = async () => {
@@ -387,7 +394,7 @@ function PetDetails({ navigation, route }) {
   const handleSubmitData = async () => {
 
 
-    if (petData && Object.keys(petData).length > 0) {
+    if (petData && Object.keys(petData).length > 0 && !petData.screen) {
 
 
       let myData = {
@@ -407,6 +414,7 @@ function PetDetails({ navigation, route }) {
         petId: petData.petId
       }
 
+      console.log(myData, "editedData")
 
 
 
@@ -420,9 +428,7 @@ function PetDetails({ navigation, route }) {
       let checkData = { ...dataToSend }
 
       delete checkData.healthIssue
-
-
-
+      delete checkData.additionalDetails
 
 
 
@@ -461,7 +467,7 @@ function PetDetails({ navigation, route }) {
           firestore().collection("Pets").doc(currentUser.uid).set(sendingData).then((res) => {
             ToastAndroid.show("Pet has been succesfully edited", ToastAndroid.SHORT)
             setLoading(false)
-            navigation.navigate("PetSelect", mergeData)
+            navigation.navigate("Pets", mergeData)
           }).catch((error) => {
             setLoading(false)
             ToastAndroid.show(erorr.message, ToastAndroid.SHORT)
@@ -490,8 +496,9 @@ function PetDetails({ navigation, route }) {
       typeOfPet: value,
       gender: gender,
       natureOfPet: natureOfPet.filter((e, i) => e.selected),
-      healthIssue: healthIssue
+      healthIssue: healthIssue ? healthIssue : false
     }
+
 
     if (myData.natureOfPet.length > 0) {
       myData.natureOfPet = myData.natureOfPet[0].label
@@ -502,6 +509,11 @@ function PetDetails({ navigation, route }) {
     let checkData = { ...dataToSend }
 
     delete checkData.healthIssue
+    delete checkData.additionalDetails
+
+
+
+
 
 
     let flag = Object.values(checkData).some((e, i) => !e)
@@ -529,6 +541,14 @@ function PetDetails({ navigation, route }) {
       dataToSend.petId = petId
       dataToSend.userId = currentUser.uid
 
+      if (!healthIssue) {
+        dataToSend.healthIssue = false
+      }
+
+      if (!dataToSend?.additionalDetails) {
+        dataToSend.additionalDetails = ""
+      }
+
 
       firestore().collection("Pets").doc(id).set(
         {
@@ -547,6 +567,14 @@ function PetDetails({ navigation, route }) {
         setImage3("")
         setImage3Url("")
         ToastAndroid.show("Pet has been successfully added", ToastAndroid.SHORT)
+
+        if (petData?.screen) {
+          navigation.navigate("Pets")
+          setLoading(false)
+          return
+        }
+
+
         navigation.navigate("Tab", {
           screen: "Home"
         })
@@ -563,9 +591,9 @@ function PetDetails({ navigation, route }) {
 
   </View> : <View style={{ flex: 1, backgroundColor: Colors.white }} >
     <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true} >
-
-      <CustomHeader text={"Enter pet Details"} />
-
+      <View style={{ marginTop: 10 }} >
+        <CustomHeader text={"Enter New Pet"} />
+      </View>
 
       <View style={{ paddingHorizontal: 15, marginTop: 10 }} >
 
@@ -669,7 +697,7 @@ function PetDetails({ navigation, route }) {
             <TextInput
 
               style={{ color: Colors.black, backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
-              placeholder={'Weight in lbs'}
+              placeholder={'Weight in lb'}
               placeholderTextColor={"gray"}
               keyboardType='number-pad'
               value={otherData.weight}
@@ -701,7 +729,7 @@ function PetDetails({ navigation, route }) {
 
                 <TouchableOpacity onPress={() => selectNatureOfPet(i)} key={i} style={{ flexDirection: "row", alignItems: "flex-start" }} >
 
-                  <View style={{ width: 18, height: 18, borderRadius: 100, borderWidth: 1, alignSelf: "center", backgroundColor: e.selected ? "blue" : "white" }} >
+                  <View style={{ width: 18, height: 18, borderRadius: 100, borderWidth: e.selected ? 0 : 1, alignSelf: "center", backgroundColor: e.selected ? Colors.buttonColor : "white" }} >
                   </View>
                   <Text style={{ fontSize: 16, fontFamily: "Poppins-Regular", color: Colors.gray, marginLeft: 5 }} >{e.label}</Text>
 

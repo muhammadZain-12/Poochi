@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react"
-import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator, ScrollView } from "react-native"
+import React, { useState, useEffect, useContext, useCallback } from "react"
+import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator, ScrollView, StyleSheet, Modal } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
@@ -12,6 +12,8 @@ import LoginContext from "../../Context/loginContext/context"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
 import CustomCard from "../../Components/customCards"
+
+
 
 function PaymentMethod({ navigation, route }) {
 
@@ -27,6 +29,8 @@ function PaymentMethod({ navigation, route }) {
     const [cardDetail, setCardDetail] = useState("")
     const [cardHolderName, setCardHolderName] = useState("")
     const [loading, setLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
+    const [cardError, setCardError] = useState(false)
 
 
 
@@ -67,7 +71,6 @@ function PaymentMethod({ navigation, route }) {
 
             if (data && data?.cards) {
 
-
                 let cards = data.cards
 
 
@@ -85,14 +88,66 @@ function PaymentMethod({ navigation, route }) {
     }
 
 
-
     useEffect(() => {
 
         getSavedCards()
     }, [])
 
 
-    console.log(data, "dataaa")
+
+    const ShowLocationModal = useCallback(() => {
+        return (
+            <View style={styles.centeredView}>
+                <Modal animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)} visible={modalVisible}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Image source={require('../../Images/noBalance.png')} style={{ width: 100, height: 100 }} />
+
+                            <Text
+                                style={[
+                                    styles.modalText,
+                                    {
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontFamily: 'Poppins-SemiBold',
+                                        marginTop: 10,
+                                        fontWeight: '600',
+                                        marginBottom: 5,
+                                    },
+                                ]}>
+                                {cardError}
+                            </Text>
+
+                            <Text
+                                style={[
+                                    styles.modalText,
+                                    {
+                                        color: Colors.gray,
+                                        fontSize: 14,
+                                        fontFamily: 'Poppins-SemiBold',
+                                        marginTop: 0,
+                                        padding: 0,
+                                        width: '100%',
+                                    },
+                                ]}>
+                                Sorry but we are Unable to add card this card add any other card
+                            </Text>
+
+                            <CustomButton
+                                text={loading ? <ActivityIndicator color="white" size="small" /> : 'OK'}
+                                styleContainer={{ width: '100%', marginTop: 10 }}
+                                onPress={() => setModalVisible(false)}
+                            />
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        );
+    }, [modalVisible, loading]);
+
+
+
+
 
 
     const handlePayment = async () => {
@@ -111,6 +166,8 @@ function PaymentMethod({ navigation, route }) {
             axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
 
                 let responseData = res.data
+
+
 
                 if (!responseData.status) {
 
@@ -253,10 +310,19 @@ function PaymentMethod({ navigation, route }) {
         })
             .then(res => {
 
-                console.log(res, "resss")
 
+                if (res.error) {
+
+                    setCardError(res?.error?.message)
+                    setModalVisible(true)
+                    setLoading(false)
+                    return
+
+                }
 
                 let token = res?.token;
+
+                console.log(token, "tokennn")
 
 
                 let tokenToSend = {
@@ -274,20 +340,17 @@ function PaymentMethod({ navigation, route }) {
 
                     if (!response?.status) {
 
-                        ToastAndroid.show(response?.error?.raw?.message, ToastAndroid.SHORT)
+                        // ToastAndroid.show(response?.error?.raw?.message, ToastAndroid.SHORT)
+                        setCardError(response?.error?.raw?.message)
+                        setModalVisible(true)
                         setLoading(false)
 
                         return
                     }
 
 
-                    console.log(response, "response")
-
                     let customerId = response.customerId
-                    console.log(data?.amout,"amount")
 
-
-                    console.log(customerId, "customerId")
 
                     let dataToSend = {
 
@@ -301,9 +364,10 @@ function PaymentMethod({ navigation, route }) {
 
                         if (!responseData.status) {
 
-                            console.log(responseData, "responseData")
 
-                            ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                            // ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                            setCardError(responseData?.error?.raw?.message)
+                            setModalVisible(true)
                             setLoading(false)
 
                             return
@@ -392,7 +456,6 @@ function PaymentMethod({ navigation, route }) {
                                 cards: firestore.FieldValue.arrayUnion(cardData)
                             }, { merge: true }).then((res) => {
 
-                                console.log("successfully add card")
                                 setCardDetails(cardData)
                                 setLoading(false)
                                 navigation.navigate(data.type)
@@ -445,8 +508,6 @@ function PaymentMethod({ navigation, route }) {
             })
     };
 
-    console.log(selectedCards, "selectedCards")
-
     const getSelectedCard = (card, ind) => {
         setSelectedCards(card)
         setSavedCards(
@@ -484,7 +545,7 @@ function PaymentMethod({ navigation, route }) {
             </View>
 
 
-            {savedCards && savedCards.length>0 && <View style={{ flexDirection: "row", height: 270, marginTop: 20, padding: 10 }} >
+            {savedCards && savedCards.length > 0 && <View style={{ flexDirection: "row", height: 270, marginTop: 20, padding: 10 }} >
                 <ScrollView horizontal={true} style={{ marginTop: 20 }}>
                     {savedCards &&
                         savedCards.length > 0 &&
@@ -650,7 +711,10 @@ function PaymentMethod({ navigation, route }) {
 
                 </View>
 
+                {modalVisible && ShowLocationModal()}
+
             </ScrollView>
+
 
 
         </View>
@@ -658,3 +722,50 @@ function PaymentMethod({ navigation, route }) {
 }
 
 export default PaymentMethod
+
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        paddingVertical: 30,
+        width: '80%',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+});

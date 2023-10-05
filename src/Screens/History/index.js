@@ -71,7 +71,6 @@ function History({ navigation }) {
                 if (doc._exists) {
                     let data = doc?.data();
 
-                    console.log(data, "dataaa")
                     let sortedBookings = data?.cancelledBookings.length > 0 && data?.cancelledBookings?.sort((a, b) => (a.cancelledTime).toDate().getTime() - (b.cancelledTime).toDate().getTime());
                     sortedBookings = sortedBookings.length > 0 && sortedBookings.reverse()
                     setCancelledBookingData(sortedBookings.length > 0 ? sortedBookings : []);

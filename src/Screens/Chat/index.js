@@ -176,13 +176,13 @@ function Chat({navigation}) {
           padding: 20,
           alignItems: 'center',
         }}>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <Image
             source={{uri: loginData.profile}}
             style={{width: 40, height: 40}}
           />
-        </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image source={require('../../Images/location.png')} />
 
           <Text
@@ -197,32 +197,32 @@ function Chat({navigation}) {
           </Text>
 
           <Icons size={20} color="gray" name="chevron-down" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity onPress={()=>navigation.navigate("Notification")} >
             <Image source={require('../../Images/notification.png')} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity style={{marginLeft: 5}}>
+          {/* <TouchableOpacity style={{marginLeft: 5}}>
             <Image source={require('../../Images/tracking.png')} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
-      <View style={{paddingHorizontal: 20, marginTop: 10}}>
+      <View style={{paddingHorizontal: 20,flex:1,justifyContent:"center",alignItems:"center"}}>
         <Text
           style={{
-            fontFamily: 'Poppins-SemiBold',
+            fontFamily: 'Poppins-Bold',
             color: Colors.black,
-            fontSize: 22,
+            fontSize: 32,
           }}>
-          Chats
+          Coming Soon
         </Text>
 
-        <View style={{marginTop: 0, marginBottom: 20}}>
-          <FlatList data={drivers} renderItem={renderDrivers} />
-        </View>
+        {/* <View style={{marginTop: 0, marginBottom: 20}}> */}
+          {/* <FlatList data={drivers} renderItem={renderDrivers} /> */}
+        {/* </View> */}
       </View>
     </View>
   );

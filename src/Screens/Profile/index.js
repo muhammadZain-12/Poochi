@@ -1,16 +1,20 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid } from "react-native"
+import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking } from "react-native"
 import React, { useContext, useEffect } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import auth from "@react-native-firebase/auth"
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { StackActions } from "@react-navigation/native"
+import { LinkingContext, StackActions } from "@react-navigation/native"
 import LoginContext from "../../Context/loginContext/context"
 import LocationContext from "../../Context/locationContext/context"
+import firestore from "@react-native-firebase/firestore"
+import BookingContext from "../../Context/bookingContext/context"
 
 
 function Profile({ navigation }) {
+
+
 
     useEffect(() => {
         GoogleSignin.configure({
@@ -23,9 +27,12 @@ function Profile({ navigation }) {
 
     const loginCont = useContext(LoginContext)
     const locationCont = useContext(LocationContext)
+    const bookingCont = useContext(BookingContext)
 
     const { loginData, setLoginData } = loginCont
     const { locationData, setLocationData } = locationCont
+    const { bookingData, setBookingData } = bookingCont
+
 
     const handleLogoutUser = async () => {
 
@@ -75,6 +82,43 @@ function Profile({ navigation }) {
 
     }
 
+
+    const handleRouteToTrackScreen = () => {
+
+
+        if (!bookingData) {
+            ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+            return
+        }
+
+        firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+
+            let data = doc.data()
+
+            if ((data?.bookingStatus !== "running" && data?.userReponse) || data.bookingStatus == "cancelled") {
+                ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+            }
+
+            else {
+
+
+                setBookingData(data)
+                navigation.navigate("PassengerRideDetail")
+
+
+
+            }
+
+        })
+
+
+        // bookingData && bookingData?.bookingStatus == "running" ? 
+
+
+    }
+
+
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -82,8 +126,8 @@ function Profile({ navigation }) {
             <View style={{ paddingHorizontal: 20, marginTop: 10, flexDirection: "row", width: "75%", justifyContent: "space-between" }} >
 
                 <Icons onPress={() => navigation.goBack()} name="arrow-back-outline" color={Colors.black} size={25} />
-                <View>
-                    <Image source={{ uri: loginData.profile }} resizeMode="contain" style={{ alignSelf: "center", height: 130, width: 130, borderRadius: 10 }} />
+                <View style={{ marginRight: 10, marginTop: 10 }} >
+                    <Image source={{ uri: loginData.profile }} resizeMode="cover" style={{ alignSelf: "center", height: 130, width: 130, borderRadius: 100 }} />
                     <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18 }} >{loginData.fullName}</Text>
                 </View>
 
@@ -139,7 +183,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
@@ -154,7 +198,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => handleRouteToTrackScreen()} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
@@ -169,7 +213,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => navigation.navigate("PrivacyPolicy")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
@@ -184,7 +228,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => Linking.openURL("mailto:apppoochie@gmail.com")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
