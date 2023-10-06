@@ -158,7 +158,6 @@ function Location({ navigation }) {
 
   };
 
-  console.log(currentLocation,"currentLocation")
 
   const ShowLocationModal = useCallback(() => {
     return (

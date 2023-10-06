@@ -116,7 +116,7 @@ function MyTabs() {
   const navigation = useNavigation()
 
   const [chatScreen, setChatScreen] = useState(false)
-  const [homeScreen, setHomeScreen] = useState(false)
+  const [homeScreen, setHomeScreen] = useState(true)
   const [petScreen, setPetScreen] = useState(false)
 
 

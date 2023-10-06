@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -78,7 +78,11 @@ export default function SplashScreen({ navigation }) {
   };
 
 
-  setTimeout(() => {
+  useEffect(() => {
+
+
+
+
     const CheckUser = auth().currentUser;
 
     if (CheckUser) {
@@ -172,8 +176,6 @@ export default function SplashScreen({ navigation }) {
               return
 
             }
-
-
 
             if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
 
@@ -359,9 +361,9 @@ export default function SplashScreen({ navigation }) {
 
     } else {
       navigation.replace('OnBoardingScreen');
-    }
-  }, 3000);
+    };
 
+  }, [])
   return (
     <View style={styles.imgContainer}>
       <Image

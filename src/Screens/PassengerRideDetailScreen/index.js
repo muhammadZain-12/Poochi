@@ -13,6 +13,7 @@ import auth from "@react-native-firebase/auth"
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import { getPreciseDistance } from "geolib"
+import { useIsFocused } from "@react-navigation/native"
 
 // import {MapViewDirections} from "react-native-maps-directions"
 
@@ -73,6 +74,8 @@ function PassengerRideDetail({ navigation, route }) {
         },
     ])
 
+    const focus = useIsFocused()
+
     const selectRating = (rating) => {
         setRating(rating)
     }
@@ -91,151 +94,153 @@ function PassengerRideDetail({ navigation, route }) {
 
             let data = querySnapshot.data()
 
-
-            if (data?.rideCancelByDriver && data?.bookingStatus == "cancelled" && data?.requestStatus == "cancelled") {
-
-
-                firestore().collection("Request").doc(id).update({
-                    rideCancelByDriver: false,
-                    requestStatus: ""
-                }).then(() => {
-
-                    navigation.replace("Drivers")
-                    ToastAndroid.show("Ride has been cancelled by driver", ToastAndroid.SHORT)
-                }).catch((error) => {
-
-                    console.log(error)
-
-                })
+            if (focus) {
 
 
+                if (data?.rideCancelByDriver && data?.bookingStatus == "cancelled" && data?.requestStatus == "cancelled") {
 
-            }
+
+                    firestore().collection("Request").doc(id).update({
+                        rideCancelByDriver: false,
+                        requestStatus: ""
+                    }).then(() => {
+
+                        navigation.replace("Drivers")
+                        ToastAndroid.show("Ride has been cancelled by driver", ToastAndroid.SHORT)
+                    }).catch((error) => {
+
+                        console.log(error)
+
+                    })
 
 
 
-            if (data?.petImage) {
+                }
 
 
 
-                setPetImage(data?.petImage)
-
-            }
-
-            if (data.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse)) {
-
-                setBookingData({
-                    ...bookingData,
-                    bookingStatus: data?.bookingStatus
-                })
+                if (data?.petImage) {
 
 
-                if (data?.driverLocation) {
 
-                    if (data?.rideStatus == "pickup") {
+                    setPetImage(data?.petImage)
 
-                        const dis = getPreciseDistance(
-                            {
-                                latitude: bookingData.pickupCords.lat,
-                                longitude: bookingData.pickupCords.lng,
-                            },
-                            {
-                                latitude: data.driverLocation.latitude ? data.driverLocation.latitude : data?.driverData?.currentLocation?.latitude,
-                                longitude: data.driverLocation.longitude ? data.driverLocation.longitude : data?.driverData?.currentLocation?.longitude,
-                            },
-                        );
+                }
+
+                if (data.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse)) {
+
+                    setBookingData({
+                        ...bookingData,
+                        bookingStatus: data?.bookingStatus
+                    })
 
 
-                        let mileDistance = (dis / 1609.34)?.toFixed(2);
+                    if (data?.driverLocation) {
 
-                        let arrivalMinutes = Math.ceil(mileDistance / 0.40)
+                        if (data?.rideStatus == "pickup") {
 
-                        setArrivalDis(arrivalMinutes)
+                            const dis = getPreciseDistance(
+                                {
+                                    latitude: bookingData.pickupCords.lat,
+                                    longitude: bookingData.pickupCords.lng,
+                                },
+                                {
+                                    latitude: data.driverLocation.latitude ? data.driverLocation.latitude : data?.driverData?.currentLocation?.latitude,
+                                    longitude: data.driverLocation.longitude ? data.driverLocation.longitude : data?.driverData?.currentLocation?.longitude,
+                                },
+                            );
+
+
+                            let mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                            let arrivalMinutes = Math.ceil(mileDistance / 0.40)
+
+                            setArrivalDis(arrivalMinutes)
+
+                        }
+
+                        if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk") {
+
+                            const dis = getPreciseDistance(
+                                {
+                                    latitude: data.driverLocation.latitude,
+                                    longitude: data.driverLocation.longitude,
+                                },
+                                {
+                                    latitude: data?.dropoffCoords?.lat,
+                                    longitude: data?.dropoffCoords?.lng,
+                                },
+                            );
+
+
+                            let mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                            let arrivalMinutes = Math.ceil(mileDistance / 0.40)
+
+                            setArriveDropoffMin(arrivalMinutes)
+
+
+
+                        }
+
+                        setDriverLocation(data?.driverLocation)
+                    }
+
+
+
+
+
+
+
+
+                    if (data.arrived) {
+                        setArrived(true)
+                        setBookingData({
+                            ...bookingData,
+                            arrived: true
+                        })
+                    }
+
+                    if (data?.rideStartToDropoff) {
+
+                        setRideStartToDropoff(true)
+                        setBookingData({
+                            ...bookingData,
+                            rideStartToDropoff: true
+                        })
 
                     }
 
-                    if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk") {
+                    if (data?.reachDropoff) {
 
-                        const dis = getPreciseDistance(
-                            {
-                                latitude: data.driverLocation.latitude,
-                                longitude: data.driverLocation.longitude,
-                            },
-                            {
-                                latitude: data?.dropoffCoords?.lat,
-                                longitude: data?.dropoffCoords?.lng,
-                            },
-                        );
-
-
-                        let mileDistance = (dis / 1609.34)?.toFixed(2);
-
-                        let arrivalMinutes = Math.ceil(mileDistance / 0.40)
-
-                        setArriveDropoffMin(arrivalMinutes)
-
-
+                        setReachDropoff(true)
+                        setBookingData({
+                            ...bookingData,
+                            reactDropoff: true
+                        })
 
                     }
 
-                    setDriverLocation(data?.driverLocation)
-                }
+                    if (data.startRide) {
+                        setBookingData({
+                            ...bookingData,
+                            startRide: true
+                        })
+                        setStartRide(true)
+                    }
+                    if (data.endRide) {
+                        setEndRide(true)
+                        setBookingData({
+                            ...bookingData,
+                            endRide: true
+                        })
+                    }
 
 
-
-
-
-
-
-
-                if (data.arrived) {
-                    setArrived(true)
-                    setBookingData({
-                        ...bookingData,
-                        arrived: true
-                    })
-                }
-
-                if (data?.rideStartToDropoff) {
-
-                    setRideStartToDropoff(true)
-                    setBookingData({
-                        ...bookingData,
-                        rideStartToDropoff: true
-                    })
 
                 }
-
-                if (data?.reachDropoff) {
-
-                    setReachDropoff(true)
-                    setBookingData({
-                        ...bookingData,
-                        reactDropoff: true
-                    })
-
-                }
-
-                if (data.startRide) {
-                    setBookingData({
-                        ...bookingData,
-                        startRide: true
-                    })
-                    setStartRide(true)
-                }
-                if (data.endRide) {
-                    setEndRide(true)
-                    setBookingData({
-                        ...bookingData,
-                        endRide: true
-                    })
-                }
-
-
 
             }
-
-
 
         })
 
@@ -248,13 +253,15 @@ function PassengerRideDetail({ navigation, route }) {
 
     useEffect(() => {
 
+        if (focus) {
 
-        getDriverRideStatus()
+            getDriverRideStatus()
 
+        }
 
+    }, [focus])
 
-    }, [])
-
+    console.log(focus,"focusss")
 
 
 
@@ -680,7 +687,7 @@ function PassengerRideDetail({ navigation, route }) {
                             {stars && stars.length > 0 && stars.map((e, i) => {
 
                                 return (
-                                    <Icons onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
+                                    <Icons keys={i} onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
                                 )
                             })}
                         </View>
