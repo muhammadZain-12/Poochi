@@ -435,6 +435,11 @@ function PetGrooming({ navigation, route }) {
                 return
             }
 
+            let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
+
+            let driverFare = Number(fare) - Number(serviceCharges)
+
+
 
             let dataToSend = {
                 pickupAddress: pickupAddress,
@@ -450,7 +455,8 @@ function PetGrooming({ navigation, route }) {
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
-                serviceCharge: serviceCharge,
+                serviceCharge: serviceCharges,
+                driverFare: driverFare,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
                 dropoffToPickupDis: dropoffToPickupDistance,
@@ -505,6 +511,11 @@ function PetGrooming({ navigation, route }) {
                 return
             }
 
+
+            let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
+            let driverFare = Number(fare) - Number(serviceCharges)
+
+
             let dataToSend = {
                 pickupAddress: pickupAddress,
                 dropoffAddress: dropoffAddress,
@@ -515,7 +526,8 @@ function PetGrooming({ navigation, route }) {
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
-                serviceCharge: serviceCharge,
+                serviceCharge: serviceCharges,
+                driverFare: driverFare,
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",

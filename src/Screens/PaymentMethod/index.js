@@ -553,15 +553,17 @@ function PaymentMethod({ navigation, route }) {
 
 
                             return (
-                                <CustomCard
-                                    PaymentMethod="Credit Card"
-                                    source={e?.otherDetails?.card?.brand == "MasterCard" ? require('../../Images/master1.png') : e?.otherDetails?.card?.brand == "Visa" ? require("../../Images/Visa.png") : ""}
-                                    cardHolderName={e.cardHolderName}
-                                    cardNumber={`*** **** **** ${e.last4}`}
-                                    cardDate={`${e?.otherDetails?.card?.expMonth}/${e?.otherDetails?.card?.expYear}`}
-                                    selected={e?.default}
-                                    onPress={() => getSelectedCard(e, i)}
-                                />
+                                <View key={i} >
+                                    <CustomCard
+                                        PaymentMethod="Credit Card"
+                                        source={e?.otherDetails?.card?.brand == "MasterCard" ? require('../../Images/master1.png') : e?.otherDetails?.card?.brand == "Visa" ? require("../../Images/Visa.png") : ""}
+                                        cardHolderName={e.cardHolderName}
+                                        cardNumber={`*** **** **** ${e.last4}`}
+                                        cardDate={`${e?.otherDetails?.card?.expMonth}/${e?.otherDetails?.card?.expYear}`}
+                                        selected={e?.default}
+                                        onPress={() => getSelectedCard(e, i)}
+                                    />
+                                </View>
                             );
                         })}
                 </ScrollView>

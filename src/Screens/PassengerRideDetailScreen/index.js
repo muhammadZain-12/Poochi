@@ -137,7 +137,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                     if (data?.driverLocation) {
 
-                        if (data?.rideStatus == "pickup") {
+                        if (data?.rideStatus == "pickup" && bookingData?.pickupCords?.lat) {
 
                             const dis = getPreciseDistance(
                                 {
@@ -145,8 +145,8 @@ function PassengerRideDetail({ navigation, route }) {
                                     longitude: bookingData.pickupCords.lng,
                                 },
                                 {
-                                    latitude: data.driverLocation.latitude ? data.driverLocation.latitude : data?.driverData?.currentLocation?.latitude,
-                                    longitude: data.driverLocation.longitude ? data.driverLocation.longitude : data?.driverData?.currentLocation?.longitude,
+                                    latitude: data?.driverLocation.latitude ? data.driverLocation.latitude : data?.driverData?.currentLocation?.latitude,
+                                    longitude: data?.driverLocation.longitude ? data.driverLocation.longitude : data?.driverData?.currentLocation?.longitude,
                                 },
                             );
 
@@ -159,12 +159,12 @@ function PassengerRideDetail({ navigation, route }) {
 
                         }
 
-                        if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk") {
+                        if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk" && data?.dropoffCoords) {
 
                             const dis = getPreciseDistance(
                                 {
-                                    latitude: data.driverLocation.latitude,
-                                    longitude: data.driverLocation.longitude,
+                                    latitude: data?.driverLocation?.latitude,
+                                    longitude: data?.driverLocation?.longitude,
                                 },
                                 {
                                     latitude: data?.dropoffCoords?.lat,
@@ -261,7 +261,7 @@ function PassengerRideDetail({ navigation, route }) {
 
     }, [focus])
 
-    console.log(focus,"focusss")
+    console.log(focus, "focusss")
 
 
 
@@ -274,8 +274,8 @@ function PassengerRideDetail({ navigation, route }) {
                     longitude: bookingData?.dropoffCoords?.lng,
                 }}
                 destination={{
-                    latitude: bookingData?.returnDropoffCords.lat,
-                    longitude: bookingData?.returnDropoffCords.lng,
+                    latitude: bookingData?.returnDropoffCords?.lat,
+                    longitude: bookingData?.returnDropoffCords?.lng,
                 }}
                 apikey={GOOGLE_MAP_KEY}
                 strokeColor={Colors.buttonColor}
@@ -331,7 +331,7 @@ function PassengerRideDetail({ navigation, route }) {
                     strokeWidth={3}
                     optimizeWayPoints={true}
                     onReady={result => {
-                        //   getMinutesAndDistance(result);
+                        //   getMinutesAndDistance(result);...
                         mapRef.current.fitToCoordinates(result.coordinates, {
                             edgePadding: {
                                 right: 30,
@@ -687,7 +687,9 @@ function PassengerRideDetail({ navigation, route }) {
                             {stars && stars.length > 0 && stars.map((e, i) => {
 
                                 return (
-                                    <Icons keys={i} onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
+                                    <View key={i} >
+                                        <Icons onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
+                                    </View>
                                 )
                             })}
                         </View>

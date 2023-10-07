@@ -12,11 +12,22 @@ import cardDetailsContext from '../../Context/CardDetailsContext/context';
 import SelectedPetContext from '../../Context/SelectedPetContext/context';
 import { useIsFocused } from '@react-navigation/native';
 import NotificationContext from '../../Context/NotificationContext/context';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 function Home({ navigation }) {
 
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '889265375440-76ihli23dk6ulbuamsujt41t0t3gvdcs.apps.googleusercontent.com',
+      androidClientId:
+        '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
+    });
+  }, []);
 
 
   const { height, width } = Dimensions.get('screen');
@@ -173,6 +184,66 @@ function Home({ navigation }) {
   }, [focus])
 
 
+  const handleLogoutUser = async () => {
+
+    AsyncStorage.removeItem("user")
+
+
+    if (GoogleSignin.isSignedIn()) {
+
+
+      await GoogleSignin.signOut()
+      await auth().signOut()
+      // ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+      setLoginData("")
+      setLocationData("")
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'Login',
+
+          },
+        ],
+      });
+    } else {
+
+      auth().signOut().then((res) => {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Login',
+
+            },
+          ],
+        });
+        setLoginData("")
+        setLocationData("")
+        // ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+
+      }).catch((error) => {
+
+        // ToastAndroid.show("Logout Unsuccessfull", ToastAndroid.SHORT)
+
+
+      })
+    }
+
+  }
+
+  useEffect(() => {
+
+    if (loginData?.status == "blocked") {
+
+      ToastAndroid.show("You have been blocked", ToastAndroid.SHORT)
+
+      handleLogoutUser()
+
+    }
+
+  }, [focus])
+
 
   const getNotifications = () => {
 
@@ -193,7 +264,28 @@ function Home({ navigation }) {
 
         setUnseenNotifications(unseenNotification)
 
-        let sorting = allNotification && allNotification.length > 0 && allNotification.sort((a, b) => b?.date?.toDate() - a?.date.toDate())
+
+        let now = new Date().getDate()
+        let nowMonth = new Date().getMonth()
+        let nowYear = new Date().getFullYear()
+
+        let filterNotification = allNotification && allNotification.length > 0 && allNotification.filter((e, i) => {
+
+          let date = e.date.toDate()
+
+          let notDate = date.getDate()
+          let notMonth = date.getMonth()
+          let notYear = date.getFullYear()
+
+
+          if (now == notDate && nowMonth == notMonth && nowYear == notYear) {
+
+            return e
+
+          }
+        })
+
+        let sorting = filterNotification && filterNotification.length > 0 && filterNotification.sort((a, b) => b?.date?.toDate() - a?.date.toDate())
         setNotification(sorting)
 
       }
@@ -396,7 +488,7 @@ function Home({ navigation }) {
 
           <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 10 }} >
 
-            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center",top:-10 }} >
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -10 }} >
 
               <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
 
@@ -473,7 +565,7 @@ function Home({ navigation }) {
 
         <View style={{ paddingHorizontal: 20 }} >
 
-          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20,marginBottom:20 }} >Where would you like to go?</Text>
+          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where would you like to go?</Text>
 
 
           <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >

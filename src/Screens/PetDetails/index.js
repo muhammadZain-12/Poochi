@@ -65,13 +65,16 @@ function PetDetails({ navigation, route }) {
   ]
 
   const [natureOfPet, setNatureOfPets] = useState(initialNature)
-  const [otherData, setOtherData] = useState({
+
+  let otherInitialData = {
     breed: "",
     petName: "",
     weight: "",
     height: "",
     additionalDetails: "",
-  })
+  }
+
+  const [otherData, setOtherData] = useState(otherInitialData)
   const [loading, setLoading] = useState(false)
 
 
@@ -390,6 +393,7 @@ function PetDetails({ navigation, route }) {
 
 
 
+  console.log(petData, "PETdTA")
 
   const handleSubmitData = async () => {
 
@@ -563,13 +567,19 @@ function PetDetails({ navigation, route }) {
         setImage1url("")
         setImage1("")
         setImage2Url("")
+        setOtherData(otherInitialData)
         setImage2("")
         setImage3("")
         setImage3Url("")
         ToastAndroid.show("Pet has been successfully added", ToastAndroid.SHORT)
 
-        if (petData?.screen) {
-          navigation.navigate("Pets")
+        if (petData?.screen && petData?.name) {
+          navigation.navigate(petData?.screen, petData?.name)
+          setLoading(false)
+          return
+        }
+        else if (petData?.screen) {
+          navigation.navigate(petData?.screen)
           setLoading(false)
           return
         }
@@ -603,16 +613,16 @@ function PetDetails({ navigation, route }) {
 
           <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
 
-            {image1url ? <Image source={{ uri: image1url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
+            {image1url ? <Image source={{ uri: image1url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
 
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setVisible2(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
-            {image2url ? <Image source={{ uri: image2url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
+            {image2url ? <Image source={{ uri: image2url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setVisible3(true)} d style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
-            {image3Url ? <Image source={{ uri: image3Url }} style={{ width: 100, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
+            {image3Url ? <Image source={{ uri: image3Url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
           </TouchableOpacity>
 
@@ -697,7 +707,7 @@ function PetDetails({ navigation, route }) {
             <TextInput
 
               style={{ color: Colors.black, backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
-              placeholder={'Weight in lb'}
+              placeholder={'Weight in kg'}
               placeholderTextColor={"gray"}
               keyboardType='number-pad'
               value={otherData.weight}

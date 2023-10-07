@@ -348,7 +348,7 @@ function Drivers({ navigation }) {
 
                                 <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                     <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 25 }} >{e.fullName.length>10 ?  `${e.fullName.slice(0,8)}...` : e.fullName}</Text>
+                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 25 }} >{e.fullName.length > 10 ? `${e.fullName.slice(0, 8)}...` : e.fullName}</Text>
                                         <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                         <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({e.rating})</Text>
 

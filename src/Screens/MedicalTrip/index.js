@@ -432,6 +432,9 @@ function MedicalTrip({ navigation, route }) {
                 return
             }
 
+            let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
+
+            let driverFare = Number(fare) - Number(serviceCharges)
 
             let dataToSend = {
                 pickupAddress: pickupAddress,
@@ -444,10 +447,11 @@ function MedicalTrip({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
+                driverFare: driverFare,
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
-                serviceCharge: serviceCharge,
+                serviceCharge: serviceCharges,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
                 dropoffToPickupDis: dropoffToPickupDistance,
@@ -502,6 +506,13 @@ function MedicalTrip({ navigation, route }) {
                 return
             }
 
+            let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
+            let driverFare = Number(fare) - Number(serviceCharges).toFixed(2)
+
+            console.log(serviceCharge, "serviceCharges")
+            console.log(driverFare, "driverDate")
+
+
             let dataToSend = {
                 pickupAddress: pickupAddress,
                 dropoffAddress: dropoffAddress,
@@ -512,7 +523,8 @@ function MedicalTrip({ navigation, route }) {
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
-                serviceCharge: serviceCharge,
+                serviceCharge: serviceCharges,
+                driverFare: driverFare,
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",

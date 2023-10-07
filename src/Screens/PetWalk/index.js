@@ -206,6 +206,8 @@ function PetWalk({ navigation, route }) {
     const handleSelectOptions = (ind) => {
 
 
+
+
         setOptions(option && option.length > 0 && option.map((e, i) => {
             if (ind == i) {
                 return {
@@ -220,14 +222,13 @@ function PetWalk({ navigation, route }) {
             }
         }))
 
-
     }
-
 
 
     const handleSelectDuration = (e, ind) => {
 
         setSelectedTimeDuration(e.value)
+        setCustomTime(false)
 
         setDuration(duration && duration.length > 0 && duration.map((e, i) => {
 
@@ -336,11 +337,13 @@ function PetWalk({ navigation, route }) {
         let selectedOption = option && option.length > 0 && option.filter((e, i) => e.selected)
 
         if (selectedOption.length == 0) {
-
             ToastAndroid.show("Kindly Choose Options", ToastAndroid.SHORT)
             return
-
         }
+
+
+        let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
+        let driverFare = Number(fare) - Number(serviceCharges)
 
 
         let dataToSend = {
@@ -352,7 +355,8 @@ function PetWalk({ navigation, route }) {
             cardDetails: cardDetails,
             userData: loginData,
             fare: fare,
-            serviceCharge: serviceCharge,
+            serviceCharge: serviceCharges,
+            driverFare: driverFare,
             duration: selectedTimeDuration,
             bookingType: "oneWay",
             requestDate: new Date(),
@@ -377,6 +381,22 @@ function PetWalk({ navigation, route }) {
 
     }
 
+
+    const handlePressCustomTime = () => {
+
+
+        setDuration(duration && duration.length > 0 && duration.map((e, i) => {
+            return {
+                ...e,
+                selected: false
+            }
+
+        }))
+
+
+        setCustomTime(!customTime)
+
+    }
 
 
 
@@ -505,7 +525,7 @@ function PetWalk({ navigation, route }) {
                             )
                         })}
 
-                        <TouchableOpacity onPress={() => setCustomTime(!customTime)} style={{ justifyContent: "center", alignItems: "center", width: 70, height: 40, borderRadius: 20, backgroundColor: customTime ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5 }} >
+                        <TouchableOpacity onPress={() => handlePressCustomTime()} style={{ justifyContent: "center", alignItems: "center", width: 70, height: 40, borderRadius: 20, backgroundColor: customTime ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5 }} >
                             <Icons name="plus" size={25} color={"#777"} />
                         </TouchableOpacity>
 
@@ -523,11 +543,11 @@ function PetWalk({ navigation, route }) {
 
 
 
-                    <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "medical")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
 
-                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Schedule Ride</Text>
+                        <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Soon you will also be able to schedule rides</Text>
 
-                        <Image source={require("../../Images/calender.png")} />
+                        {/* <Image source={require("../../Images/calender.png")} /> */}
 
                     </TouchableOpacity>
 
@@ -572,7 +592,7 @@ function PetWalk({ navigation, route }) {
 
 
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center"}} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center" }} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

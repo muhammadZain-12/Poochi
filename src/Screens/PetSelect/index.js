@@ -11,6 +11,8 @@ function PetSelect({ navigation, route }) {
 
     let routeData = route.params
 
+    console.log(routeData,"routeData")
+
     const selectedPetsCont = useContext(SelectedPetContext)
 
     let { selectedPets, setSelectedPets } = selectedPetsCont
@@ -163,6 +165,7 @@ function PetSelect({ navigation, route }) {
 
     }
 
+console.log(routeData)
 
     return (
 
@@ -177,6 +180,10 @@ function PetSelect({ navigation, route }) {
                     image={require("../../Images/plus.png")}
                     imageFunc={() => navigation.navigate('Tab', {
                         screen: 'PetDetails',
+                        params: {
+                            screen: "PetSelect",
+                            name: routeData
+                        }
                     })}
                 />
             </View>

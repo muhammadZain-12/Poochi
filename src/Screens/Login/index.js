@@ -126,8 +126,16 @@ export default function Login() {
 
     setGoogleLoading(false);
 
-    firestore().collection("Users").doc(uid).get().then((doc) => {
+    firestore().collection("Users").doc(uid).get().then(async (doc) => {
       let data = doc.data()
+
+      if (data?.status == "blocked") {
+        await GoogleSignin.signOut()
+        await auth().signOut()
+        ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
+        return
+      }
+
 
       let email = user.email
 
@@ -297,12 +305,17 @@ export default function Login() {
           AsyncStorage.setItem("user", loginAuth)
 
           setLoading(false);
-          ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
 
-          firestore().collection("Users").doc(uid).get().then((doc) => {
+          firestore().collection("Users").doc(uid).get().then(async (doc) => {
             let data = doc.data()
 
-
+            if (data?.status == "blocked") {
+              // await GoogleSignin.signOut()
+              await auth().signOut()
+              ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
+              return
+            }
+            ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
             if (data) {
 
               setLoginData(data)
