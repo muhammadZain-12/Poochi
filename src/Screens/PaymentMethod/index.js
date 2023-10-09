@@ -50,7 +50,7 @@ function PaymentMethod({ navigation, route }) {
         async function initialize() {
             await initStripe({
                 publishableKey:
-                    'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP',
+                    'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy',
             });
         }
         initialize().catch(console.error);
@@ -130,7 +130,7 @@ function PaymentMethod({ navigation, route }) {
                                         width: '100%',
                                     },
                                 ]}>
-                                Sorry but we are Unable to add card this card add any other card
+                                Sorry but we are Unable to add this card add any other card
                             </Text>
 
                             <CustomButton
@@ -171,13 +171,15 @@ function PaymentMethod({ navigation, route }) {
 
                 if (!responseData.status) {
 
-                    ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+
+                    // ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                    setCardError(responseData?.error?.raw?.message)
+                    setModalVisible(true)
                     setLoading(false)
 
                     return
 
                 }
-
 
 
                 let walletData = {
@@ -581,14 +583,13 @@ function PaymentMethod({ navigation, route }) {
 
 
                         <TouchableOpacity onPress={() => setCardSelected("master")} >
-                            <Image source={require("../../Images/master.png")} style={{ borderWidth: 2, borderColor: cardSelected == "master" ? Colors.buttonColor : "gray", borderRadius: 10 }} />
+                            <Image source={require("../../Images/stripe.png")} style={{ borderWidth: 0, borderColor: cardSelected == "master" ? Colors.buttonColor : "gray", borderRadius: 10, width: 120, height: 60 }} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setCardSelected("visa")} >
+                        {/* <TouchableOpacity onPress={() => setCardSelected("visa")} >
                             <Image source={require("../../Images/Visa.png")} style={{ borderWidth: 2, borderColor: cardSelected == "visa" ? Colors.buttonColor : "gray", borderRadius: 10, marginLeft: 15 }} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                     </View>
-
 
 
                     <View style={{ marginTop: 20 }} >

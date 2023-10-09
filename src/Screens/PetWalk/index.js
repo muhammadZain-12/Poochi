@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid } from "react-native"
+import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
@@ -14,6 +14,7 @@ import cardDetailsContext from "../../Context/CardDetailsContext/context";
 import AntDesign from "react-native-vector-icons/AntDesign"
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
 
 function PetWalk({ navigation, route }) {
 
@@ -38,9 +39,12 @@ function PetWalk({ navigation, route }) {
     const { cardDetails, setCardDetails } = cardCont
 
 
+    const chooseLocationCont = useContext(ChooseLocationContext)
+    const { pickup, setPickup, pickupAddress, setPickupAddress } = chooseLocationCont
 
-    const [pickup, setPickup] = useState({})
-    const [pickupAddress, setPickupAddress] = useState("")
+
+
+
     const [walletAmount, setWalletAmount] = useState(0)
     const [date, setDate] = useState("")
     const [time, setTime] = useState("")
@@ -133,12 +137,81 @@ function PetWalk({ navigation, route }) {
     }
 
 
+    useEffect(() => {
+
+        if (!pickupAddress) {
+
+
+            let pickCords = {
+                lat: locationData?.currentLocation?.latitude,
+                lng: locationData?.currentLocation?.longitude
+            }
+
+            setPickup(pickCords)
+            setPickupAddress(locationData?.currentAddress)
+
+        }
+
+    }, [])
+
+
+    const getPets = async () => {
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("Pets").doc(id).get().then((doc) => {
+            let userPets = doc?.data()
+
+            console.log(userPets, "userPets")
+
+
+            if (userPets?.pets) {
+
+                if (userPets?.pets?.length == 1) {
+
+                    setSelectedPets(userPets.pets)
+
+                }
+
+            }
+
+
+        })
+
+    }
+
+
 
     useEffect(() => {
 
         getWalletAmount()
+        getPets()
 
     }, [])
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Tab',
+
+                    },
+                ],
+            })
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
 
 
     useEffect(() => {
@@ -260,11 +333,45 @@ function PetWalk({ navigation, route }) {
             if (data && data?.walkFare) {
 
 
-                let totalFare = selectedTimeDuration * Number(data?.walkFare)
 
-                setFare(totalFare)
-                setServiceCharge(data?.serviceCharge)
+                if (Number(selectedTimeDuration) < 31) {
 
+
+                    let totalFare = selectedTimeDuration * Number(data?.walkFare)
+
+
+                    let baseCharge = data?.petWalkBaseCharge
+
+
+
+                    totalFare = Number(totalFare) + Number(baseCharge)
+
+
+
+                    setFare(totalFare)
+                    setServiceCharge(data?.serviceCharge)
+                }
+                else {
+
+                    let walkFare = Number(data?.walkfareChargePlus30)
+
+                    console.log(walkFare, "walkFare")
+
+                    let totalFare = selectedTimeDuration * Number(walkFare)
+
+
+                    let baseCharge = data?.petWalkBaseCharge
+
+
+
+                    totalFare = Number(totalFare) + Number(baseCharge)
+
+
+
+                    setFare(totalFare)
+                    setServiceCharge(data?.serviceCharge)
+
+                }
 
             }
 
@@ -344,7 +451,7 @@ function PetWalk({ navigation, route }) {
 
         let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
         let driverFare = Number(fare) - Number(serviceCharges)
-
+        driverFare = Number(driverFare).toFixed(2)
 
         let dataToSend = {
             pickupAddress: pickupAddress,
@@ -409,7 +516,15 @@ function PetWalk({ navigation, route }) {
                     text={"Pet Walk"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: 'Tab',
+
+                            },
+                        ],
+                    })}
 
 
                 />
@@ -433,7 +548,7 @@ function PetWalk({ navigation, route }) {
 
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
 
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
+                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
 
                                 </View>
 
@@ -515,11 +630,11 @@ function PetWalk({ navigation, route }) {
 
                     </View>
 
-                    <View style={{ flexDirection: "row", alignItems: "center" }} >
+                    <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
                         {duration && duration.length > 0 && duration.map((e, i) => {
                             return (
-                                <TouchableOpacity onPress={() => handleSelectDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5 }} >
+                                <TouchableOpacity onPress={() => handleSelectDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
                                     <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.label}</Text>
                                 </TouchableOpacity>
                             )
@@ -532,7 +647,7 @@ function PetWalk({ navigation, route }) {
                     </View>
 
                     {customTime && <TextInput value={selectedTimeDuration} onChangeText={(e) => setSelectedTimeDuration(e)} keyboardType="numeric"
-                        style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                        style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
                         placeholder="Enter Time Duration (in min)"
                         placeholderTextColor={Colors.gray}
 

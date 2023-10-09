@@ -86,14 +86,14 @@ function SinglePetDetail({ navigation, route }) {
                 <Image source={{ uri: data.image1 }} style={{ width: "100%", height: 300, marginTop: 10, borderRadius: 10 }} />
 
 
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10,width:"90%",alignSelf:"center" }} >
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, width: "90%", alignSelf: "center" }} >
 
                     <View>
                         <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase", textAlignVertical: "bottom" }} >{data.petName}</Text>
                         <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase" }} >{data.breed}</Text>
                     </View>
 
-                    <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase"}} >{data.typeOfPet}</Text>
+                    <Text style={{ fontSize: 20, fontFamily: "Poppins-SemiBold", color: Colors.black, textTransform: "uppercase" }} >{data.typeOfPet}</Text>
                 </View>
 
 
@@ -112,7 +112,7 @@ function SinglePetDetail({ navigation, route }) {
                     <View style={{ width: "32%", height: 100, backgroundColor: "rgba(13,153,162,0.3)", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
 
                         <Text style={{ fontSize: 22, fontFamily: "Poppins-Medium", color: Colors.black, textTransform: "uppercase", }} >
-                            {data.weight} Kg
+                            {data.weight} Lb
                         </Text>
                         <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.gray, textTransform: "uppercase", opacity: 1 }} >
                             Weight

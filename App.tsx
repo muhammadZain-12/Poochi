@@ -33,6 +33,7 @@ import CardDetailsState from './src/Context/CardDetailsContext/state';
 import BookingState from './src/Context/bookingContext/state';
 import IdleTimerManager from 'react-native-idle-timer';
 import NotificationState from './src/Context/NotificationContext/state';
+import ChooseLocationState from './src/Context/pickupanddropoffContext/state';
 
 function App() {
   useEffect(() => {
@@ -48,19 +49,22 @@ function App() {
   return (
     <StripeProvider
       publishableKey={
-        'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP'
+        // 'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy'
+        'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy'
       }>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SelectedPetState>
           <NotificationState>
             <BookingState>
-              <CardDetailsState>
-                <LoginState>
-                  <LocationState>
-                    <Navigation />
-                  </LocationState>
-                </LoginState>
-              </CardDetailsState>
+              <ChooseLocationState>
+                <CardDetailsState>
+                  <LoginState>
+                    <LocationState>
+                      <Navigation />
+                    </LocationState>
+                  </LoginState>
+                </CardDetailsState>
+              </ChooseLocationState>
             </BookingState>
           </NotificationState>
         </SelectedPetState>

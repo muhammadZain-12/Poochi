@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking } from "react-native"
+import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking, BackHandler } from "react-native"
 import React, { useContext, useEffect } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
@@ -118,6 +118,30 @@ function Profile({ navigation }) {
     }
 
 
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Tab',
+
+                    },
+                ],
+            })
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
+
 
     return (
 
@@ -125,7 +149,15 @@ function Profile({ navigation }) {
 
             <View style={{ paddingHorizontal: 20, marginTop: 10, flexDirection: "row", width: "75%", justifyContent: "space-between" }} >
 
-                <Icons onPress={() => navigation.goBack()} name="arrow-back-outline" color={Colors.black} size={25} />
+                <Icons onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Tab',
+
+                        },
+                    ],
+                })} name="arrow-back-outline" color={Colors.black} size={25} />
                 <View style={{ marginRight: 10, marginTop: 10 }} >
                     <Image source={{ uri: loginData.profile }} resizeMode="cover" style={{ alignSelf: "center", height: 130, width: 130, borderRadius: 100 }} />
                     <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18 }} >{loginData.fullName}</Text>

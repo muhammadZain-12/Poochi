@@ -1,22 +1,24 @@
-import React, { useState, useContext } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView, ToastAndroid } from "react-native"
+import React, { useState, useContext, useEffect } from "react"
+import { View, Text, TouchableOpacity, Image, ScrollView, ToastAndroid, BackHandler } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import Colors from "../../Constant/Color"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
+import { useIsFocused } from "@react-navigation/native"
 
 function PetSelect({ navigation, route }) {
 
 
     let routeData = route.params
 
-    console.log(routeData,"routeData")
+    const focus = useIsFocused()
+
+    console.log(routeData, "routeData")
 
     const selectedPetsCont = useContext(SelectedPetContext)
 
     let { selectedPets, setSelectedPets } = selectedPetsCont
-
 
     const [pets, setPets] = useState([
 
@@ -139,15 +141,14 @@ function PetSelect({ navigation, route }) {
 
         })
 
-
-
     }
+
 
     React.useEffect(() => {
 
         getUserPets()
 
-    }, [routeData])
+    }, [routeData, focus])
 
 
     const handleSelectPet = (selectedPet) => {
@@ -165,7 +166,24 @@ function PetSelect({ navigation, route }) {
 
     }
 
-console.log(routeData)
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.navigate(routeData)
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
+
+
+
 
     return (
 
@@ -173,24 +191,24 @@ console.log(routeData)
 
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate(routeData)}
                     iconname={"arrow-back-outline"}
-                    text="Pet Select"
+                    text="Select Pet"
                     color={Colors.black}
-                    image={require("../../Images/plus.png")}
-                    imageFunc={() => navigation.navigate('Tab', {
-                        screen: 'PetDetails',
-                        params: {
-                            screen: "PetSelect",
-                            name: routeData
-                        }
-                    })}
+                    // image={require("../../Images/plus.png")}
+                    // imageFunc={() => navigation.navigate('Tab', {
+                    //     screen: 'PetDetails',
+                    //     params: {
+                    //         screen: "PetSelect",
+                    //         name: routeData
+                    //     }
+                    // })}
                 />
             </View>
 
             <ScrollView>
 
-                <View style={{ marginTop: 10, paddingHorizontal: 15, width: "100%", flexWrap: "wrap", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View style={{ marginTop: 10, paddingHorizontal: 15, width: "100%", flexWrap: "wrap", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
 
                     {pets && pets.length > 0 && pets.map((e, i) => {
                         return (
@@ -204,6 +222,20 @@ console.log(routeData)
                             </TouchableOpacity>
                         )
                     })}
+
+                    <TouchableOpacity onPress={() => navigation.navigate('Tab', {
+                        screen: 'PetDetails',
+                        params: {
+                            screen: "PetSelect",
+                            name: routeData
+                        }
+                    })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 20 }} >
+
+                        <Image source={require("../../Images/add.png")} />
+
+                    </TouchableOpacity>
+
+
 
 
                 </View>

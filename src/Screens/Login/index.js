@@ -129,13 +129,12 @@ export default function Login() {
     firestore().collection("Users").doc(uid).get().then(async (doc) => {
       let data = doc.data()
 
-      if (data?.status == "blocked") {
+      if (data && data?.status == "blocked") {
         await GoogleSignin.signOut()
         await auth().signOut()
         ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
         return
       }
-
 
       let email = user.email
 
@@ -309,7 +308,7 @@ export default function Login() {
           firestore().collection("Users").doc(uid).get().then(async (doc) => {
             let data = doc.data()
 
-            if (data?.status == "blocked") {
+            if (data && data?.status == "blocked") {
               // await GoogleSignin.signOut()
               await auth().signOut()
               ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)

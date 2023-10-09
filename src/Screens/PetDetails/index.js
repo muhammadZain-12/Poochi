@@ -1,5 +1,5 @@
-import React from "react"
-import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator } from 'react-native';
+import React, { useEffect } from "react"
+import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator, BackHandler } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -12,6 +12,7 @@ import { launchCamera, launchImageLibrary } from "react-native-image-picker"
 import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { toDecimal } from "geolib";
 
 function PetDetails({ navigation, route }) {
 
@@ -495,8 +496,8 @@ function PetDetails({ navigation, route }) {
     let myData = {
 
       image1: image1,
-      image2: image2,
-      image3: image3,
+      // image2: image2,
+      // image3: image3,
       typeOfPet: value,
       gender: gender,
       natureOfPet: natureOfPet.filter((e, i) => e.selected),
@@ -516,6 +517,52 @@ function PetDetails({ navigation, route }) {
     delete checkData.additionalDetails
 
 
+    if (!image1url) {
+
+      ToastAndroid.show("Image is missing", ToastAndroid.SHORT)
+      return
+
+    }
+
+    if (!value) {
+
+      ToastAndroid.show("Pet Type is missing", ToastAndroid.SHORT)
+      return
+
+    }
+
+    if (!gender) {
+
+      ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
+      return
+
+    }
+
+    if (myData?.natureOfPet && myData?.natureOfPet == 0) {
+
+      ToastAndroid.show("Select Nature of pet", ToastAndroid.SHORT)
+      return
+    }
+
+    if (!otherData?.petName) {
+      ToastAndroid.show("PetName is missing", ToastAndroid.SHORT)
+      return
+    }
+
+    if (!otherData?.breed) {
+      ToastAndroid.show("Breed is missing", ToastAndroid.SHORT)
+      return
+    }
+
+    if (!otherData?.weight) {
+      ToastAndroid.show("Weight is missing", ToastAndroid.SHORT)
+      return
+    }
+
+    if (!otherData?.height) {
+      ToastAndroid.show("Height is missing", ToastAndroid.SHORT)
+      return
+    }
 
 
 
@@ -566,11 +613,11 @@ function PetDetails({ navigation, route }) {
         setGender("")
         setImage1url("")
         setImage1("")
-        setImage2Url("")
+        // setImage2Url("")
         setOtherData(otherInitialData)
-        setImage2("")
-        setImage3("")
-        setImage3Url("")
+        // setImage2("")
+        // setImage3("")
+        // setImage3Url("")
         ToastAndroid.show("Pet has been successfully added", ToastAndroid.SHORT)
 
         if (petData?.screen && petData?.name) {
@@ -579,7 +626,7 @@ function PetDetails({ navigation, route }) {
           return
         }
         else if (petData?.screen) {
-          navigation.navigate(petData?.screen)
+          navigation.navigate(petData?.screen, petData?.name)
           setLoading(false)
           return
         }
@@ -595,6 +642,28 @@ function PetDetails({ navigation, route }) {
     }
   }
 
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      // Replace 'TabScreenName' with the name of your tab screen
+      // This will navigate to the specified tab screen when the back button is pressed
+
+      if (petData?.screen) {
+        navigation.replace(petData?.screen, petData?.name)
+        setLoading(false)
+        return true
+      }
+      else {
+        return true; // Return true to prevent the default back action
+      }
+    });
+
+    return () => backHandler.remove(); // Cleanup the event listener
+
+  }, []);
+
+
+
   return loading ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
 
     <ActivityIndicator size={"large"} color={Colors.black} />
@@ -607,9 +676,9 @@ function PetDetails({ navigation, route }) {
 
       <View style={{ paddingHorizontal: 15, marginTop: 10 }} >
 
-        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black }} >Upload Images</Text>
+        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black }} >Upload Image</Text>
 
-        <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row", marginTop: 10 }} >
+        <View style={{ width: "100%", flexDirection: "row", marginTop: 10, justifyContent: "center" }} >
 
           <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
 
@@ -617,14 +686,14 @@ function PetDetails({ navigation, route }) {
 
 
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setVisible2(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
+          {/* <TouchableOpacity onPress={() => setVisible2(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
             {image2url ? <Image source={{ uri: image2url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setVisible3(true)} d style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
             {image3Url ? <Image source={{ uri: image3Url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
         </View>
 
@@ -707,7 +776,7 @@ function PetDetails({ navigation, route }) {
             <TextInput
 
               style={{ color: Colors.black, backgroundColor: "#E6E6E6", borderRadius: 5, borderWidth: 0, paddingVertical: 15, width: "49%", marginTop: 10, paddingHorizontal: 10, fontSize: 14, fontFamily: "Poppins-Regular" }}
-              placeholder={'Weight in kg'}
+              placeholder={'Weight in lb'}
               placeholderTextColor={"gray"}
               keyboardType='number-pad'
               value={otherData.weight}

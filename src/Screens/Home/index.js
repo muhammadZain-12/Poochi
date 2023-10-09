@@ -14,6 +14,7 @@ import { useIsFocused } from '@react-navigation/native';
 import NotificationContext from '../../Context/NotificationContext/context';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChooseLocationContext from '../../Context/pickupanddropoffContext/context';
 
 
 
@@ -38,6 +39,7 @@ function Home({ navigation }) {
   const cardDetailCont = useContext(cardDetailsContext)
   const selectedPetCont = useContext(SelectedPetContext)
   const notificationCont = useContext(NotificationContext)
+  const chooseLocationCont = useContext(ChooseLocationContext)
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
@@ -45,6 +47,9 @@ function Home({ navigation }) {
   const { cardDetails, setCardDetails } = cardDetailCont
   const { selectedPets, setSelectedPets } = selectedPetCont
   const { notification, setNotification, unseenNotification, setUnseenNotifications } = notificationCont
+  const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
+    , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+
 
 
 
@@ -178,6 +183,13 @@ function Home({ navigation }) {
 
       setCardDetails("")
       setSelectedPets("")
+      setDropoff({})
+      setReturnPickup({})
+      setReturnDropoff({})
+      setReturnPickupAddress("")
+      setReturnDropoffAddress("")
+      setDropoffAddress("")
+
 
     }
 
@@ -578,7 +590,7 @@ function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Walk</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, ActivityIndicator } from "react-native"
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, ActivityIndicator, BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
@@ -15,7 +15,8 @@ import { firebase } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import cardDetailsContext from "../../Context/CardDetailsContext/context";
 import BookingContext from "../../Context/bookingContext/context";
-
+import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
+import auth from "@react-native-firebase/auth";
 
 function PetGrooming({ navigation, route }) {
 
@@ -38,6 +39,14 @@ function PetGrooming({ navigation, route }) {
     const { cardDetails, setCardDetails } = cardCont
 
 
+
+    const chooseLocationCont = useContext(ChooseLocationContext)
+
+    const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
+        , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+
+
+
     const [oneWay, setOneWay] = useState(true)
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
@@ -54,15 +63,9 @@ function PetGrooming({ navigation, route }) {
 
     const [date, setDate] = useState("")
     const [time, setTime] = useState("")
-    const [pickup, setPickup] = useState({})
-    const [pickupAddress, setPickupAddress] = useState("")
-    const [dropoff, setDropoff] = useState({})
+
     const [minutes, setMinutes] = useState("")
-    const [dropoffAddress, setDropoffAddress] = useState("")
-    const [returnPickup, setReturnPickup] = useState({})
-    const [returnPickupAddress, setReturnPickupAddress] = useState("")
-    const [returnDropoff, setReturnDropoff] = useState({})
-    const [returnDropoffAddress, setReturnDropoffAddress] = useState("")
+
     const [distance, setDistance] = useState("")
     const [fare, setFare] = useState(null)
     const [comment, setComment] = useState("")
@@ -108,9 +111,53 @@ function PetGrooming({ navigation, route }) {
 
     }
 
+    useEffect(() => {
+
+        if (!pickupAddress) {
+
+
+            let pickCords = {
+                lat: locationData?.currentLocation?.latitude,
+                lng: locationData?.currentLocation?.longitude
+            }
+
+            setPickup(pickCords)
+            setPickupAddress(locationData?.currentAddress)
+
+        }
+
+    }, [])
+
+
+    const getPets = async () => {
+
+        let id = auth().currentUser?.uid
+
+        firestore().collection("Pets").doc(id).get().then((doc) => {
+            let userPets = doc?.data()
+
+            console.log(userPets, "userPets")
+
+
+            if (userPets?.pets) {
+
+                if (userPets?.pets?.length == 1) {
+
+                    setSelectedPets(userPets.pets)
+
+                }
+
+            }
+
+
+        })
+
+    }
+
 
     useEffect(() => {
         getWalletAmount()
+        getPets()
     }, [])
 
 
@@ -205,6 +252,8 @@ function PetGrooming({ navigation, route }) {
             let creditCardCharge = Number(data.creditCardCharge)
 
             let fare = mileCharge * Number(mileDistance)
+            let baseCharge = data?.BaseCharge
+            fare = Number(fare) + Number(baseCharge)
 
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -305,6 +354,7 @@ function PetGrooming({ navigation, route }) {
             let serviceCharge = Number(data.serviceCharge)
             let creditCardCharge = Number(data.creditCardCharge)
             let waitingCharges = Number(data?.waitingCharges)
+            let baseCharge = Number(data?.BaseCharge)
 
 
             let totalWaitingCharges = 0
@@ -320,6 +370,7 @@ function PetGrooming({ navigation, route }) {
 
 
             let fare = mileCharge * Number(mileDistance)
+            fare = fare + Number(baseCharge)
             fare = fare + totalWaitingCharges
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -438,7 +489,7 @@ function PetGrooming({ navigation, route }) {
             let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
 
             let driverFare = Number(fare) - Number(serviceCharges)
-
+            driverFare = Number(driverFare).toFixed(2)
 
 
             let dataToSend = {
@@ -515,6 +566,7 @@ function PetGrooming({ navigation, route }) {
             let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
             let driverFare = Number(fare) - Number(serviceCharges)
 
+            driverFare = Number(driverFare).toFixed(2)
 
             let dataToSend = {
                 pickupAddress: pickupAddress,
@@ -577,6 +629,28 @@ function PetGrooming({ navigation, route }) {
     }
 
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Tab',
+
+                    },
+                ],
+            })
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
 
 
 
@@ -589,7 +663,15 @@ function PetGrooming({ navigation, route }) {
                     text={"Pet Grooming"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: 'Tab',
+
+                            },
+                        ],
+                    })}
 
 
                 />
@@ -611,7 +693,7 @@ function PetGrooming({ navigation, route }) {
 
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
 
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
+                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
 
                                 </View>
 
@@ -629,7 +711,7 @@ function PetGrooming({ navigation, route }) {
 
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
 
-                                    <Text style={{ color: dropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{dropoffAddress ? dropoffAddress : "Enter Destination"}</Text>
+                                    <Text style={{ color: dropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{dropoffAddress ? dropoffAddress : "Enter Destination"}</Text>
 
                                 </View>
 
@@ -715,7 +797,7 @@ function PetGrooming({ navigation, route }) {
 
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
 
-                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
+                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
 
                                 </View>
 
@@ -732,7 +814,7 @@ function PetGrooming({ navigation, route }) {
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Dropoff', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 16, marginLeft: 10 }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
+                                    <Text style={{ color: returnDropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
                                 </View>
                                 <Image source={require("../../Images/search.png")} />
 

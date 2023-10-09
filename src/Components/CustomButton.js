@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../Constant/Color';
 
@@ -10,18 +10,19 @@ export default function CustomButton({
   styleContainer,
   btnTextStyle,
   linearColor,
+  linearStyle
 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.container, styleContainer]}>
       <LinearGradient
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
         colors={
           bgColor ? [Colors.black, Colors.black] : [linearColor ? linearColor : Colors.buttonColor, linearColor ? linearColor : Colors.buttonColor]
         }
-        style={styles.linearGradient}>
+        style={[styles.linearGradient, linearStyle]}>
         <Text style={[styles.buttonText, btnTextStyle]}>{text}</Text>
       </LinearGradient>
     </TouchableOpacity>

@@ -2,7 +2,7 @@ import React from "react"
 import { View, Text, ScrollView } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
-function PrivacyPolicy() {
+function PrivacyPolicy({ navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
@@ -21,103 +21,258 @@ function PrivacyPolicy() {
             </View>
             <ScrollView >
                 <Text style={{ fontSize: 18, fontFamily: "Poppins-Medium", color: Colors.black, marginHorizontal: 20, marginTop: 10 }} >
-                    THIS CONTRACT CONTAINS AN ARBITRATION PROVISION WHICH MAY BE ENFORCED BY THE PARTIES. TAKE THE TIME AND SEEK ANY ASSISTANCE NEEDED TO COMPREHEND THE CONSEQUENCES OF ENTERING INTO THIS AGREEMENT.
-                    1. CONTRACTUAL RELATIONSHIP
-                    1.1 Agreement. This Agreement (“Agreement”) is made and entered into by and between you (“Customer” or “User”) and XOX Rides Inc. and or  (dba “Poochie app”)  (“Poochie” or “Company”) each of whom shall be referred to as a “Party” and collectively referred to as the “Parties’. The terms of this Agreement (“Terms”) govern your access or use of applications, websites, content, products, and services (individually and collectively “Services”) made available by Poochie and its parents, subsidiaries, representatives, affiliates, officers and directors. Please read these Terms carefully as they constitute a legal agreement between you and Poochie.
-                    1.2 Summary Termination. By accessing or using the Services, you confirm your agreement to be bound by these Terms. If you do not agree to these Terms, you may not access or use the Services. This Agreement expressly supersedes prior agreements or arrangements with you. Poochie may immediately terminate this Agreement or any Services with respect to you, or generally cease offering or deny access to the Services or any portion thereof, at any time for any reason.
-                    1.3 Supplement Terms. Supplemental terms may apply to certain Services, such as policies for a particular event, program, activity or promotion, and such supplemental terms will be disclosed to you in separate disclosures or in connection with the applicable Service(s). Supplemental terms are in addition to, and shall be deemed a part of, this Agreement for the purposes of the applicable Service(s). Supplemental terms shall prevail over these Terms in the event of a conflict with respect to the applicable Services.
-                    1.4 Poochie Amendments. Poochie may amend this Agreement from time to time. If Poochie amends the Agreement you will be notified by a message sent to the email address you provide in your contact information. Amendments will be effective upon posting of such updated Terms on the Poochie website. Your use of the Poochie Platform or Services after notification confirms your consent to be bound by the Agreement as amended. For Services used by you prior to the effective date of the amendment you will continue to be bound by the provisions of these Terms as of the date you first agreed to the Terms (or to any subsequent changes to these Terms).
-                    2. DESCRIPTION OF SERVICES
-                    2.1 Brokerage Service. Poochie provides an online marketplace connection using web-based technology that connects customers, contract drivers (“Contractors”) and pet services businesses (“Poochie Platform”). Poochie software permits registered users to request transportation for pets from Contractors. Poochie software notifies Contractors that a ride opportunity is available and the Poochie software facilitates the logistics and payment of the rides. XoX Rides Inc.and or  dba  Poochie or Poochie app is a technology-based services broker. The Contractor is a Pet Services Business.
-                    YOU ACKNOWLEDGE THAT YOUR ABILITY TO SCHEDULE TRANSPORTATION FOR YOUR PET THROUGH THE USE OF POOCHIE DOES NOT ESTABLISH POOCIE AS A PROVIDER OF TRANSPORTATION, LOGISTICS OR DELIVERY SERVICES OR AS A TRANSPORTATION CARRIER.
-                    2.2 License. Subject to your compliance with these Terms, Poochie grants you a limited, non-exclusive, non-sublicensable, revocable, non-transferable license to: (i) access and use the web-technology on your personal device solely in connection with your use of the Services; and (ii) access and use any content, information and related materials that may be made available through the Services, in each case solely for your personal, noncommercial use. Any rights not expressly granted herein are reserved by Poochie.
-                    2.3 Restrictions.
-                    2.3.1 You may not remove any copyright, trademark or other proprietary notices from any portion of the Services.
-                    2.3.2 You may not reproduce, modify, prepare derivative works based upon, distribute, license, lease, sell, resell, transfer, publicly display, publicly perform, transmit, stream, broadcast or otherwise exploit the Services except as expressly permitted by Poochie.
-                    2.3.3 You may not decompile, reverse engineer or disassemble the Services except as may be permitted by applicable law.
-                    2.3.4 You may not link to, mirror or frame any portion of the Services, cause or launch any programs or scripts for the purpose of scraping, indexing, surveying, or otherwise data mining any portion of the Services, or unduly burden or hinder the operation and/or functionality of any aspect of the Services.
-                    2.3.5 You may not attempt to gain unauthorized access to or impair any aspect of the Services or its related systems or networks.
-                    2.4. Third-Party Services and Content. The Services will be made available or accessed in connection with pet service businesses or third-party services that Poochie does not control. You acknowledge that different terms of use and privacy policies will apply to your use of such third-party services and content. Poochie does not endorse such third-party services and content; and, in no event shall Poochie be responsible or liable for any products or services of such third-party providers. Additionally, Apple Inc., Google, Inc., Microsoft Corporation or BlackBerry Limited will be a third-party beneficiary to this contract if you access the Services using Applications developed for Apple iOS, Android, Microsoft Windows, or Blackberry-powered mobile devices, respectively. These third-party beneficiaries are not parties to this contract and are not responsible for the provision or support of the Services in any manner. Your access to the Services using these devices is subject to terms set forth in the applicable third-party beneficiary’s terms of service.
-                    2.5 Ownership. The Services and all rights therein are and shall remain Poochie property. Neither these Terms nor your use of the Services convey or grant to you any rights: (i) in or related to the Services except for the limited license granted above; or (ii) to use or reference in any manner Poochie company names, logos, product and service names, trademarks or services marks.
-                    3. ACCESS AND USE OF THE SERVICES
-                    3.1 User Accounts. In order to use most aspects of the Services, you must register for and maintain an active personal user Services account (“Account”). You must be at least 18 years of age, or the age of legal majority in your jurisdiction (if different than 18), to obtain an Account, unless a specific Service permits otherwise. Account registration requires you to submit to Poochie certain personal information, such as your name, address, mobile phone number and age, as well as at least one valid payment method supported by Poochie. You agree to maintain accurate, complete, and up-to-date information in your Account. Your failure to maintain accurate, complete, and up-to-date Account information, including having an invalid or expired payment method on file, will result in your inability to access or use the Services. You are responsible for all activity that occurs under your Account, and you agree to maintain the security and secrecy of your Account username and password at all times. You may only possess one Account.
-                    3.2 User Requirements and Conduct. The Service is not available for use by persons under the age of 18. You may not authorize third parties to use your Account, and you may not allow persons under the age of 18 to schedule pet transportation. You may not assign or otherwise transfer your Account to any other person or entity. You agree to comply with all applicable laws when accessing or using the Services, and you may only access or use the Services for lawful purposes (e.g., no transport of unlawful or hazardous materials). You may not in your access or use of the Services cause nuisance, annoyance, inconvenience, or property damage. In certain instances you will be asked to provide proof of identity or other method of identity verification to access or use the Services; and you will be denied access to or use of the Services if you refuse to provide proof of identity or other method of identity verification.
-                    3.3 Text Messaging and Telephone Calls. You agree that Poochie may contact you by telephone or text messages (including by an automatic telephone dialing system) at any of the phone numbers provided by you or on your behalf in connection with a Poochie account, including for marketing purposes. You understand that you are not required to provide this consent as a condition of purchasing any property, goods or services. You also understand that you may opt out of receiving text messages from Poochie at any time, by contacting hello@poochieapp.com. If you do not choose to opt out, Poochie may contact you as outlined in its Privacy Statement.
-                    3.4 User Provided Content. Poochie may, in Poochie’s sole discretion, permit you from time to time to submit, upload, publish or otherwise make available to Poochie through the Services textual, audio, and/or visual content and information, including commentary and feedback related to the Services, initiation of support requests, and submission of entries for competitions and promotions (“User Content”). Any User Content provided by you remains your property. However, by providing User Content to Poochie, you grant Poochie a worldwide, perpetual, irrevocable, transferable, royalty-free license, with the right to sublicense, to use, copy, modify, create derivative works of, distribute, publicly display, publicly perform, and otherwise exploit in any manner such User Content in all formats and distribution channels now known or hereafter devised (including in connection with the Services and Poochie’s business and on third-party sites and services), without further notice to or consent from you, and without the requirement of payment to you or any other person or entity.
-                    3.4.1 You represent and warrant that: (i) you either are the sole and exclusive owner of all User Content or you have all rights, licenses, consents and releases necessary to grant Poochie  the license to the User Content as set forth above; and (ii) neither the User Content, nor your submission, uploading, publishing or otherwise making available of such User Content, nor Poochie’s use of the User Content as permitted herein will infringe, misappropriate or violate a third-party’s intellectual property or proprietary rights, or rights of publicity or privacy, or result in the violation of any applicable law or regulation.
-                    3.4.2 You agree to not provide User Content that is defamatory, libelous, hateful, violent, obscene, pornographic, unlawful, or otherwise offensive, as determined by Poochie in its sole discretion, whether or not such material may be protected by law. Poochie may, but shall not be obligated to, review, monitor, or remove User Content, at Poochie’s sole discretion and at any time and for any reason, without notice to you.
-                    3.5 Network Access and Devices. You are responsible for obtaining the data network access necessary to use the Services. Your mobile network’s data and messaging rates and fees may apply if you access or use the Services from your device. You are responsible for acquiring and updating compatible hardware or devices necessary to access and use the Services and Applications and any updates thereto. Poochie does not guarantee that the Services, or any portion thereof, will function on any particular hardware or devices. In addition, the Services may be subject to malfunctions and delays inherent in the use of the Internet and electronic communications.
-                    4. PAYMENT
-                    4.1 Amount. The use of the Services will result in charges to you for the services you receive (“Charges”). Poochie will receive and/or enable your payment of the applicable Charges for services obtained through your use of the Services. Charges will be inclusive of applicable taxes where required by law. Charges will include other applicable fees, tolls, and/or surcharges including booking fees, municipal tolls, airport surcharges or processing fees.
-                    4.2 How Made. All Charges and payments will be enabled by Poochie, after which you will receive a receipt by email. If your Account payment method is determined to be expired, invalid or otherwise not able to be charged, you agree that Poochie may use a secondary payment method in your Account, if available. Charges you pay are final and non-refundable.
-                    4.3 Adjustments. As between you and Poochie, Poochie reserves the right to establish, remove, refund and/or revise Charges for the use of the Services at any time in Poochie’s sole discretion. Further, you acknowledge and agree that Charges applicable in certain geographical areas may increase substantially during times of high demand. Poochie will use reasonable efforts to inform you of Charges that may apply, provided that you will be responsible for Charges incurred under your Account regardless of your awareness of such Charges or the amounts thereof.
-                    4.1 Special Deals. Poochie may from time to time provide certain users with promotional offers and discounts that will result in different amounts charged for the same or similar services through the use of the Services, and you agree that such promotional offers and discounts, unless also made available to you, shall have no bearing on your use of the Services or the Charges applied to you.
-                    4.3 Service Cancellation. You may elect to cancel your scheduled Services up to 24 hours prior to the commencement of such Services, after which case you will be charged a cancellation fee of $15.00.
-                    4.4. Feedback. After you have received Services or goods obtained through the Services, you will have the opportunity via email to rate your experience and leave additional feedback.
-                    4.5 Application of Payments. Poochie may use the proceeds of any Charges for any purpose, subject to any payment obligations it has to Contractors as a broker.
-                    4.6 Tips. Poochie does not designate any portion of your payment as a tip or gratuity to Contractors. You understand and agree that, while you are free to provide additional payment as a gratuity to Contractors who provide you pet transportation services, you are under no obligation to do so. Gratuities are voluntary.
-                    4.7 Repair, Cleaning or Lost and Found Fees. You shall be responsible for the cost of repair for damage to, or necessary cleaning of Contractor vehicles and property resulting from use of pet transportation services under your Account in excess of normal “wear and tear” (“Repair or Cleaning”). In the event that a Repair or Cleaning request from the Contractor is verified by Poochie, Poochie will Charge your Account for the reasonable cost of such Repair or Cleaning using your payment method designated in your Account.
-                    5. USER RESPONSIBILITIES
-                    5.1 Your Pet. You hereby represent, covenant and warrant that with regard to pet(s) for which you request transportation services:
-                    (a) you own the pet;
-                    (b) the pet is free from fleas, ticks, other pests, and communicable disease (e.g. mange);
-                    (c) you have divulged all material information about your pet(s), including pre-existing veterinary conditions, bite history, and behavioral issues that may be relevant or impact transportation services.
-                    (d) the pet is not aggressive;
-                    (e) you carry liability insurance that covers injuries and damages caused by your pet(s);
-                    (f) the pet(s) is fully vaccinated and licensed as required by local laws;
-                    (g) you shall provide accurate information about yourself and your pet(s).
-                    5.2 Pet Damages. You are fully responsible for the actions of your pet(s). You are liable for any and all claims, costs, proceedings, demands, losses, damages, and expenses (including, without limitation, reasonable attorney’s fees and legal costs) or any kind or nature, arising from or relating to, the behavior of your pet(s), including without limitations, claims by third parties (including Contractors) for damages, loss or injuries resulting from bites or attacks on such third parties by your pet(s).
-                    5.3 Contractor Discretion. Contractors have the sole and absolute discretion to reject or refuse any pet transportation services that you may request, even at the point of pickup, when:
-                    (a) the physical condition or temperament of the pet prevents timely delivery, prevents safe transportation, or endangers the security of the pet;
-                    (b) you vary the instructions and parameters of the desired service from that contained in your accepted order for pet transportation services (e.g. more than one pet, different pet, different time or place of delivery);
-                    (c) transportation would be unlawful.
-                    5.4 Veterinary Care in Transit.
-                    (a) You Are Reached. If a Contractor or Poochie reaches you with a request to authorize veterinary care for your pet and you refuse, you are solely responsible for the consequences to your Pet(s).
-                    (b) You Are Not Reached. If you cannot be reached to authorize care, and your pet needs immediate veterinary care in the estimation and discretion of Poochie or the Contractor, you hereby authorize the Contractor and/or Poochie to obtain and authorize veterinary care for your pet. You are solely responsible for the costs of any such veterinary treatment for your pet(s); and, you consent to and authorize Poochie to charge any of your payment methods for such costs.
-                    (c) No Liability to Poochie or Contractor. Whether or not you are reached, you waive, release and promise never to assert any claims or causes of action arising from seeking veterinary care or failure to seek such care against Poochie and Contractor, and their predecessors, successors or past or present subsidiaries, stockholders, directors, officers, employees, consultants, attorneys, agents, or assigns with respect to any matter, including without limitation any claims of negligence, emotional distress, fraud, breach of contract, or breach of the covenant of good faith and fair dealing.
-                    6. INDEMNITY DISCLAIMERS: LIMITATION OF LIABILITY
-                    6.1 INDEMNITY – IT IS THE EXPRESS INTENT OF THE PARTIES TO PROVIDE FOR INDEMNIFICATION BY THE USER AND TO CONFORM TO THE PROVISIONS OF THE EXCEPTIONS TO ANY GENERAL PROHIBITION ON INDEMNITY CLAUSES CONTAINED IN THE APPLICABLE LAW OF THIS AGREEMENT. YOU AGREE TO INDEMNIFY AND HOLD POOCHIE AND ITS AFFILIATES AND THEIR OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS HARMLESS FROM ANY AND ALL CLAIMS, DEMANDS, LOSSES, LIABILITIES, AND EXPENSES (INCLUDING ATTORNEYS’ FEES), ARISING OUT OF OR IN CONNECTION WITH: (I) YOUR USE OF THE SERVICES OR SERVICES OR GOODS OBTAINED THROUGH YOUR USE OF THE SERVICES; (II) YOUR BREACH OR VIOLATION OF ANY OF THESE TERMS; (III) POOCHIE’S USE OF YOUR USER CONTENT; OR (IV) YOUR VIOLATION OF THE RIGHTS OF ANY THIRD-PARTY, INCLUDING CONTRACTORS.
-                    6.2 DISCLAIMER. THE SERVICES ARE PROVIDED “AS IS” AND “AS AVAILABLE.” POOCHIE DISCLAIMS ALL REPRESENTATIONS AND WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY, NOT EXPRESSLY SET OUT IN THESE TERMS, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN ADDITION, POOCHIE MAKES NO REPRESENTATION, WARRANTY, OR GUARANTEE REGARDING THE RELIABILITY, TIMELINESS, QUALITY, SUITABILITY, OR AVAILABILITY OF THE SERVICES OR ANY SERVICES OR GOODS REQUESTED THROUGH THE USE OF THE SERVICES, OR THAT THE SERVICES WILL BE UNINTERRUPTED OR ERROR-FREE. POOCHIE DOES NOT GUARANTEE THE QUALITY, SUITABILITY, SAFETY OR ABILITY OF CONTRACTORS OR OTHER THIRD-PARTY PROVIDERS. YOU AGREE THAT THE ENTIRE RISK ARISING OUT OF YOUR USE OF THE SERVICES, AND ANY SERVICE OR GOOD REQUESTED IN CONNECTION THEREWITH, REMAINS SOLELY WITH YOU, TO THE MAXIMUM EXTENT PERMITTED UNDER APPLICABLE LAW.
-                    6.3 LIMITATION OF LIABILITY.
-                    6.3.1 Poochie shall not be liable for indirect, incidental, special, exemplary, punitive, or consequential damages, including lost profits, lost data, personal injury, or property damage related to, in connection with, or otherwise resulting from any use of the Services, regardless of the negligence (either active, affirmative, sole, or concurrent) of Poochie, even if Poochie has been advised of the possibility of such damages.
-                    6.3.2 Poochie shall not be liable for any damages, liability or losses arising out of: (i) your use of or reliance on the Services or your inability to access or use the Services; or (ii) any transaction or relationship between you and any third-party provider, even if Poochie has been advised of the possibility of such damages. Poochie shall not be liable for delay or failure in performance resulting from causes beyond Poochie’s reasonable control. You acknowledge that third-party providers providing transportation services requested through some request products may offer ridesharing or peer-to-peer transportation services and may not be professionally licensed or permitted.
-                    6.3.3 The Services may be used by you to request and schedule pet transportation services with contractors and other third-party providers, but you agree that Poochie has no responsibility or liability to you related to any transportation, goods or logistics services provided to you by contractor or other third-party providers other than as expressly set forth in these terms.
-                    6.3.4 The limitations and disclaimer in this section 5 do not purport to limit liability or alter your rights as a consumer that cannot be excluded under applicable law. Because some states or jurisdictions do not allow the exclusion of or the limitation of liability for consequential or incidental damages, in such states or jurisdictions, Poochie’s liability shall be limited to the extent permitted by law. This provision shall have no effect on the choice of law provision set forth below.
-                    7. MUTUAL ARBITRATION PROVISION
-                    7.1 Arbitration Governs All Disputes. User and Poochie mutually agree to this Mutual Arbitration Provision, which is governed by the Federal Arbitration Act (9 U.S.C. §§ 1-16) (“FAA”) and shall apply to any and all disputes arising out of or relating to this Agreement including without limitation harassment, discrimination or retaliation claims. The Parties expressly agree that this Agreement shall be governed by the FAA even in the event User and/or Poochie are otherwise exempted from the FAA. Any disputes in this regard shall be resolved exclusively by an arbitrator.
-                    7.2 Class Arbitration Prohibited and Waived. User and Poochie mutually agree that by entering into this Agreement to arbitrate, both waive their right to have any dispute or Claim brought, heard or arbitrated as, or to participate in, a class action, collective action and/or representative action—including but not limited to actions brought pursuant to the Private Attorney General Act (“PAGA”), California Labor Code section 2699 et seq., and any request seeking a public injunction—and an arbitrator shall not have any authority to hear or arbitrate any class, collective or representative action, or to award relief to anyone but the individual in arbitration (“Arbitration Class Action Waiver”).
-                    7.3 Initiation of Arbitration. If either User or Poochie wishes to initiate arbitration, the initiating Party must notify the other Party in writing via certified mail, return receipt requested, or hand delivery within the applicable statute of limitations period. This demand for arbitration must include (1) the name and address of the Party seeking arbitration, (2) a statement of the legal and factual basis of the claim, and (3) a description of the remedy sought and (4) the amount in controversy. Any demand for arbitration by User must be delivered to XOX Rides Inc, attention CEO 350 Salem st unit 201 Glendale Ca. 91203.
-                    7.4 Arbitration Tribunal and Rules. Any arbitration shall be submitted to the International Institute for Conflict Prevention & Resolution (CPR), and governed by the CPR Administered Arbitration Rules and, when applicable, the CPR Employment-Related Mass-Claims Protocol (together, the “CPR Rules”) of the International Institute for Conflict Prevention & Resolution, except as follows:
-                    7.4.1 The arbitration shall be heard by one arbitrator (the “Arbitrator”) selected in accordance with the CPR Rules. The Arbitrator shall be an attorney with experience in the law underlying the dispute.
-                    7.4.2 The arbitration shall take place in Los Angeles County, Ca.
-                    7.4.3 The CPR fee schedule will apply. The cost of the arbitration shall be borne equally by the Parties, except that each Party shall bear its own costs of preparation, counsel and presentation. A prevailing Party shall be entitled to an award of reasonable attorney’s fees and costs made by the Arbitrator and as a part of the arbitration award.
-                    7.4.4 The Arbitrator may issue orders (including subpoenas to third parties) allowing the Parties to conduct discovery sufficient to allow each Party to prepare that Party’s claims and/or defenses, taking into consideration that arbitration is designed to be a speedy and efficient method for resolving disputes.
-                    7.4.5 The Arbitrator shall be able to award any and all relief of an equitable nature, including but not limited to such relief as a temporary restraining order, a temporary and/or a permanent injunction, and shall also be able to award damages, with or without an accounting and costs The Arbitrator may issue orders to protect the confidentiality of proprietary information, trade secrets, or other sensitive information.
-                    7.4.6. The Arbitrator may hear motions to dismiss and/or motions for summary judgment and will apply the standards of the Federal Rules of Civil Procedure governing such motions.
-                    7.4.7. The Arbitrator’s decision or award shall be in writing with findings of fact and conclusions of law.
-                    7.4.8. Subject to the discretion of the Arbitrator or agreement of the Parties, any person having a direct interest in the arbitration may attend the arbitration hearing. The Arbitrator may exclude any non-party from any part of the hearing.
-                    7.4.9. Either User or Poochie may apply to a court of competent jurisdiction for temporary or preliminary injunctive relief on the ground that without such relief the arbitration provided in this paragraph may be rendered ineffectual. A Party may apply to any Federal or State court in Los Angeles County California to compel arbitration. Judgment upon the Award shall be entered by the District Court of Los Angeles County California, which court shall be invested with the authority to grant and enforce any interim or permanent relief or injunction awarded, notwithstanding any statutory provision providing for venue in some other Court.
-                    7.5 Survival. This Mutual Arbitration Provision will survive any termination of your relationship with Poochie.
-                    8. LITIGATION CLASS ACTION WAIVER. To the extent allowed by applicable law, separate and apart from the Mutual Arbitration Provision the Parties agree that any proceeding to litigate in court any dispute arising out of or relating to this Agreement, will be conducted solely on an individual basis, and User and Poochie agree not to seek to have any controversy, claim or dispute heard as a class action, a representative action, a collective action, a private attorney-general action, or in any proceeding in which User or Poochie acts or proposes to act in a representative capacity (“Litigation Class Action Waiver”). The Parties further agree that no proceeding will be joined, consolidated, or combined with another proceeding, without the prior written consent of all parties to any such proceeding.
-                    9. MODIFICATIONS
-                    9.1 Amendment This Agreement is the complete agreement of the Parties concerning the subject matter, and supersedes any prior agreements concerning the subject matter; and, may not be amended or in any manner modified except by a written instrument signed by authorized representatives of each and all Parties, except with respect to Poochie’s right to amend in section 1.4.
-                    9.2 Exception. Poochie’s right to amend may be changed by Poochie according to section 1.4 and will bind the User once adopted without User signature upon User use of the Poochie Platform or Services following notice of the modification of the policy.
-                    10. GOVERNING LAW AND LEGAL RECOURSE
-                    10.1 California Law. This Agreement shall be construed and enforced in accordance with the federal law of the United States of America and the laws of the State of California, excluding its conflicts of law’s provisions.
-                    10.2 Electronic Signatures. The provisions of The Ca. Uniform Electronic Transaction Act (UETA) Electronic Transactions Act and the Federal Electronic Signatures in Global and National Commerce Act (ESIGN) apply; and signatures and assent rendered under such acts shall be valid for all purposes.
-                    10.3 Costs. Should either Party seek legal recourse to have the other Party comply with and/or fulfill any of its legal obligations under this Agreement, the prevailing Party shall be entitled to recover all reasonable attorney fees, expert fees and all costs incurred in connection therewith.
-                    10.4 Courts. Actions seeking judicial relief may be brought only before federal or state courts having jurisdiction in Los Angeles County Court and each Party irrevocably submits to personal jurisdiction and waives any objection to venue in such courts. This provision does not negate mandatory arbitration.
-                    11. NOTICE. Poochie may give notice by means of a general notice on the Services, electronic mail to your email address in your Account, telephone or text message to any phone number provided in connection with your account, or by written communication sent by first class mail or pre-paid post to any address connected with your Account. Such notice shall be deemed to have been given upon the expiration of 48 hours after mailing or posting (if sent by first class mail or pre-paid post) or 12 hours after sending (if sent by email or telephone). You may give notice to Poochie, with such notice deemed given when received by Poochie, at any time by first class mail or pre-paid post to our registered agent for service of process, c/o XOX Rides Inc. 350 Salem st unit 201 Glendale Ca. 91203
-                    12. MERGER, SEVERABILITY AND INTERPRETATION
-                    12.1 Four Corners. The making, execution and delivery of this Agreement by the Parties hereto have been induced by no representations, statements, warranties or agreements other than those herein expressed. This Agreement embodies the entire understanding of the Parties hereto and there are no further or other agreements or understandings, written or oral, that govern this transaction.
-                    12.2 Assignment. You may not assign this Agreement without Poochie’s prior written approval. Poochie may assign this Agreement without your consent to: (i) a subsidiary or affiliate; (ii) an acquirer of Poochie’s equity, business or assets; or (iii) a successor by merger. Any purported assignment in violation of this section shall be void. No joint venture, partnership, employment, or agency relationship exists between you, Poochie or Contractors as a result of this Agreement or use of the Services.
-                    12.3 Severability. If any provision (or portion thereof) of this Agreement shall be declared invalid or unlawful, the remaining provisions shall not be affected thereby, and this Agreement shall be construed as if such invalid or unlawful provision (or portion thereof) had never been contained therein.
-                    12.4 No Waiver. The failure of Poochie or User in any instance to insist upon a strict performance of the terms of this Agreement or to exercise any option herein, shall not be construed as a waiver or relinquishment of such term or option and such term or option shall continue in full force and effect. This provision shall not affect the Severability and Survivability section of the Arbitration Agreement of these Terms.
-                    13. HEADINGS. Headings used throughout this Agreement are for administrative convenience only and shall be disregarded for the purpose of constructing and enforcing this Agreement.
+                    Introduction
+                    Welcome to the "Poochie" Pet Transportation Services App! Xox Rides Inc owns all the rights to the "Poochie" app. This SERVICE is provided by XOX Rides Inc. and is intended for use as is. At Poochie, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, disclose, and safeguard your information when you use our app and the services we provide.
+
+                    At Poochie, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Poochie and how we use it.
+
+                    This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service. At XOX Rides Inc. and/or dba Poochie App and Poochie, our mission is to make people's lives easier through pet transportation services and provide a platform to help you transport your pets from point A to point B. To do this, we need to collect, use and disclose some of your personal information.
+                    If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that We collect is used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy.
+                    The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which are accessible at Poochie unless otherwise defined in this Privacy Policy.
+                    If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.
+
+                    Scope of this policy
+                    This Policy applies to all Poochie users, including customers (pet owners), drivers (including driver applicants), third-party companies, and all Poochie platforms and services, including our apps, websites, features and other services (collectively, " Poochie Platform"). Please remember that your use of the Poochie Platform is also subject to our Terms of Service.
+
+                    Information Collection and Use
+                    For a better experience, while using our Service, We may require you to provide us with certain personally identifiable information. The information that We requests will be retained on your device and is not collected by me in any way.
+
+                    Personal Information: We may collect personal information from you, such as your name, email address, date of birth, contact information, payment details, and pet-related information when you register for our services or use the app.
+                    You may choose to share additional info with us, like your photo or saved addresses (e.g., home or groomer).
+
+
+                    Location Information: We may collect your device's location information if you enable location services on the app. This information is used for providing pet transportation services and for the safety and security of your pets and device permissions as well as whether you are using the platform as a Customer or Driver.
+
+
+                    Driver Information: When you apply to be a driver, we collect the information you provide in your application, including your name, email address, phone number, date of birth, profile photo, home address, government identification number (such as Social Security number) and the driver’s ID number, license information, vehicle information and car insurance information. We collect the payment information you provide to us, including your bank routing number and tax information. At some point after you become a driver, we may ask you to provide additional information, including information to confirm your identity.
+
+                    Customer: When you open and use the Poochie app, we collect the precise location of your device. Poochie Analog does not collect your location data.
+
+                    Drivers: We collect your device's precise location when you open and use the App, including when the App is running in the background while in driver mode. Poochie Analog does not collect your location data.
+
+                    Usage Information: We collect information about how you interact with our app, including your interactions, preferences, and settings including pet shipping information such as date, time, destination, distance, route, payment and whether you use a promotional or referral code.
+
+
+                    Ratings and Feedback: When you rate and provide feedback to a customer or driver, we collect all the information you provide in the feedback. communicate. If you contact us or we contact you, we will collect any information you provide, including the content of any messages or attachments you send us.
+
+                    Communications Between Customers and Drivers:
+
+                    We work with third parties to facilitate phone calls and text messages between customers and drivers without revealing one party's actual phone number to the other party. However, when we use third parties to provide communications services, we collect information about those communications, including participants' phone numbers, dates and times, and the content of text messages. Poochie Analog does not use third parties to facilitate communications. Poochie Customer Service facilitates simulated Poochie communication between customers and drivers.
 
 
 
-                    https://doc-hosting.flycricket.io/poochie-terms-of-use/bf4d5e66-f753-48b9-b762-760b0bb6638f/terms
+
+
+
+                    5. How We Use Your Information:
+                    We do not sell your personal information. We may need to share your personal information with other users, third parties, and service providers.
+
+                    Providing Services: We use your information to provide pet transportation services, including matching you with drivers and facilitating the transportation of your pets.
+
+                    Communication: We may use your contact information to send you notifications, updates, and important information about the app and services.
+
+                    Improvement: We use collected data to improve our app and services, analyze user behavior, and enhance user experience.
+
+                    We use your personal information to provide an intuitive, useful, efficient and beneficial experience on our Platform. For this purpose, we use your personal data to:
+
+                    Verify your identity and maintain your account, settings and preferences.
+                    Connect with your pet’s rides and track their progress;
+                    Calculate prices and process payments;
+                    Allow customers and drivers to communicate about their pets’ trips and share their location with others.
+                    Communicate with you about your pet’s rides and experiences;
+                    Collect feedback about your experience;
+                    enable additional services and programs with third parties; and
+                    Carry out promotional activities.
+
+                    Maintain the security of the Poochie Platform and its users. Our platform is designed to provide a safe experience for you and your pet, whether on the go, in our app or through Poochie Analog. For this purpose, we use your personal data to:
+
+                    Verify the identity of customers and drivers;
+                    Ensure that drivers and their vehicles meet safety requirements.
+                    Investigate and resolve incidents, accidents and insurance claims;
+                    Promote safe driving behavior and avoid unsafe activities;
+                    Detect and prevent fraud; and
+                    Block and remove unsafe or fraudulent customers and drivers from Poochie.
+                    Build and maintain Poochie communities. Poochie is committed to being an active part of the pet services community. We use your personal information to communicate with you about events and promotions. Provide customer support. We strive to give you the best experience possible, including providing support when you need it. For this purpose, we use your personal data to:
+                    Investigate and assist you with any questions or issues you have about Poochie
+                    To provide you with support or response. Improvements to the Poochie platform.
+
+                    We are constantly working to improve your experience and provide you with new and useful features. For this purpose, we use your personal data to:
+
+                    Conduct research, testing and analysis;
+                    Develop new products, features, partnerships and services;
+                    Prevent, detect and resolve software or hardware errors and problems; and
+                    Monitor and improve our operations and processes, including security practices, algorithms and other modeling.
+                    Respond to legal processes and requests. From time to time, laws, government agencies or other regulatory bodies impose requirements and obligations on the services we wish to provide. In such cases, we may use your personal information to respond to these requests or obligations.
+
+                    Sharing Between Poochie Users:
+
+                    Customers and Drivers: Customer Information Shared with Drivers, When we receive a pet ride request, we share with the driver the scheduled pickup time and date, pickup location, destination, customer name, pet name and information, ratings, and customer demographics (e.g. Approximate number of trips) and number of years as a customer) and the information the customer includes in their customer profile. We also communicate customer ratings and feedback to drivers on a weekly basis. (When we share reviews and feedback with drivers, we remove the customer identification associated with the reviews and feedback, but drivers may be able to identify the customer who provided the review or feedback.)
+
+                    Driver information shared with Customer: Approximately 30 minutes before booking a ride, we share the driver's name, profile photo, rating, real-time location, as well as the vehicle's make, model, color, and license plate, along with other information from the driver directory and profile, with the customer. For example: B. Information and driver statistics that the driver wants to add (e.g., approximate number of trips and number of years as a driver). Sharing of customer and driver information in Poochie Analog may be restricted. Although we help customers and drivers communicate with each other to arrange pet pickups, we do not share your actual phone number or other contact information with other users. If you report a lost or found item to us, we will attempt to connect you with the relevant customer or driver, including sharing actual contact information with your consent.
+
+                    Referral Programs: If referral program is available, When you refer someone to the Poochie Platform, we let them know that you initiated the referral. If another user refers to you, we may share information about your use of the Poochie Platform with that user. For example, referral sources may receive bonuses when you join the Poochie platform.
+
+
+
+                    Sharing With Third-Party Service Providers for Business Purposes:
+                    Depending on whether you are a customer or a driver, Poochie may share the following categories of your personal information for business purposes in order to provide you with the various features and services of the Poochie Platform:
+
+                    Personally identifiable information, such as your name, address, email address, date of birth, government identification number (such as Social Security number), pet information, driver’s license information, vehicle information, and vehicle insurance information;
+                    Financial information, such as bank routing numbers, tax information and any other payment information you provide to us;
+                    Itinerary information, driver/customer statistics and feedback, driver/customer transaction history and other business information;
+                    Internet or other electronic network activity information, such as: B. Your IP address, browser type, operating system version, network operator and/or manufacturer, device identifiers and mobile advertising identifiers; and
+                    Location data.
+
+                    Disclosure of Your Information
+                    We may disclose your information in the following situations:
+
+                    Service Providers: We may share your information with third-party service providers who assist us in providing and improving our services.
+
+                    We  may employ third-party companies and individuals due to the following reasons:
+                    To facilitate our Service;
+                    To provide the Service on our behalf;
+                    To perform Service-related services; or
+                    To assist us in analyzing how our Service is used.
+                    We want to inform users of this Service that these third parties have access to their Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.
+                    Legal Compliance: We may disclose your information to comply with legal obligations, such as responding to court orders or government requests.
+
+                    Protection of Rights: We may disclose your information to protect our rights, privacy, safety, or property and that of our users.
+
+
+
+
+                    We share these categories of personal information with our service providers for the following business purposes:
+
+                    Maintain and maintain your Poochie Account;
+                    Process or perform travel;
+                    Provide customer service;
+                    Process customer transactions;
+                    Process driver applications and payments;
+                    Verify user identity;
+                    Detect and prevent fraud;
+                    Process insurance claims;
+                    Offer loyalty and promotional programs to drivers;
+                    Provide marketing and advertising services to Poochie;
+                    Provide financing;
+                    Provide emergency services as requested;
+                    Provide analytical services to Poochie; and
+                    Conduct internal research to develop the Poochie platform
+
+
+                    Information We Collect from Third Parties
+
+                    Third Party Services: Third-party services provide us with the information we need for core aspects of the Poochie Platform, as well as additional services, programs, loyalty benefits and promotions that may enhance your Poochie experience. These third-party services include background check providers, insurance partners, financial services providers, marketing providers and other companies. We receive the following information about you from these third-party services:
+                    Information that makes the Poochie platform safer, such as B. Driver background check information;
+                    Information about your participation in third-party programs that provide insurance coverage and financial instruments, such as: B. Insurance, payment, transaction and fraud detection information;
+                    Information about the operation of loyalty and advertising programs, such as B. Information about your use of such programs; and
+                    Information about you provided by certain services, such as B. Demographic information and market segment information.
+
+                    Pet Business Services: Sometimes, pet companies or animal organizations can order dog rides for your pet. If a pet company orders a ride for your pet through our Service, they will provide us with your contact information and the pick-up and drop-off location for your ride. Referral Program. If someone recommends you to Poochie, we collect information about you from that referral, including your name and contact information.
+
+                    Other Users and Sources: Other users or public or third party sources (such as law enforcement agencies, insurance companies, the media or pedestrians) may provide information about you to us, for example as part of an investigation of an incident or to assist you.
+
+                    For Legal Reasons and to Protect the Poochie Platform
+
+                    We may share your personal information as required by law or for the purposes for which we determine that sharing your personal information is reasonably necessary or appropriate:
+
+                    To comply with any applicable federal, state or local law or regulation, civil, criminal or governmental investigation, investigation or proceeding, or enforceable governmental request;
+                    Respond to legal process (such as a search warrant, subpoena, summons or court order);
+                    Enforce our Terms of Use;
+                    Cooperate with law enforcement agencies in connection with any conduct or activity that we reasonably and in good faith believe may violate federal, state, or local law; or
+                    To exercise or defend legal rights to protect our rights, property, interests or safety, or the rights, property, interests or safety of you, third parties or the public, to the extent required or permitted by law.
+
+                    In Connection with Sale or Merger
+                    We may use your personal data as part of negotiations or in connection with a change of corporate control, such as: B. A reorganization, merger or sale of our assets.
+
+                    Upon Your Further Direction
+                    With your permission or upon your direction, we may disclose your personal information to interact with a third party or for other purposes.
+
+                    How We Store and Protect Your Information
+
+                    We will retain your data for as long as necessary to provide the Poochie Platform to you and our other users. This means that we will retain your profile information for as long as you maintain your account. We retain transaction data such as pet rides and payments for at least seven years to ensure we can perform legitimate business functions, such as settling tax obligations. If you request to cancel your account, we will delete your information as described in the "Cancel Your Account" section below. We take reasonable and appropriate measures to protect your personal information. However, no security measures can be 100% effective and we cannot guarantee the security of your data, including from unauthorized interference or actions of third parties.
+
+
+
+                    Your Rights And Choices Regarding Your Data
+                    Poochie provides ways for you to access and delete your personal information as well as exercise other data rights that give you certain control over your personal information.
+
+                    You have certain rights regarding your information, including the right to access, correct, or delete your data. You can also opt-out of receiving promotional communications from us.
+                    The app does use third-party services that may collect information used to identify you.
+                    Link to the privacy policy of third-party service providers used by the app
+                    Google Play Services
+
+                    All Users
+
+                    Email Subscription: You may unsubscribe from our commercial or promotional emails at any time by clicking "unsubscribe" in these messages. We will continue to send you transactional and relationship emails related to your use of the Poochie Platform. Please note that opting out of receiving text messages may affect your use of the Poochie Platform (e.g., receiving notification that your pet's ride has arrived or that your pet has arrived at its destination). Poochie Analog uses text messaging to communicate with customers and drivers.
+
+
+                    Push Notifications:  You can opt out of receiving push notifications through your device settings. Please note that opting out of receiving push notifications may affect your use of the Poochie Platform (for example, if you receive a notification that your pet's ride has arrived or that your pet has arrived at its destination). Poochie Analog does not use push notifications.
+
+                    Location information: You can prevent your device from sharing location information through your device's system settings. However, if you do so, it may affect Poohies' ability to provide you with the full range of features and services. Poochie Analog does not collect location information.
+
+                    Cookie Tracking: You can modify your cookie settings on your browser, but if you delete or choose not to accept our cookies, you may be missing out on certain features of the Poochie Platform.
+
+                    Delete your account:  If you would like to delete your Poochie account, please call 818-213-3884. In some cases, we may not be able to delete your account, for example, if there are trust, security, or fraud-related issues with your account. If we delete your account, we may retain certain information for legitimate business purposes or to comply with legal or regulatory obligations. For example, we may retain your information to resolve a pending insurance claim, or we may need to retain your information as part of a pending legal claim. If we retain such information, we will do so in a manner designed to prevent its use for other purposes.
+
+                    Security:
+                    We take reasonable measures to protect your information from unauthorized access, disclosure, or alteration. However, no method of data transmission or storage is completely secure, and we cannot guarantee its absolute security.
+
+                    Log File
+                    Poochie follows a standard procedure of using log files. These files log visitors when they use the app. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the app, tracking users' movement on the app, and gathering demographic information.
+                    Cookies
+                    Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device's internal memory.
+                    This Service does not use these “cookies” explicitly. However, the app may use third-party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.
+                    We may use "cookies", tracking pixels, data analysis tools such as Google Analytics, SDKs and other third-party technologies to collect information to understand how you browse the Poochie platform and interact with Poochie ads to enhance your Poochie experience and allow you to Be safer, learn what content is popular, improve your site experience, show you better ads on other sites and remember your preferences. Cookies are small text files placed on your device by a web server; they store basic information and help websites and applications recognize your browser. We may use session cookies and persistent cookies. The session cookie disappears when you close your browser. Persistent cookies remain after closing the browser You can access it every time you use the Poochie Platform. You should consult your web browser to change your cookie settings. If you delete or choose not to accept cookies from us, you may miss out on certain features of the Poochie Platform. This section does not apply to Poochie Analog.
+
+
+
+
+
+
+
+                    Our Advertising Partners
+
+                    Some of the advertisers in our app may use cookies and web beacons. Our advertising partners are listed below. Each of our advertising partners has their own Privacy Policy for their policies on user data. For easier access, we hyperlinked to their Privacy Policies below.
+                    Google
+                    https://policies.google.com/technologies/ads
+
+
+                    Privacy Policies:
+                    You may consult this list to find the Privacy Policy for each of the advertising partners of Poochie.
+                    Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Beacons that are used in their respective advertisements and links that appear on Poochie. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on this app or other apps or websites.
+                    Note that Poochie has no access to or control over these cookies that are used by third-party advertisers.
+
+                    Third Party Privacy Policies
+                    Poochie's Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
+
+                    Online Privacy Policy Only:
+                    This Privacy Policy applies only to our online activities and is valid for visitors to our App with regards to the information that they shared and/or collected in Poochie. This policy is not applicable to any information collected offline or via channels other than this app. Our Privacy Policy was created with the help of the App Privacy Policy Generator from App-Privacy-Policy.com
+
+
+                    Links to Other Sites
+                    This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
+
+
+
+
+
+
+                    Children’s Privacy
+                    Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
+                    These Services do not address anyone under the age of 18. We do not knowingly collect personally identifiable information from children under 18 years of age. In the case We discover that a child under 18 has provided me with personal information, We immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that we will be able to do the necessary actions.
+                    So, Poochie does not knowingly collect any Personal Identifiable Information from children under the age of 18. If you think that your child provided this kind of information on our App, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
+
+                    Consent
+                    By using our app, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.
+
+                    Changes to This Privacy Policy
+                    As the Poochie Platform changes and data protection laws develop, we may update this policy from time to time. If we update, we will do so online, and if we make any material changes, we will notify you via the Poochie Platform or other communication methods (such as email). If you use the Poochie Application, you agree to the most current terms of this Policy.
+                    Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.
+                    Contact Us
+                    If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at 818-213-3884.
+
+
+
 
 
                 </Text>

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
+import { View, Text, TouchableOpacity, Image, ScrollView, BackHandler } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import Colors from "../../Constant/Color"
 import firestore from "@react-native-firebase/firestore"
@@ -48,6 +48,21 @@ function Pets({ navigation, route }) {
     }, [routeData])
 
 
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.navigate("Profile")
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
 
 
     return (
@@ -56,14 +71,14 @@ function Pets({ navigation, route }) {
 
             <View style={{ marginTop: 10 }} >
                 <CustomHeader
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate("Profile")}
                     iconname={"arrow-back-outline"}
                     text="Pets"
                     color={Colors.black}
-                    // image={require("../../Images/plus.png")}
-                    // imageFunc={() => navigation.navigate('Tab', {
-                    //     screen: 'PetDetails',
-                    // })}
+                // image={require("../../Images/plus.png")}
+                // imageFunc={() => navigation.navigate('Tab', {
+                //     screen: 'PetDetails',
+                // })}
                 />
             </View>
 
@@ -89,7 +104,7 @@ function Pets({ navigation, route }) {
                         params: {
                             screen: "Pets"
                         }
-                    })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center",marginTop:20}} >
+                    })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 20 }} >
 
                         <Image source={require("../../Images/add.png")} />
 

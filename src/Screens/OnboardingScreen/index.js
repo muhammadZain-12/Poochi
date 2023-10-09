@@ -210,6 +210,11 @@ export default function OnBoardingScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.rootContainer}>
+      <StatusBar
+            animated={true}
+            backgroundColor="transparent"
+            barStyle={'light-content'}
+          />
       <View style={styles.innerTopContainer}>
         <FlatList
           ref={ref}

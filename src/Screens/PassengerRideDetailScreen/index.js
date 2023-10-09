@@ -26,6 +26,10 @@ function PassengerRideDetail({ navigation, route }) {
     const BookingCont = useContext(BookingContext)
     const cardCont = useContext(cardDetailsContext)
     const PetCont = useContext(SelectedPetContext)
+    const chooseLocationCont = useContext(chooseLocationCont)
+    const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
+        , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+
 
     const { bookingData, setBookingData } = BookingCont
     const { cardDetails, setCardDetails } = cardCont
@@ -358,6 +362,14 @@ function PassengerRideDetail({ navigation, route }) {
             setBookingData("")
             setCardDetails("")
             setSelectedPets("")
+            setPickup({})
+            setDropoff({})
+            setReturnPickup({})
+            setReturnDropoff({})
+            setReturnPickupAddress("")
+            setReturnDropoffAddress("")
+            setPickupAddress("")
+            setDropoffAddress("")
 
             navigation.replace("Tab")
 
@@ -413,6 +425,14 @@ function PassengerRideDetail({ navigation, route }) {
                         setBookingData("")
                         setCardDetails("")
                         setSelectedPets("")
+                        setPickup({})
+                        setDropoff({})
+                        setReturnPickup({})
+                        setReturnDropoff({})
+                        setReturnPickupAddress("")
+                        setReturnDropoffAddress("")
+                        setPickupAddress("")
+                        setDropoffAddress("")
                         setRating(0)
                         setComment("")
                         ToastAndroid.show("Successfully Submitted Reveiew", ToastAndroid.SHORT)
@@ -465,6 +485,14 @@ function PassengerRideDetail({ navigation, route }) {
                         setBookingData("")
                         setCardDetails("")
                         setSelectedPets("")
+                        setPickup({})
+                        setDropoff({})
+                        setReturnPickup({})
+                        setReturnDropoff({})
+                        setReturnPickupAddress("")
+                        setReturnDropoffAddress("")
+                        setPickupAddress("")
+                        setDropoffAddress("")
                         setRating(0)
                         setComment("")
                         ToastAndroid.show("Successfully Submitted Reveiew", ToastAndroid.SHORT)
