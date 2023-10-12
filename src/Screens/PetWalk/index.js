@@ -5,7 +5,7 @@ import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
 import CustomButton from "../../Components/CustomButton";
 import Navigation from "../Navigation";
-import { timeConversion } from "geolib";
+import { getPreciseDistance, timeConversion } from "geolib";
 import LoginContext from "../../Context/loginContext/context";
 import LocationContext from "../../Context/locationContext/context";
 import BookingContext from "../../Context/bookingContext/context";
@@ -40,7 +40,8 @@ function PetWalk({ navigation, route }) {
 
 
     const chooseLocationCont = useContext(ChooseLocationContext)
-    const { pickup, setPickup, pickupAddress, setPickupAddress } = chooseLocationCont
+    const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
+        , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
 
 
 
@@ -53,7 +54,14 @@ function PetWalk({ navigation, route }) {
     const [comment, setComment] = useState("")
     const [loading, setLoading] = useState(false)
     const [deductedFromWallet, setDeductedFromWallet] = useState(false)
+    const [selectedOption, setSelectedOption] = useState("")
 
+    const [pickupToDropoffDistance, setPickupToDropoffDistance] = useState(null)
+    const [dropoffToPickupDistance, setDropoffToPickupDistance] = useState(null)
+    const [pickupToDropoffMinutes, setPickupToDropoffMinutes] = useState(null)
+    const [dropoffToPickupMinutes, setDropoffToPickupMinutes] = useState(null)
+    const [minutes, setMinutes] = useState(null)
+    const [distance, setDistance] = useState(null)
 
     const [option, setOptions] = useState([
         {
@@ -62,7 +70,7 @@ function PetWalk({ navigation, route }) {
             source: require("../../Images/around.png")
         },
         {
-            name: "Near Park",
+            name: "Dog Park",
             selected: false,
             source: require("../../Images/park.png")
 
@@ -216,6 +224,7 @@ function PetWalk({ navigation, route }) {
 
     useEffect(() => {
 
+
         if (data?.date) {
             setDate(data?.date)
             setTime(data?.time)
@@ -231,8 +240,17 @@ function PetWalk({ navigation, route }) {
         }
 
 
+        if (data?.type == "dropoff") {
+            setDropoff({
+                lat: data.lat,
+                lng: data.lng
+            })
+            setDropoffAddress(data.name)
+
+        }
 
     }, [data])
+
 
 
 
@@ -276,8 +294,130 @@ function PetWalk({ navigation, route }) {
 
 
 
-    const handleSelectOptions = (ind) => {
+    console.log(dropoffAddress, "dropoff")
 
+
+    useEffect(() => {
+
+        if (selectedOption?.name == "Dog Park" && dropoffAddress) {
+
+            setReturnPickup(dropoff)
+            setReturnPickupAddress(dropoffAddress)
+            setReturnDropoff(pickup)
+            setReturnPickupAddress(pickupAddress)
+
+        }
+
+
+    }, [selectedOption?.name, dropoffAddress])
+
+
+
+
+
+    const handleCalculateTwoWayDistance = () => {
+
+
+        const pickupToDropoffDis = getPreciseDistance(
+            {
+                latitude: pickup?.lat ? pickup?.lat : pickup?.latitude,
+                longitude: pickup?.lng ? pickup?.lng : pickup?.longitude,
+            },
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+        );
+
+        const dropoffToReturnPickupDis = getPreciseDistance(
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+        );
+
+
+
+
+        const returnPickupToReturnDropoffDis = getPreciseDistance(
+            {
+                latitude: dropoff.lat,
+                longitude: dropoff.lng,
+            },
+            {
+                latitude: pickup.lat,
+                longitude: pickup.lng,
+            },
+        );
+
+
+        let totalDis = pickupToDropoffDis + dropoffToReturnPickupDis + returnPickupToReturnDropoffDis
+
+
+        let pickupToDropoffMileDistance = (pickupToDropoffDis / 1609.34)?.toFixed(2);
+
+        setPickupToDropoffDistance(pickupToDropoffMileDistance)
+
+
+
+
+
+        let dropoffToPickupMileDistance = (returnPickupToReturnDropoffDis / 1609.34)?.toFixed(2);
+
+        setDropoffToPickupDistance(dropoffToPickupMileDistance)
+
+
+        let mileDistance = (totalDis / 1609.34)?.toFixed(2);
+
+        let averageMilePetMinutes = 0.40
+
+
+        setDistance(mileDistance)
+
+
+        let totalMinutes = Math.ceil(mileDistance / averageMilePetMinutes)
+
+        let pickupToDropffMin = Math.ceil(pickupToDropoffMileDistance / averageMilePetMinutes)
+
+
+        let dropoffToPickupMin = Math.ceil(dropoffToPickupMileDistance / averageMilePetMinutes)
+
+
+        setMinutes(totalMinutes)
+        setDropoffToPickupMinutes(dropoffToPickupMin)
+        setPickupToDropoffMinutes(pickupToDropffMin)
+
+
+
+    }
+
+    useEffect(() => {
+
+        if (pickupAddress && dropoffAddress) {
+            handleCalculateTwoWayDistance()
+        }
+
+
+    }, [pickupAddress, dropoffAddress])
+
+
+
+    const handleSelectOptions = (e, ind) => {
+
+
+        setSelectedOption(e)
+
+        if (e?.name !== "Dog Park") {
+
+            setDropoff({})
+            setDropoffAddress("")
+            setDistance(null)
+
+        }
 
 
 
@@ -287,6 +427,8 @@ function PetWalk({ navigation, route }) {
                     ...e,
                     selected: true
                 }
+
+
             } else {
                 return {
                     ...e,
@@ -296,6 +438,8 @@ function PetWalk({ navigation, route }) {
         }))
 
     }
+
+    console.log(selectedOption, "selectee")
 
 
     const handleSelectDuration = (e, ind) => {
@@ -326,6 +470,8 @@ function PetWalk({ navigation, route }) {
 
     const calculateFare = () => {
 
+
+
         firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
 
             let data = doc?.data()
@@ -341,10 +487,24 @@ function PetWalk({ navigation, route }) {
 
 
                     let baseCharge = data?.petWalkBaseCharge
+                    let mileCharge = Number(data?.petMileCharge)
+
+                    let additionalPetCharge;
+
+                    if (selectedPets && selectedPets.length > 1) {
+                        additionalPetCharge = data?.additionalPetCharge
+
+                        additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+                    }
+
+                    let totalMileCharges = 0
+
+                    if (distance) {
+                        totalMileCharges = Number(distance) * Number(mileCharge)
+                    }
 
 
-
-                    totalFare = Number(totalFare) + Number(baseCharge)
+                    totalFare = Number(totalFare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0) + totalMileCharges
 
 
 
@@ -359,12 +519,29 @@ function PetWalk({ navigation, route }) {
 
                     let totalFare = selectedTimeDuration * Number(walkFare)
 
+                    let mileCharge = Number(data?.petMileCharge)
+
+
+                    let additionalPetCharge;
+
+                    if (selectedPets && selectedPets.length > 1) {
+                        additionalPetCharge = data?.additionalPetCharge
+
+                        additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+                    }
+
+                    let totalMileCharges = 0
+
+                    if (distance) {
+                        totalMileCharges = Number(distance) * Number(mileCharge)
+                    }
+
 
                     let baseCharge = data?.petWalkBaseCharge
 
 
 
-                    totalFare = Number(totalFare) + Number(baseCharge)
+                    totalFare = Number(totalFare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0) + totalMileCharges
 
 
 
@@ -387,8 +564,7 @@ function PetWalk({ navigation, route }) {
 
         calculateFare()
 
-    }, [selectedTimeDuration])
-
+    }, [selectedTimeDuration, selectedPets.length, distance])
 
 
     const handleNavigateToPayment = () => {
@@ -412,6 +588,7 @@ function PetWalk({ navigation, route }) {
 
     }
 
+    console.log(loginData, "LOGINdATA")
 
     const handleFindDriver = () => {
 
@@ -441,9 +618,9 @@ function PetWalk({ navigation, route }) {
             return
         }
 
-        let selectedOption = option && option.length > 0 && option.filter((e, i) => e.selected)
+        let selectedOptions = option && option.length > 0 && option.filter((e, i) => e.selected)
 
-        if (selectedOption.length == 0) {
+        if (selectedOptions.length == 0) {
             ToastAndroid.show("Kindly Choose Options", ToastAndroid.SHORT)
             return
         }
@@ -453,22 +630,62 @@ function PetWalk({ navigation, route }) {
         let driverFare = Number(fare) - Number(serviceCharges)
         driverFare = Number(driverFare).toFixed(2)
 
-        let dataToSend = {
-            pickupAddress: pickupAddress,
-            pickupCords: pickup,
-            selectedPets: selectedPets,
-            selectedOption: selectedOption[0],
-            comment: comment,
-            cardDetails: cardDetails,
-            userData: loginData,
-            fare: fare,
-            serviceCharge: serviceCharges,
-            driverFare: driverFare,
-            duration: selectedTimeDuration,
-            bookingType: "oneWay",
-            requestDate: new Date(),
-            type: "PetWalk",
-            deductedFromWallet: deductedFromWallet
+
+        let dataToSend;
+        if (selectedOption?.name !== "Dog Park") {
+            dataToSend = {
+                pickupAddress: pickupAddress,
+                pickupCords: pickup,
+                dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                selectedPets: selectedPets,
+                selectedOption: selectedOptions[0],
+                comment: comment,
+                cardDetails: cardDetails,
+                userData: loginData,
+                fare: fare,
+                serviceCharge: serviceCharges,
+                driverFare: driverFare,
+                duration: selectedTimeDuration,
+                bookingType: "oneWay",
+                requestDate: new Date(),
+                type: "PetWalk",
+                deductedFromWallet: deductedFromWallet
+            }
+        } else {
+
+            dataToSend = {
+                pickupAddress: pickupAddress,
+                pickupCords: pickup,
+                dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                returnPickupCords: dropoff,
+                returnDropoffCords: pickup,
+                returnPickupAddress: dropoffAddress,
+                returnDropoffAddress: pickupAddress,
+
+                distance: distance,
+                pickupToDropDis: pickupToDropoffDistance,
+                dropoffToPickupDis: dropoffToPickupDistance,
+                minutes: minutes,
+                pickupToDropoffMinutes: pickupToDropoffMinutes,
+                dropoffToPickupMinutes: dropoffToPickupMinutes,
+
+                selectedPets: selectedPets,
+                selectedOption: selectedOptions[0],
+                comment: comment,
+                cardDetails: cardDetails,
+                userData: loginData,
+                fare: fare,
+                serviceCharge: serviceCharges,
+                driverFare: driverFare,
+                duration: selectedTimeDuration,
+                bookingType: "twoWay",
+                requestDate: new Date(),
+                type: "PetWalk",
+                deductedFromWallet: deductedFromWallet
+            }
+
         }
 
 
@@ -513,7 +730,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Pet Walk"}
+                    text={"Dog Walk"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -558,6 +775,24 @@ function PetWalk({ navigation, route }) {
                             </TouchableOpacity>
 
                         </View>
+                        {selectedOption.name == "Dog Park" && <View style={{ marginTop: 10, marginBottom: 10 }} >
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Dropoff Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+
+                                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
+
+                                    <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
+
+                                    <Text style={{ color: dropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{dropoffAddress ? dropoffAddress : "Enter Destination"}</Text>
+
+                                </View>
+                                <View style={{ width: "7%" }} >
+                                    <Image source={require("../../Images/search.png")} />
+                                </View>
+
+                            </TouchableOpacity>
+
+                        </View>}
 
                     </View>
 
@@ -566,8 +801,8 @@ function PetWalk({ navigation, route }) {
                     <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "space-between" }} >
                         {option && option.length > 0 && option.map((e, i) => {
                             return (
-                                <View style={{ width: 110, height: 110 }} >
-                                    <TouchableOpacity onPress={() => handleSelectOptions(i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
+                                <View key={i} style={{ width: 110, height: 110 }} >
+                                    <TouchableOpacity onPress={() => handleSelectOptions(e, i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
                                         <Image source={e?.source} style={{ width: 40, height: 40 }} />
                                     </TouchableOpacity>
                                     <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.name}</Text>
@@ -577,7 +812,9 @@ function PetWalk({ navigation, route }) {
 
                     </View>
 
-                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Pet Select</Text>
+                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Select Your Pet</Text>
+
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
 
                     {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
 
@@ -590,13 +827,6 @@ function PetWalk({ navigation, route }) {
                             )
 
                         })}
-
-                        {/* <FlatList
-                            data={selectedPets}
-                            renderItem={renderSelectedPets}
-                            scrollEnabled={true}
-                            horizontal={true}
-                        /> */}
 
 
                         <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetWalk")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
@@ -634,7 +864,7 @@ function PetWalk({ navigation, route }) {
 
                         {duration && duration.length > 0 && duration.map((e, i) => {
                             return (
-                                <TouchableOpacity onPress={() => handleSelectDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
+                                <TouchableOpacity key={i} onPress={() => handleSelectDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
                                     <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.label}</Text>
                                 </TouchableOpacity>
                             )

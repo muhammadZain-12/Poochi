@@ -360,7 +360,10 @@ export default function SplashScreen({ navigation }) {
       })
 
     } else {
-      navigation.replace('OnBoardingScreen');
+
+      setTimeout(() => {
+        navigation.replace('OnBoardingScreen');
+      }, 3000);
     };
 
   }, [])

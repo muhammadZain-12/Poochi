@@ -217,6 +217,7 @@ function MedicalTrip({ navigation, route }) {
     const handleCalculateDistanceAndFare = () => {
 
 
+
         const dis = getPreciseDistance(
             {
                 latitude: pickup.lat,
@@ -247,14 +248,16 @@ function MedicalTrip({ navigation, route }) {
             let serviceCharge = Number(data.serviceCharge)
             let creditCardCharge = Number(data.creditCardCharge)
             let baseCharge = data?.BaseCharge
+            let additionalPetCharge;
+            if(selectedPets && selectedPets.length>1){
+            additionalPetCharge = data?.additionalPetCharge
+            
+            additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+        }
 
-            console.log(baseCharge, "baseCharge")
 
             let fare = mileCharge * Number(mileDistance)
-
-
-
-            fare = Number(fare) + Number(baseCharge)
+            fare = Number(fare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
 
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -369,8 +372,17 @@ function MedicalTrip({ navigation, route }) {
 
             let fare = mileCharge * Number(mileDistance)
             fare = fare + Number(baseCharge)
+            let additionalPetCharge;
+            if(selectedPets && selectedPets.length>1){
+                additionalPetCharge = data?.additionalPetCharge
+                
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length -1)
+            }
+    
 
-            fare = fare + totalWaitingCharges
+            console.log(additionalPetCharge,"additional")
+
+            fare = fare + totalWaitingCharges + (additionalPetCharge ? additionalPetCharge : 0)
 
 
 
@@ -410,7 +422,7 @@ function MedicalTrip({ navigation, route }) {
 
 
 
-    }, [pickupAddress, dropoffAddress, returnPickupAddress, returnDropoffAddress, value, customWaitingTime])
+    }, [pickupAddress, dropoffAddress, returnPickupAddress, returnDropoffAddress, value, customWaitingTime, oneWay,selectedPets.length])
 
 
     const removeSelectedPet = (ind) => {
@@ -688,7 +700,7 @@ function MedicalTrip({ navigation, route }) {
 
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "MedicalTrip" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
@@ -730,6 +742,7 @@ function MedicalTrip({ navigation, route }) {
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Your Pet</Text>
 
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
 
 
                     {selectedPets && selectedPets.length > 0 ? <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%" }} >
@@ -791,7 +804,7 @@ function MedicalTrip({ navigation, route }) {
 
                     {!oneWay && <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10, marginTop: 20, marginBottom: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
@@ -851,7 +864,7 @@ function MedicalTrip({ navigation, route }) {
                     />
                     }
 
-                    {value == "custom" && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
+                    {value == "custom" && !oneWay && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
 
 
                     {!oneWay && <View style={{ borderRadius: 30, backgroundColor: Colors.buttonColor, padding: 10, marginTop: 15 }} >

@@ -210,6 +210,5 @@ countries.map((country, index) => {
 
 });
 
-console.log(countriesObject, "countruezs")
 
 export default countriesObject

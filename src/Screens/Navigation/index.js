@@ -42,6 +42,7 @@ import AccountSetting from '../AccountSetting';
 import UpdatePassword from '../updatePassword';
 import EditProfile from '../EdiitProfile';
 import PrivacyPolicy from '../PrivacyPolicy';
+import ChatSingle from '../Home/singleChat';
 
 
 const Stack = createNativeStackNavigator();
@@ -196,6 +197,7 @@ export default function Navigation() {
         <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+        <Stack.Screen name="ChatSingle" component={ChatSingle} />
       </Stack.Navigator>
     </NavigationContainer>
   );

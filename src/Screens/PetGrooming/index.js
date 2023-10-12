@@ -234,6 +234,8 @@ function PetGrooming({ navigation, route }) {
 
         mileDistance = (dis / 1609.34)?.toFixed(2);
 
+        console.log(mileDistance, "milesss")
+
         let averageMilePetMinutes = 0.40
 
         setDistance(mileDistance)
@@ -251,9 +253,28 @@ function PetGrooming({ navigation, route }) {
             let serviceCharge = Number(data.serviceCharge)
             let creditCardCharge = Number(data.creditCardCharge)
 
+            let additionalPetCharge;
+
+            if (selectedPets && selectedPets.length > 1) {
+                additionalPetCharge = data?.additionalPetCharge
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+            }
+
+
             let fare = mileCharge * Number(mileDistance)
+            console.log(mileCharge, "mileChar")
+
             let baseCharge = data?.BaseCharge
-            fare = Number(fare) + Number(baseCharge)
+
+
+
+            fare = Number(fare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
+
+
+
+            // fare = Number(fare)
+
+            console.log(fare, "fareee")
 
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -330,6 +351,8 @@ function PetGrooming({ navigation, route }) {
 
         let averageMilePetMinutes = 0.40
 
+        console.log(mileDistance, "milesss")
+
 
         setDistance(mileDistance)
 
@@ -357,6 +380,9 @@ function PetGrooming({ navigation, route }) {
             let baseCharge = Number(data?.BaseCharge)
 
 
+            console.log(mileCharge, "mileChar")
+
+            let additionalPetCharge;
             let totalWaitingCharges = 0
 
             if (!customWaitingTime && value !== "custom") {
@@ -367,10 +393,18 @@ function PetGrooming({ navigation, route }) {
                 totalWaitingCharges = waitingCharges * Number(customWaitingTime)
             }
 
+            if (selectedPets && selectedPets.length > 1) {
+                additionalPetCharge = data?.additionalPetCharge
+
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+            }
 
 
             let fare = mileCharge * Number(mileDistance)
-            fare = fare + Number(baseCharge)
+            fare = fare + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
+
+            console.log(fare, "fareee")
+
             fare = fare + totalWaitingCharges
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -408,7 +442,7 @@ function PetGrooming({ navigation, route }) {
 
 
 
-    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime])
+    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime, oneWay, selectedPets.length])
 
 
     console.log(value, "value")
@@ -686,7 +720,7 @@ function PetGrooming({ navigation, route }) {
 
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
@@ -725,8 +759,10 @@ function PetGrooming({ navigation, route }) {
                     </View>
 
 
-                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Pet Select</Text>
+                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Your Pet</Text>
 
+
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
 
 
                     {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
@@ -790,7 +826,7 @@ function PetGrooming({ navigation, route }) {
 
                     {!oneWay && <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10, marginTop: 20, marginBottom: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >

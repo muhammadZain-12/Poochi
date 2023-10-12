@@ -121,6 +121,14 @@ function Drivers({ navigation }) {
 
             let data = querySnapshot.data()
 
+            if (data?.insufficientBalance) {
+
+                ToastAndroid.show(data?.insufficientBalanceMessage, ToastAndroid.SHORT)
+                navigation.goBack()
+
+            }
+
+
             if (data?.requestStatus == "accept" && focus && requestInProcess) {
 
 
@@ -243,6 +251,8 @@ function Drivers({ navigation }) {
 
 
     const handleSelectDriver = (driver) => {
+
+
 
         firestore().collection("Request").doc(bookingData?.userData?.id).update({
             driverData: driver,

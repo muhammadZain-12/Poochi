@@ -19,22 +19,22 @@ const slides = [
   {
     id: '1',
     image: require('../../Images/onboard1.png'),
-    title: 'Let us give the best treatment',
-    subtitle:
-      'Just turn on your location and you will find the nearest pet care you wish.',
+    title: 'Taxi  For Pets. we Drive You pets to any appointment.',
+    // subtitle:
+    //   'Just turn on your location and you will find the nearest pet care you wish.',
   },
   {
     id: '2',
     image: require('../../Images/onboard2.png'),
-    title: 'Find Pet Care Around Your Location',
-    subtitle:
-      'Just turn on your location and you will find the nearest pet care you wish.',
+    title: 'Vetted drivers for your Pets. we transport your furry friends with care. ',
+    // subtitle:
+    //   'Just turn on your location and you will find the nearest pet care you wish.',
   },
   {
     id: '3',
     image: require('../../Images/onboard3.png'),
-    title: 'Book Appointment With us!',
-    subtitle: 'What do you think? book our veterinanians now ',
+    title: 'Book a ride with poochie. one way or round trip, quick safe & reliable.',
+    // subtitle: 'What do you think? book our veterinanians now ',
   },
 ];
 

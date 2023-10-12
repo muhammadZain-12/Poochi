@@ -553,22 +553,25 @@ function Home({ navigation }) {
             horizontal
             renderItem={({ item, index }) => {
               return (
-                <View
+                <TouchableOpacity
                   style={{
                     width: width,
                     // height: '100%',
                     alignItems: 'flex-start',
                     justifyContent: "center",
-
                     padding: 0,
                     margin: 0,
-                  }}>
+                  }}
+                  
+                  onPress={()=> item.id == 3 && navigation.navigate("PetWalk") }
+                  
+                  >
                   <Image
                     source={item.image}
                     style={{ width: width - 40, height: 150, borderRadius: 10 }}
                     resizeMode="stretch"
                   />
-                </View>
+                </TouchableOpacity>
               );
             }}
           />
@@ -590,7 +593,7 @@ function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Dog Walk</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />

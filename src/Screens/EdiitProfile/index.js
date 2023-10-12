@@ -29,10 +29,17 @@ import ModalImg from '../../Components/modalimg';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import LoginContext from '../../Context/loginContext/context';
+import countriesObject from '../../Constant/countries';
+import ModalDropdown from 'react-native-modal-dropdown';
+import CustomDropDown from '../../Components/dropdown';
+
+
+DropDownPicker.setListMode("SCROLLVIEW")
 
 
 export default function EditProfile({ route }) {
     const navigation = useNavigation();
+
 
 
     let email = route?.params?.email ? route?.params?.email : route.params
@@ -50,11 +57,16 @@ export default function EditProfile({ route }) {
     const [signinData, setSigninData] = useState({
         fullName: loginData.fullName,
         mobileNumber: loginData.mobileNumber,
-        country: loginData.country,
+        streetAddress: loginData.streetAddress,
+        extendedAddress: loginData.extendedAddress,
+        state: loginData.state,
         city: loginData.city,
-        address: loginData.address
+        zipCode: loginData.zipCode
     })
 
+    const [allCountries, setAllCountries] = useState(countriesObject)
+    const [selectedCountry, setSelectedCountry] = useState(loginData.country)
+    const [openCountry, setOpenCountry] = useState(false)
 
     const [openGender, setOpenGender] = useState(false)
     const [gender, setGender] = useState(loginData.gender)
@@ -167,17 +179,73 @@ export default function EditProfile({ route }) {
 
         let uid = auth().currentUser.uid
 
+        if (!signinData?.fullName) {
+            ToastAndroid.show("Full Name is missing", ToastAndroid.SHORT)
+            return
+        }
+        if (!signinData?.mobileNumber) {
+            ToastAndroid.show("Mobile Number is missing", ToastAndroid.SHORT)
+            return
+        }
+        if (!signinData?.city) {
+            ToastAndroid.show("City is missing", ToastAndroid.SHORT)
+            return
+        }
+        if (!selectedCountry) {
+            ToastAndroid.show("Country is missing", ToastAndroid.SHORT)
+            return
+        }
+        if (!signinData?.streetAddress) {
+            ToastAndroid.show("Street Address is missing", ToastAndroid.SHORT)
+            return
+        }
+
+        if (!signinData?.extendedAddress) {
+            ToastAndroid.show("Extended Address is missing", ToastAndroid.SHORT)
+            return
+        }
+
+        if (!signinData?.state) {
+            ToastAndroid.show("State is missing", ToastAndroid.SHORT)
+            return
+        }
+
+        if (!image1) {
+            ToastAndroid.show("Image is missing", ToastAndroid.SHORT)
+            return
+        }
+
+        if (!signinData?.zipCode) {
+            ToastAndroid.show("Zip Code is missing", ToastAndroid.SHORT)
+            return
+        }
+
+        if (!gender) {
+            ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
+            return
+        }
+
+
+
         let dataToSend = {
 
             fullName: signinData.fullName,
             mobileNumber: signinData.mobileNumber,
-            country: signinData.country,
+            country: selectedCountry,
             city: signinData.city,
-            address: signinData.address,
+            streetAddress: signinData.streetAddress,
+            extendedAddress: signinData?.extendedAddress,
             profile: image1,
+            state: signinData?.state,
+            zipCode: signinData?.zipCode,
             gender: gender,
+            email: loginData.email,
+            update_at: new Date(),
+            id : auth().currentUser.uid
+
 
         }
+
 
 
         let values = Object.values(dataToSend)
@@ -197,18 +265,11 @@ export default function EditProfile({ route }) {
 
         firestore().collection("Users").doc(uid).update(dataToSend).then((res) => {
 
-            ToastAndroid.show("Details has been edited Succesfully", ToastAndroid.SHORT)
-            setLoginData({
-                ...loginData,
-                fullName: signinData.fullName,
-                mobileNumber: signinData.mobileNumber,
-                country: signinData.country,
-                city: signinData.city,
-                address: signinData.address,
-                profile: image1,
-                gender: gender,
-            })
+            ToastAndroid.show("Details has been Edited Succesfully", ToastAndroid.SHORT)
+            setLoginData(dataToSend)
             setLoading(false)
+            // navigation.navigate("Location")
+
 
         }).catch((error) => {
             setLoading(false)
@@ -220,13 +281,14 @@ export default function EditProfile({ route }) {
 
 
 
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
-                    onPress={() => navigation.goBack()}
-                    iconname={"arrow-back-outline"}
-                    text="Edit Profile"
+                    // onPress={() => navigation.goBack()}
+                    // iconname={"arrow-back-outline"}
+                    text="Complete Your Profile"
                     color={Colors.black}
                 />
             </View>
@@ -247,7 +309,7 @@ export default function EditProfile({ route }) {
             <KeyboardAvoidingView
                 behavior="height"
                 style={{ flex: 1, backgroundColor: Colors.white }}>
-                <ScrollView>
+                <ScrollView nestedScrollEnabled={true} style={{ flex: 1 }} >
                     <View style={{ flex: 1, backgroundColor: Colors.white }}>
                         <StatusBar
                             animated={true}
@@ -273,6 +335,7 @@ export default function EditProfile({ route }) {
                                 placeholder="Full Name"
                                 placeholderTextColor={Colors.gray}
                             />
+
 
                             <View
                                 style={{
@@ -312,13 +375,74 @@ export default function EditProfile({ route }) {
                                 setOpen={setOpenGender}
                                 setValue={setGender}
                                 setItems={setGenderOptions}
-                                containerStyle={{ height: 60,borderRadius: 5, alignItems: "center", justifyContent: "center", marginTop: 10,elevation:0,zIndex:100 }}
-                                style={{ backgroundColor: Colors.input, borderRadius: 5, borderWidth: 1, paddingVertical: 17,borderColor: '#b2b2b1', }}
+                                containerStyle={{ height: 60, borderRadius: 5, alignItems: "center", justifyContent: "center", marginTop: 10, elevation: 0, zIndex: 100 }}
+                                style={{ backgroundColor: Colors.input, borderRadius: 5, borderWidth: 1, paddingVertical: 17, borderColor: '#b2b2b1', }}
                                 textStyle={{ fontSize: 16 }}
                                 dropDownContainerStyle={{ zIndex: 800 }}
                                 placeholder={'Gender'}
                                 placeholderStyle={{ color: "gray" }}
                             />
+
+                            <TextInput
+                                style={{
+                                    backgroundColor: Colors.input,
+                                    borderRadius: 5,
+                                    width: '100%',
+                                    padding: 15,
+                                    borderWidth: 1,
+                                    borderColor: '#b2b2b1',
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    marginTop: 10,
+                                    paddingHorizontal: 20,
+                                }}
+                                value={signinData.streetAddress}
+                                onChangeText={(e) => setSigninData({ ...signinData, streetAddress: e })}
+                                placeholder="Street Address"
+                                placeholderTextColor={Colors.gray}
+                            />
+
+                            <TextInput
+                                style={{
+                                    backgroundColor: Colors.input,
+                                    borderRadius: 5,
+                                    width: '100%',
+                                    padding: 15,
+                                    borderWidth: 1,
+                                    borderColor: '#b2b2b1',
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    marginTop: 10,
+                                    paddingHorizontal: 20,
+                                }}
+                                value={signinData.extendedAddress}
+                                onChangeText={(e) => setSigninData({ ...signinData, extendedAddress: e })}
+                                placeholder="Extended Address"
+                                placeholderTextColor={Colors.gray}
+                            />
+
+
+                            <CustomDropDown
+                                setSelectedSubject={setSelectedCountry}
+
+                                selectedSubject={selectedCountry}
+                                dropdownPlace={"Select Country"}
+                                dropdownContainerStyle={{
+                                    paddingVertical: 15,
+                                    marginTop: 10,
+                                    borderWidth: 1,
+                                    borderColor: '#b2b2b1',
+                                    paddingHorizontal: 20,
+                                    backgroundColor: Colors.input
+
+                                }}
+                                subject={countriesObject}
+                            //   categoryShow={"complain_name"}
+                            />
+
+
+
+
 
 
                             <TextInput
@@ -334,9 +458,9 @@ export default function EditProfile({ route }) {
                                     fontSize: 16,
                                     paddingHorizontal: 20,
                                 }}
-                                value={signinData.country}
-                                onChangeText={(e) => setSigninData({ ...signinData, country: e })}
-                                placeholder="Country"
+                                value={signinData.state}
+                                onChangeText={(e) => setSigninData({ ...signinData, state: e })}
+                                placeholder="State"
                                 placeholderTextColor={Colors.gray}
                             />
                             <TextInput
@@ -357,6 +481,7 @@ export default function EditProfile({ route }) {
                                 placeholder="City"
                                 placeholderTextColor={Colors.gray}
                             />
+
                             <TextInput
                                 style={{
                                     backgroundColor: Colors.input,
@@ -370,9 +495,10 @@ export default function EditProfile({ route }) {
                                     fontSize: 16,
                                     paddingHorizontal: 20,
                                 }}
-                                value={signinData.address}
-                                onChangeText={(e) => setSigninData({ ...signinData, address: e })}
-                                placeholder="Address"
+                                keyboardType='numeric'
+                                value={signinData.zipCode}
+                                onChangeText={(e) => setSigninData({ ...signinData, zipCode: e })}
+                                placeholder="Zip Code"
                                 placeholderTextColor={Colors.gray}
                             />
 
@@ -380,11 +506,12 @@ export default function EditProfile({ route }) {
 
 
                         <CustomButton
-                            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Save Changes"}
+                            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Next"}
                             styleContainer={{
                                 alignSelf: 'center',
                                 marginTop: 30,
                                 width: '90%',
+                                marginBottom: 30
                             }}
                             onPress={() => signInValidation()}
                             btnTextStyle={{ fontSize: 18 }}
@@ -403,5 +530,3 @@ export default function EditProfile({ route }) {
         </View>
     );
 }
-
-

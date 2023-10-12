@@ -267,8 +267,6 @@ const CustomDropDown = (props) => {
                                     )
                                         .map((e, i) => {
 
-                                            console.log(e, "eee")
-
                                                 return (
                                                     <TouchableOpacity
                                                         onPress={() =>

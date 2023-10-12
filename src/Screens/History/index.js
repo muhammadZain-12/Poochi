@@ -155,7 +155,7 @@ function History({ navigation }) {
 
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigation.navigate("ChatSingle", { data: item, screenName: "History", nested: false })} >
                                         <Image source={require("../../Images/message.png")} />
                                     </TouchableOpacity>
                                 </View>
@@ -277,7 +277,9 @@ function History({ navigation }) {
 
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
-                                    <TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate("ChatSingle", { data: item, screenName: "History", nested: false })}
+                                    >
                                         <Image source={require("../../Images/message.png")} />
                                     </TouchableOpacity>
                                 </View>

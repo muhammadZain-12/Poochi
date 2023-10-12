@@ -14,6 +14,7 @@ import cardDetailsContext from "../../Context/CardDetailsContext/context"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import { getPreciseDistance } from "geolib"
 import { useIsFocused } from "@react-navigation/native"
+import ChooseLocationContext from "../../Context/pickupanddropoffContext/context"
 
 // import {MapViewDirections} from "react-native-maps-directions"
 
@@ -26,7 +27,7 @@ function PassengerRideDetail({ navigation, route }) {
     const BookingCont = useContext(BookingContext)
     const cardCont = useContext(cardDetailsContext)
     const PetCont = useContext(SelectedPetContext)
-    const chooseLocationCont = useContext(chooseLocationCont)
+    const chooseLocationCont = useContext(ChooseLocationContext)
     const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
         , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
 
@@ -163,7 +164,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         }
 
-                        if (data?.rideStatus == "dropoff" && bookingData?.type !== "PetWalk" && data?.dropoffCoords) {
+                        if (data?.rideStatus == "dropoff" && data?.dropoffCoords) {
 
                             const dis = getPreciseDistance(
                                 {
@@ -267,7 +268,7 @@ function PassengerRideDetail({ navigation, route }) {
 
     console.log(focus, "focusss")
 
-
+    console.log(bookingData, "coords")
 
     const showDirection = useCallback(() => {
 
@@ -296,7 +297,7 @@ function PassengerRideDetail({ navigation, route }) {
                         },
                     });
                 }}
-            /> : arrived && bookingData?.type !== "PetWalk" ? <MapViewDirections
+            /> : arrived ? <MapViewDirections
                 origin={{
                     latitude: bookingData?.driverData?.currentLocation?.latitude,
                     longitude: bookingData?.driverData?.currentLocation?.longitude,
@@ -381,7 +382,7 @@ function PassengerRideDetail({ navigation, route }) {
 
     }
 
-
+    console.log(bookingData?.dropoffAddress, "addresss")
 
     const handleSubmitReview = () => {
 
@@ -425,13 +426,11 @@ function PassengerRideDetail({ navigation, route }) {
                         setBookingData("")
                         setCardDetails("")
                         setSelectedPets("")
-                        setPickup({})
                         setDropoff({})
                         setReturnPickup({})
                         setReturnDropoff({})
                         setReturnPickupAddress("")
                         setReturnDropoffAddress("")
-                        setPickupAddress("")
                         setDropoffAddress("")
                         setRating(0)
                         setComment("")
@@ -485,13 +484,13 @@ function PassengerRideDetail({ navigation, route }) {
                         setBookingData("")
                         setCardDetails("")
                         setSelectedPets("")
-                        setPickup({})
+
                         setDropoff({})
                         setReturnPickup({})
                         setReturnDropoff({})
                         setReturnPickupAddress("")
                         setReturnDropoffAddress("")
-                        setPickupAddress("")
+
                         setDropoffAddress("")
                         setRating(0)
                         setComment("")
@@ -543,6 +542,9 @@ function PassengerRideDetail({ navigation, route }) {
 
     }, []);
 
+
+    console.log(bookingData, "typee")
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -580,8 +582,8 @@ function PassengerRideDetail({ navigation, route }) {
 
                                 coordinate={{
 
-                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : (arrived && bookingData?.type !== "PetWalk") ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
-                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : (arrived && bookingData?.type !== "PetWalk") ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
+                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
+                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
 
                                 }}
                                 title={bookingData?.pickupAddress}
@@ -649,7 +651,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         <View style={{ alignItems: "flex-end" }} >
 
-                            <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${bookingData.fare}</Text>
+                            <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${Number(bookingData.fare).toFixed(2)}</Text>
 
                             <View style={{ flexDirection: "row" }} >
 
@@ -663,7 +665,7 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigation.replace("ChatSingle", { data: bookingData, screenName: "PassengerRideDetail", nested: false })} >
                                         <Image source={require("../../Images/message.png")} />
                                     </TouchableOpacity>
                                 </View>
@@ -676,22 +678,46 @@ function PassengerRideDetail({ navigation, route }) {
 
                     <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10 }} >
 
-                        <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                        <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
 
                             <Image source={require("../../Images/Location3.png")} />
 
-                            <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
+                            <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
 
                         </View>
 
 
-                        <View style={{ flexDirection: "row", padding: 5, datas: "center" }} >
+
+
+                        <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
 
                             <Image source={require("../../Images/Location3.png")} />
 
-                            <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData?.type == "PetWalk" ? bookingData?.pickupAddress : bookingData.dropoffAddress}</Text>
+                            <Text style={{ color: (!reachDropoff && arrived) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
 
                         </View>
+
+
+                        {bookingData?.bookingType == "twoWay" ? <View>
+                            <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center", borderBottomWidth: bookingData?.type == "twoWay" ? 2 : 0, borderBottomColor: Colors.buttonColor }} >
+
+                                <Image source={require("../../Images/Location3.png")} />
+
+                                <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pickup: {bookingData?.returnPickupAddress}</Text>
+
+                            </View>
+
+                            <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
+
+                                <Image source={require("../../Images/Location3.png")} />
+
+                                <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Dropoff: {bookingData?.returnDropoffAddress}</Text>
+
+                            </View>
+                        </View>
+                            : ""}
+
+
 
                     </View>
 
@@ -703,7 +729,7 @@ function PassengerRideDetail({ navigation, route }) {
                     <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
+                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
                     </View>
 

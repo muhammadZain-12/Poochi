@@ -273,12 +273,18 @@ function FriendsAndFamily({ navigation, route }) {
             let mileCharge = Number(data.mileCharge)
             let serviceCharge = Number(data.serviceCharge)
             let creditCardCharge = Number(data.creditCardCharge)
+            let additionalPetCharge;
 
+            if (selectedPets && selectedPets.length > 1) {
+                additionalPetCharge = data?.additionalPetCharge
+
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+            }
             let baseCharge = data?.BaseCharge
 
             console.log(baseCharge, "baseCharge")
 
-            let fare = mileCharge * Number(mileDistance)
+            let fare = mileCharge * Number(mileDistance) + (additionalPetCharge ? Number(additionalPetCharge) : 0)
             fare = Number(fare) + Number(baseCharge)
 
             setFare(fare.toFixed(2))
@@ -381,7 +387,13 @@ function FriendsAndFamily({ navigation, route }) {
             let creditCardCharge = Number(data.creditCardCharge)
             let waitingCharges = Number(data?.waitingCharges)
             let baseCharge = Number(data?.BaseCharge)
+            let additionalPetCharge;
 
+            if (selectedPets && selectedPets.length > 1) {
+                additionalPetCharge = data?.additionalPetCharge
+
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+            }
 
             let totalWaitingCharges = 0
 
@@ -396,7 +408,7 @@ function FriendsAndFamily({ navigation, route }) {
 
 
             let fare = mileCharge * Number(mileDistance)
-            fare = fare + Number(baseCharge)
+            fare = fare + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
             fare = fare + totalWaitingCharges
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -434,7 +446,7 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
-    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime])
+    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime, oneWay, selectedPets.length])
 
 
     console.log(value, "value")
@@ -451,7 +463,7 @@ function FriendsAndFamily({ navigation, route }) {
     }
 
 
-    console.log(distance,"distance")
+    console.log(distance, "distance")
 
 
 
@@ -689,7 +701,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
@@ -728,7 +740,9 @@ function FriendsAndFamily({ navigation, route }) {
                     </View>
 
 
-                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Pet Select</Text>
+                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Your Pet</Text>
+
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
 
 
 
@@ -793,14 +807,14 @@ function FriendsAndFamily({ navigation, route }) {
 
                     {!oneWay && <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10, marginTop: 20, marginBottom: 10 }} >
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
                             <TouchableOpacity style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
 
-                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10,width:"80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
+                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
 
                                 </View>
 
@@ -817,7 +831,7 @@ function FriendsAndFamily({ navigation, route }) {
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Dropoff', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                                     <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10,width:"80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
+                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
                                 </View>
                                 <Image source={require("../../Images/search.png")} />
 
