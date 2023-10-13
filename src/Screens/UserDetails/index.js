@@ -66,9 +66,9 @@ export default function UserDetails({ route }) {
 
     const [allCountries, setAllCountries] = useState(countriesObject)
     const [selectedCountry, setSelectedCountry] = useState({
-        subject : "United States",
-        value : "United States",
-        id : 186
+        subject: "United States",
+        value: "United States",
+        id: 186
     })
     const [openCountry, setOpenCountry] = useState(false)
 
@@ -243,15 +243,13 @@ export default function UserDetails({ route }) {
             state: signinData?.state,
             zipCode: signinData?.zipCode,
             gender: gender,
-            email: email,
+            email: auth().currentUser.email,
             created_at: new Date(),
             id: uid
 
         }
 
         console.log(dataToSend, "DATAtOsEND")
-
-
 
         let values = Object.values(dataToSend)
 
@@ -268,7 +266,7 @@ export default function UserDetails({ route }) {
 
 
 
-        firestore().collection("Users").doc(uid).set(dataToSend).then((res) => {
+        firestore().collection("Users").doc(uid).update(dataToSend).then((res) => {
 
             ToastAndroid.show("Details has been submitted Succesfully", ToastAndroid.SHORT)
             setLoginData(dataToSend)
@@ -516,7 +514,7 @@ export default function UserDetails({ route }) {
                                 alignSelf: 'center',
                                 marginTop: 30,
                                 width: '90%',
-                                marginBottom:30
+                                marginBottom: 30
                             }}
                             onPress={() => signInValidation()}
                             btnTextStyle={{ fontSize: 18 }}

@@ -239,10 +239,9 @@ export default function EditProfile({ route }) {
             state: signinData?.state,
             zipCode: signinData?.zipCode,
             gender: gender,
-            email: loginData.email,
+            email: loginData.email ? loginData?.email : auth().currentUser?.email,
             update_at: new Date(),
             id : auth().currentUser.uid
-
 
         }
 

@@ -119,10 +119,10 @@ export default function Signup() {
       return false;
     }
 
-    if (!agree) {
-      ToastAndroid.show("Kindly accept terms and conditions", ToastAndroid.SHORT)
-      return
-    }
+    // if (!agree) {
+    //   ToastAndroid.show("Kindly accept terms and conditions", ToastAndroid.SHORT)
+    //   return
+    // }
 
 
 
@@ -131,6 +131,8 @@ export default function Signup() {
     );
 
     let emailTest = strongRegex.test(signupData.email)
+
+    console.log(emailTest, "email")
 
     if (!emailTest) {
       ToastAndroid.show("Invalid Email", ToastAndroid.SHORT)
@@ -338,7 +340,7 @@ export default function Signup() {
             </View>
           </View>
 
-          <View style={{ paddingHorizontal: 20, flexDirection: 'row' }}>
+          {/* <View style={{ paddingHorizontal: 20, flexDirection: 'row' }}>
             <TouchableOpacity
               style={{
                 width: 25,
@@ -366,7 +368,7 @@ export default function Signup() {
               <Text style={{ color: Colors.green }}>Terms of Service</Text> and{' '}
               <Text style={{ color: Colors.green }}>Privacy Policy</Text>{' '}
             </Text>
-          </View>
+          </View> */}
 
           <CustomButton
             text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Create Account"}
@@ -384,10 +386,11 @@ export default function Signup() {
                 marginHorizontal: 20,
                 marginVertical: 15,
                 fontSize: 16,
+                textAlign:"center",
                 color: Colors.black,
                 fontFamily: 'Poppins-Regular',
               }}>
-              Don't have account?{' '}
+              Already have account?{' '}
               <Text
                 style={{
                   fontWeight: 'bold',

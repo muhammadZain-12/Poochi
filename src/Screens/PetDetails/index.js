@@ -405,8 +405,6 @@ function PetDetails({ navigation, route }) {
       let myData = {
 
         image1: image1,
-        image2: image2,
-        image3: image3,
         typeOfPet: value,
         gender: gender,
         breed: otherData.breed,
@@ -418,8 +416,6 @@ function PetDetails({ navigation, route }) {
         healthIssue: healthIssue,
         petId: petData.petId
       }
-
-      console.log(myData, "editedData")
 
 
 

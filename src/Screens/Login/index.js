@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   ImageBackground,
   Text,
   StyleSheet,
   View,
   TouchableOpacity,
-  //   TextInput,
+  Modal,
   ScrollView,
   ToastAndroid,
   ActivityIndicator,
@@ -46,6 +46,10 @@ export default function Login() {
     email: "",
     password: ""
   })
+
+  const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false)
+
+  const [modalVisible, setModalVisible] = useState(true)
 
   const context = useContext(LoginContext)
   const locationCont = useContext(LocationContext)
@@ -129,6 +133,15 @@ export default function Login() {
     firestore().collection("Users").doc(uid).get().then(async (doc) => {
       let data = doc.data()
 
+      setLoginData(data)
+
+      if (!data?.agree) {
+        navigation.replace("TermsAndCondition")
+        return
+      }
+
+
+
       if (data && data?.status == "blocked") {
         await GoogleSignin.signOut()
         await auth().signOut()
@@ -175,6 +188,10 @@ export default function Login() {
 
               firestore().collection("Users").doc(id).update(data).then((res) => {
 
+
+
+
+
                 let dataToSend = {
                   currentAddress: address,
                   currentLocation: {
@@ -219,7 +236,6 @@ export default function Login() {
             });
           }
         });
-
       }
       else {
 
@@ -308,6 +324,13 @@ export default function Login() {
           firestore().collection("Users").doc(uid).get().then(async (doc) => {
             let data = doc.data()
 
+            setLoginData(data)
+
+            if (!data?.agree) {
+              navigation.replace("TermsAndCondition")
+              return
+            }
+
             if (data && data?.status == "blocked") {
               // await GoogleSignin.signOut()
               await auth().signOut()
@@ -346,13 +369,7 @@ export default function Login() {
               });
 
             }
-
-
           })
-
-
-
-
         });
 
     } catch (err) {
@@ -430,7 +447,7 @@ export default function Login() {
                 style={{
                   marginLeft: 20,
                   fontFamily: 'Poppins-Regular',
-                  color: '#61677D',
+                  color: '#61277D',
                   fontSize: 18,
                 }}>
                 Google
@@ -483,7 +500,6 @@ export default function Login() {
                 borderRadius: 5,
                 width: '100%',
                 marginTop: 15,
-
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -542,6 +558,7 @@ export default function Login() {
                 marginHorizontal: 20,
                 marginVertical: 15,
                 fontSize: 16,
+                textAlign:"center",
                 color: Colors.black,
                 fontFamily: 'Poppins-Regular',
               }}>
@@ -557,7 +574,11 @@ export default function Login() {
             </Text>
           </TouchableOpacity>
         </View>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
+
+
+

@@ -17,6 +17,9 @@ import cardDetailsContext from "../../Context/CardDetailsContext/context";
 import BookingContext from "../../Context/bookingContext/context";
 import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
 import auth from "@react-native-firebase/auth";
+import IonIcons from "react-native-vector-icons/Ionicons"
+
+
 
 function FriendsAndFamily({ navigation, route }) {
 
@@ -706,14 +709,15 @@ function FriendsAndFamily({ navigation, route }) {
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
-                                    <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
+                                    <IonIcons name="location-outline" size={25} color={Colors.gray} />
 
                                     <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
 
                                 </View>
 
-                                <Image source={require("../../Images/search.png")} />
-
+                                <View style={{ width: "10%" }} >
+                                    <IonIcons name="search" color={Colors.gray} size={25} />
+                                </View>
 
                             </TouchableOpacity>
 
@@ -724,14 +728,15 @@ function FriendsAndFamily({ navigation, route }) {
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
-                                    <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
+                                    <IonIcons name="location-outline" size={25} color={Colors.gray} />
 
                                     <Text style={{ color: dropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{dropoffAddress ? dropoffAddress : "Enter Destination"}</Text>
 
                                 </View>
 
-                                <Image source={require("../../Images/search.png")} />
-
+                                <View style={{ width: "10%" }} >
+                                    <IonIcons name="search" color={Colors.gray} size={25} />
+                                </View>
 
                             </TouchableOpacity>
 
@@ -769,7 +774,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                         <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
 
-                            <Image source={require("../../Images/add.png")} />
+                            <IonIcons name="add" color={Colors.gray} size={40} />
 
                         </TouchableOpacity>
 
@@ -780,11 +785,11 @@ function FriendsAndFamily({ navigation, route }) {
 
                             <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
 
-                                <Image source={require("../../Images/add.png")} />
+                                <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
-                                <Image source={require("../../Images/add.png")} />
+                                <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>
 
@@ -812,14 +817,15 @@ function FriendsAndFamily({ navigation, route }) {
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
-                                    <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
+                                    <IonIcons name="location-outline" size={25} color={Colors.gray} />
 
                                     <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
 
                                 </View>
 
-                                <Image source={require("../../Images/search.png")} />
-
+                                <View style={{ width: "10%" }} >
+                                    <IonIcons name="search" color={Colors.gray} size={25} />
+                                </View>
 
                             </TouchableOpacity>
 
@@ -830,10 +836,12 @@ function FriendsAndFamily({ navigation, route }) {
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Dropoff', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
-                                    <Image source={require("../../Images/Location1.png")} style={{ height: 20, width: 17 }} />
+                                    <IonIcons name="location-outline" size={25} color={Colors.gray} />
                                     <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
                                 </View>
-                                <Image source={require("../../Images/search.png")} />
+                                <View style={{ width: "10%" }} >
+                                    <IonIcons name="search" color={Colors.gray} size={25} />
+                                </View>
 
                             </TouchableOpacity>
 

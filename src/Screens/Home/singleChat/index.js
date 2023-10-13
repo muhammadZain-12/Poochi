@@ -429,7 +429,7 @@ export default function ChatSingle({ navigation, route }) {
                 alwaysShowSend
                 // isLoadingEarlier={true}
                 // renderLoading={renderLoading}
-                // renderInputToolbar={renderInputToolbar}
+                renderInputToolbar={renderInputToolbar}
                 scrollToBottomComponent={renderScrollToBottom}
                 textInputStyle={{ color: "#808080", fontFamily: "Poppins-Medium", fontSize: 16 }}
             />

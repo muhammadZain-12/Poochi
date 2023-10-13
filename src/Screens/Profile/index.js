@@ -10,7 +10,8 @@ import LoginContext from "../../Context/loginContext/context"
 import LocationContext from "../../Context/locationContext/context"
 import firestore from "@react-native-firebase/firestore"
 import BookingContext from "../../Context/bookingContext/context"
-
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
 
 function Profile({ navigation }) {
 
@@ -160,7 +161,7 @@ function Profile({ navigation }) {
                 })} name="arrow-back-outline" color={Colors.black} size={25} />
                 <View style={{ marginRight: 10, marginTop: 10 }} >
                     <Image source={{ uri: loginData.profile }} resizeMode="cover" style={{ alignSelf: "center", height: 130, width: 130, borderRadius: 100 }} />
-                    <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18 }} >{loginData.fullName}</Text>
+                    <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 18, marginTop: 10 }} >{loginData.fullName}</Text>
                 </View>
 
             </View>
@@ -173,7 +174,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/setting1.png")} />
+                            <MaterialIcons name="pets" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Pets</Text>
@@ -190,7 +191,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/201.png")} />
+                            <MaterialIcons name="history" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >History</Text>
@@ -206,7 +207,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/201.png")} />
+                            <MaterialIcons name="wallet" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Wallet</Text>
@@ -221,10 +222,11 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/201.png")} />
+
+                            <MaterialIcons name="settings" size={25} color={Colors.buttonColor} />
 
                         </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Account Setting</Text>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Account Settings</Text>
 
                     </View>
 
@@ -236,10 +238,10 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/track.png")} />
+                            <FontAwesome name="route" color={Colors.buttonColor} size={25} />
 
                         </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Track Your Ride</Text>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Track Your Pets</Text>
 
                     </View>
 
@@ -251,7 +253,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/setting.png")} />
+                            <MaterialIcons name="policy" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Privacy Policy</Text>
@@ -266,7 +268,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/i24support.png")} />
+                            <MaterialIcons name="support-agent" size={30} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Help & Support</Text>
@@ -281,7 +283,7 @@ function Profile({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/i24support.png")} />
+                            <MaterialIcons name="logout" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Log Out</Text>

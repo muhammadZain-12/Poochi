@@ -90,9 +90,16 @@ export default function SplashScreen({ navigation }) {
       firestore().collection("Users").doc(CheckUser.uid).get().then((doc) => {
         let data = doc.data()
 
+        if (!data?.agree) {
+          setLoginData(data)
+          navigation.replace("TermsAndCondition")
+          return
+        }
+
+
+
         if (data) {
           setLoginData(data)
-
 
           firestore().collection("Request").doc(CheckUser.uid).get().then((doc) => {
 

@@ -4,6 +4,8 @@ import CustomHeader from "../../Components/CustomHeader"
 import Colors from "../../Constant/Color"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
+import IonIcons from "react-native-vector-icons/Ionicons"
+
 
 function Pets({ navigation, route }) {
 
@@ -26,10 +28,7 @@ function Pets({ navigation, route }) {
             let userPets = doc?.data()
 
             if (userPets?.pets) {
-
                 setPets(userPets.pets)
-
-
             }
             else {
                 setPets([])
@@ -98,19 +97,14 @@ function Pets({ navigation, route }) {
                             </TouchableOpacity>
                         )
                     })}
-
                     <TouchableOpacity onPress={() => navigation.navigate("Tab", {
                         screen: "PetDetails",
                         params: {
                             screen: "Pets"
                         }
                     })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 20 }} >
-
-                        <Image source={require("../../Images/add.png")} />
-
+                        <IonIcons name="add" color={Colors.gray} size={40} />
                     </TouchableOpacity>
-
-
 
                 </View>
             </ScrollView>

@@ -1,7 +1,7 @@
 
 
 
-import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking } from "react-native"
+import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking, BackHandler } from "react-native"
 import React, { useContext, useEffect } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
@@ -14,7 +14,8 @@ import LocationContext from "../../Context/locationContext/context"
 import firestore from "@react-native-firebase/firestore"
 import BookingContext from "../../Context/bookingContext/context"
 import CustomHeader from "../../Components/CustomHeader"
-
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
 
 function AccountSetting({ navigation }) {
 
@@ -28,6 +29,23 @@ function AccountSetting({ navigation }) {
     const { loginData, setLoginData } = loginCont
     const { locationData, setLocationData } = locationCont
     const { bookingData, setBookingData } = bookingCont
+
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
 
 
 
@@ -60,8 +78,7 @@ function AccountSetting({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/setting1.png")} />
-
+                            <MaterialIcons name="password" color={Colors.buttonColor} size={25} />
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Update Password</Text>
 
@@ -77,7 +94,7 @@ function AccountSetting({ navigation }) {
 
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
 
-                            <Image source={require("../../Images/201.png")} />
+                            <FontAwesome name="user-edit" size={25} color={Colors.buttonColor} />
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Edit Profile</Text>

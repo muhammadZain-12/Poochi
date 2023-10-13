@@ -1,10 +1,25 @@
-import React from "react"
-import { View, Text, ScrollView, Linking, TouchableOpacity } from "react-native"
+import React, { useEffect } from "react"
+import { View, Text, ScrollView, Linking, TouchableOpacity, BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import { Link } from "@react-navigation/native"
 
 function PrivacyPolicy({ navigation }) {
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+        });
+
+        return () => {
+            backHandler.remove(); // Cleanup the event listener
+        }
+    }, []);
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
@@ -21,7 +36,7 @@ function PrivacyPolicy({ navigation }) {
                 />
 
             </View>
-            <ScrollView style={{marginBottom:20}}  >
+            <ScrollView style={{ marginBottom: 20 }}  >
                 {/* <Text style={{ fontSize: 18, fontFamily: "Poppins-Medium", color: Colors.black, marginHorizontal: 20, marginTop: 10,borderWidth:2 }} > */}
                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
                     Introduction
@@ -1069,7 +1084,7 @@ function PrivacyPolicy({ navigation }) {
                 <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
 
                     If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at <TouchableOpacity onPress={() => Linking.openURL("tel:818-213-3884")} >
-                        <Text style={{ color: "blue",fontFamily:"Poppins-Bold" }} > 818-213-3884 </Text>
+                        <Text style={{ color: "blue", fontFamily: "Poppins-Bold" }} > 818-213-3884 </Text>
                     </TouchableOpacity>
 
 

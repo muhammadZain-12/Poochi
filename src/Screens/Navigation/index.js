@@ -15,6 +15,7 @@ import { Image, TouchableOpacity, TouchableOpacityBase, View } from 'react-nativ
 import Colors from '../../Constant/Color';
 import Icon from "react-native-vector-icons/AntDesign"
 import MedicalTrip from '../MedicalTrip';
+import Ionicons from "react-native-vector-icons/Ionicons"
 import PetSelect from '../PetSelect';
 import PaymentMethod from '../PaymentMethod';
 import Drivers from '../Drivers';
@@ -43,6 +44,8 @@ import UpdatePassword from '../updatePassword';
 import EditProfile from '../EdiitProfile';
 import PrivacyPolicy from '../PrivacyPolicy';
 import ChatSingle from '../Home/singleChat';
+import TermsAndConditions from '../TermsAndCondition';
+import AntDesign from "react-native-vector-icons/AntDesign"
 
 
 const Stack = createNativeStackNavigator();
@@ -92,7 +95,7 @@ function CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHome
 
       <TouchableOpacity onPress={() => handleNavigateToHome()} >
 
-        <Image source={homeScreen ? require("../../Images/home.png") : require("../../Images/home1.png")} />
+        <Ionicons name="home" color={homeScreen ? Colors.green : Colors.gray} size={40} />
 
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavigateToPet()} style={{ height: 40, width: 40, borderRadius: 10, backgroundColor: petScreen ? Colors.buttonColor : Colors.gray, justifyContent: "center", alignItems: "center" }} >
@@ -102,7 +105,7 @@ function CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHome
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavigateToChat()} >
 
-        <Image source={chatScreen ? require("../../Images/chat1.png") : require("../../Images/chat.png")} style={{ width: 40, height: 40 }} />
+        <AntDesign name="wechat" size={50} color={chatScreen ? Colors.buttonColor : Colors.gray}  />
 
       </TouchableOpacity>
 
@@ -198,6 +201,7 @@ export default function Navigation() {
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
         <Stack.Screen name="ChatSingle" component={ChatSingle} />
+        <Stack.Screen name="TermsAndCondition" component={TermsAndConditions} />
       </Stack.Navigator>
     </NavigationContainer>
   );

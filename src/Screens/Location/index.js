@@ -165,7 +165,7 @@ function Location({ navigation }) {
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Image source={require('../../Images/LocationIcon.png')} />
+              <Image style={{ width: 100, height: 100 }} resizeMode='cover' source={require('../../Images/LocationIcon.png')} />
 
               <Text
                 style={[

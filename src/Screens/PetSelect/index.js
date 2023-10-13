@@ -6,6 +6,8 @@ import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import { useIsFocused } from "@react-navigation/native"
+import IonIcons from "react-native-vector-icons/Ionicons"
+
 
 function PetSelect({ navigation, route }) {
 
@@ -195,14 +197,14 @@ function PetSelect({ navigation, route }) {
                     iconname={"arrow-back-outline"}
                     text="Select Pet"
                     color={Colors.black}
-                    // image={require("../../Images/plus.png")}
-                    // imageFunc={() => navigation.navigate('Tab', {
-                    //     screen: 'PetDetails',
-                    //     params: {
-                    //         screen: "PetSelect",
-                    //         name: routeData
-                    //     }
-                    // })}
+                // image={require("../../Images/plus.png")}
+                // imageFunc={() => navigation.navigate('Tab', {
+                //     screen: 'PetDetails',
+                //     params: {
+                //         screen: "PetSelect",
+                //         name: routeData
+                //     }
+                // })}
                 />
             </View>
 
@@ -231,7 +233,7 @@ function PetSelect({ navigation, route }) {
                         }
                     })} style={{ width: "48%", height: 180, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 20 }} >
 
-                        <Image source={require("../../Images/add.png")} />
+                        <IonIcons name="add" color={Colors.gray} size={40} />
 
                     </TouchableOpacity>
 

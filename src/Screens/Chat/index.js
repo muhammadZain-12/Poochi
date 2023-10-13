@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Text, FlatList, BackHandler } from 'react-native';
+import { View, Image, TouchableOpacity, Text, FlatList, BackHandler, ToastAndroid } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
@@ -8,11 +8,17 @@ import LocationContext from '../../Context/locationContext/context';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useIsFocused } from '@react-navigation/native';
+import BookingContext from '../../Context/bookingContext/context';
+import IonIcons from "react-native-vector-icons/Ionicons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
 
 function Chat({ navigation }) {
   const loginCont = useContext(LoginContext);
   const locationCont = useContext(LocationContext);
 
+  const bookingCont = useContext(BookingContext)
+
+  const { bookingData, setBookingData } = bookingCont
 
   const focus = useIsFocused()
 
@@ -281,6 +287,40 @@ function Chat({ navigation }) {
   };
 
 
+  const handleRouteToTrackScreen = () => {
+
+
+    if (!bookingData) {
+      ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+      return
+    }
+
+    firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+
+      let data = doc.data()
+
+      if ((data?.bookingStatus !== "running" && data?.userReponse) || data.bookingStatus == "cancelled") {
+        ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+      }
+
+      else {
+
+
+        setBookingData(data)
+        navigation.navigate("PassengerRideDetail")
+
+
+
+      }
+
+    })
+
+
+    // bookingData && bookingData?.bookingStatus == "running" ? 
+
+
+  }
+
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.white }}>
@@ -294,32 +334,27 @@ function Chat({ navigation }) {
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <Image
             source={{ uri: loginData.profile }}
-            style={{ width: 40, height: 40 }}
+            style={{ width: 70, height: 70, borderRadius: 100 }}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={require('../../Images/location.png')} />
 
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: Colors.black,
-              fontSize: 16,
-              marginLeft: 5,
-            }}>
-            {locationData?.currentAddress?.slice(0, 10)}...
-          </Text>
+        <View>
+          <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 18 }} >Hi {loginData.fullName}</Text>
+        </View>
 
-          <Icons size={20} color="gray" name="chevron-down" />
-        </TouchableOpacity>
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Notification")} >
-            <Image source={require('../../Images/notification.png')} />
+
+        <View style={{ flexDirection: "row" }} >
+
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
+
+            <IonIcons name="notifications" size={30} color={Colors.buttonColor} />
+
+
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ marginLeft: 5 }}>
-            <Image source={require('../../Images/tracking.png')} />
+
+          <TouchableOpacity style={{ padding: 5 }} onPress={() => handleRouteToTrackScreen()} >
+            <FontAwesome name="route" size={25} color={Colors.buttonColor} />
           </TouchableOpacity>
         </View>
       </View>
@@ -335,7 +370,11 @@ function Chat({ navigation }) {
         </Text> */}
 
         <View style={{ marginTop: 0, marginBottom: 20 }}>
-          <FlatList data={drivers} renderItem={renderDrivers} />
+          {drivers && drivers.length > 0 ? <FlatList data={drivers} renderItem={renderDrivers} /> :
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+              <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 28, color: Colors.black }} >No Chats</Text>
+            </View>
+          }
         </View>
       </View>
     </View>

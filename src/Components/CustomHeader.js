@@ -2,8 +2,9 @@ import React from 'react'
 import { View, StyleSheet, Image, useWindowDimensions, Touchable, TouchableOpacity, Text } from 'react-native'
 import Colors from '../Constant/Color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from "react-native-vector-icons/Entypo"
 
-export default function CustomHeader({ onPress, iconname, color, source, rightButton, cancelRideFunction, iconStyle, text, image, imageFunc }) {
+export default function CustomHeader({ onPress, iconname, color, source, rightButton, cancelRideFunction, iconStyle, text, image, imageFunc, rightIcon, rightIconName, rightIconFunc }) {
     const { height } = useWindowDimensions();
 
 
@@ -33,9 +34,12 @@ export default function CustomHeader({ onPress, iconname, color, source, rightBu
                 {image ? <TouchableOpacity onPress={imageFunc} style={{ alignSelf: "flex-end", marginRight: 20, width: 60 }} >
                     <Image source={image} style={{ alignSelf: "flex-end" }} />
                 </TouchableOpacity>
-                    :
-                    <View>
-                    </View>
+                    : rightIcon ?
+                        <TouchableOpacity onPress={rightIconFunc} style={{ marginRight: 20, width: 60, alignItems: "flex-end" }} >
+                            <Entypo name={rightIconName} onPress={rightIconFunc} color={Colors.black} size={25} />
+                        </TouchableOpacity>
+                        : <View>
+                        </View>
                 }
 
             </View>

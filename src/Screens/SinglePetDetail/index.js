@@ -5,7 +5,7 @@ import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
 import firestore from "@react-native-firebase/firestore"
 import auth from "@react-native-firebase/auth"
-
+import Entypo from "react-native-vector-icons/Entypo"
 
 function SinglePetDetail({ navigation, route }) {
 
@@ -60,8 +60,11 @@ function SinglePetDetail({ navigation, route }) {
                 iconname={"arrow-back-outline"}
                 text={data.name}
                 color={Colors.black}
-                image={require("../../Images/dots.png")}
-                imageFunc={OpenEditAndDelete}
+                rightIcon
+                rightIconName={"dots-three-vertical"}
+                rightIconFunc={OpenEditAndDelete}
+            // image={require("../../Images/dots.png")}
+            // imageFunc={OpenEditAndDelete}
 
             />
             {

@@ -6,6 +6,7 @@ import {
     StatusBar,
     StyleSheet,
     Text,
+    BackHandler,
     View,
     ScrollView,
 } from 'react-native';
@@ -38,6 +39,21 @@ const Wallet = ({ navigation, route }) => {
     });
 
     let routeData = route.params;
+
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+        });
+
+        return () => {
+            backHandler.remove(); // Cleanup the event listener
+        }
+    }, []);
 
 
     const getWalletData = async () => {

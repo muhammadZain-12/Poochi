@@ -15,8 +15,8 @@ import NotificationContext from '../../Context/NotificationContext/context';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChooseLocationContext from '../../Context/pickupanddropoffContext/context';
-
-
+import IonIcons from "react-native-vector-icons/Ionicons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
 
 function Home({ navigation }) {
 
@@ -60,10 +60,7 @@ function Home({ navigation }) {
   const flatListRef = useRef(null);
 
   const HomePageBanner = [
-    {
-      id: 1,
-      image: require('../../Images/banner.png'),
-    },
+
     {
       id: 2,
       image: require('../../Images/banner2.jpg'),
@@ -71,6 +68,10 @@ function Home({ navigation }) {
     {
       id: 3,
       image: require('../../Images/banner3.jpg'),
+    },
+    {
+      id: 4,
+      image: require('../../Images/banner4.jpg'),
     },
   ];
 
@@ -323,8 +324,18 @@ function Home({ navigation }) {
   }, [focus])
 
 
+  console.log(currentIndex, "currentIndex")
+
   const nextImage = () => {
-    const nextIndex = (currentIndex + 1) % HomePageBanner.length;
+
+    if (currentIndex == HomePageBanner.length - 1) {
+      const nextIndex = 0
+      setCurrentIndex(nextIndex);
+      flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
+      return
+    }
+
+    const nextIndex = (Number(currentIndex) + 1)
     setCurrentIndex(nextIndex);
     flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
   };
@@ -498,22 +509,22 @@ function Home({ navigation }) {
 
         <View style={{ flexDirection: "row" }} >
 
-          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 10 }} >
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
 
-            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -10 }} >
+            {unseenNotification && !unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
 
               <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
 
 
             </View>}
-            <Image source={require("../../Images/notification.png")} />
+            <IonIcons name="notifications" size={30} color={Colors.buttonColor} />
 
 
           </TouchableOpacity>
 
 
-          <TouchableOpacity style={{ marginLeft: 5, padding: 10 }} onPress={() => handleRouteToTrackScreen()} >
-            <Image source={require("../../Images/tracking.png")} />
+          <TouchableOpacity style={{ padding: 5 }} onPress={() => handleRouteToTrackScreen()} >
+            <FontAwesome name="route" size={25} color={Colors.buttonColor} />
           </TouchableOpacity>
         </View>
 
@@ -556,16 +567,15 @@ function Home({ navigation }) {
                 <TouchableOpacity
                   style={{
                     width: width,
-                    // height: '100%',
                     alignItems: 'flex-start',
                     justifyContent: "center",
                     padding: 0,
                     margin: 0,
                   }}
-                  
-                  onPress={()=> item.id == 3 && navigation.navigate("PetWalk") }
-                  
-                  >
+
+                  onPress={() => navigation.navigate("PetWalk")}
+
+                >
                   <Image
                     source={item.image}
                     style={{ width: width - 40, height: 150, borderRadius: 10 }}

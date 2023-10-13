@@ -7,6 +7,7 @@ import {
     View,
     Text,
     StyleSheet,
+    BackHandler,
     TouchableOpacity,
     FlatList,
     Linking,
@@ -106,6 +107,21 @@ function History({ navigation }) {
             }),
         );
     };
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+        });
+
+        return () => {
+            backHandler.remove(); // Cleanup the event listener
+        }
+    }, []);
+
 
     const renderBookingData = ({ item, index }) => {
         let date = item?.requestDate?.toDate();
