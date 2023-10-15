@@ -365,9 +365,6 @@ function PetWalk({ navigation, route }) {
         setPickupToDropoffDistance(pickupToDropoffMileDistance)
 
 
-
-
-
         let dropoffToPickupMileDistance = (returnPickupToReturnDropoffDis / 1609.34)?.toFixed(2);
 
         setDropoffToPickupDistance(dropoffToPickupMileDistance)
@@ -732,7 +729,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Dog Walk"}
+                    text={"Dog Hotel"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({

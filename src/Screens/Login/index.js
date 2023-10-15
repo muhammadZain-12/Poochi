@@ -324,8 +324,12 @@ export default function Login() {
           firestore().collection("Users").doc(uid).get().then(async (doc) => {
             let data = doc.data()
 
+
             setLoginData(data)
 
+
+
+            
             if (!data?.agree) {
               navigation.replace("TermsAndCondition")
               return

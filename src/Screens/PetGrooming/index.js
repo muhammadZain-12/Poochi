@@ -387,7 +387,7 @@ function PetGrooming({ navigation, route }) {
             let additionalPetCharge;
             let totalWaitingCharges = 0
 
-            if (!customWaitingTime && value !== "custom") {
+            if (value !== "custom") {
                 totalWaitingCharges = waitingCharges * Number(value)
             }
 
@@ -509,7 +509,7 @@ function PetGrooming({ navigation, route }) {
             if (!value || (value == "custom" && !customWaitingTime)) {
 
                 ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
-
+                return
             }
 
             if (selectedPets.length == 0) {
@@ -901,7 +901,7 @@ function PetGrooming({ navigation, route }) {
                     />
                     }
 
-                    {value == "custom" && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
+                    {value == "custom" && !oneWay && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
 
 
                     {!oneWay && <View style={{ borderRadius: 30, backgroundColor: Colors.buttonColor, padding: 10, marginTop: 15 }} >

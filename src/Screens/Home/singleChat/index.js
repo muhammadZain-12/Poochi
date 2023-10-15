@@ -11,6 +11,8 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import LoginContext from '../../../Context/loginContext/context'
 import axios from 'axios'
+import IonIcons from "react-native-vector-icons/Ionicons"
+
 
 export default function ChatSingle({ navigation, route }) {
 
@@ -281,7 +283,7 @@ export default function ChatSingle({ navigation, route }) {
                 }}
             >
                 <View style={{ alignItems: "center", justifyContent: "center", marginRight: 10 }} >
-                    <Image source={require("../../../Images/send.png")} style={{ width: 30, height: 30 }} />
+                    <IonIcons name="send-outline" size={30} color={Colors.buttonColor} />
                 </View>
             </Send>
         )

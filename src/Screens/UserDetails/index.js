@@ -34,8 +34,6 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import CustomDropDown from '../../Components/dropdown';
 
 
-DropDownPicker.setListMode("SCROLLVIEW")
-
 
 export default function UserDetails({ route }) {
     const navigation = useNavigation();
@@ -54,6 +52,7 @@ export default function UserDetails({ route }) {
     const [goggleLoading, setGoogleLoading] = useState(false);
     const [secureEntry, setSecureEntry] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [imageLoading,setImageLoading] = useState(false)
     const [signinData, setSigninData] = useState({
         fullName: "",
         mobileNumber: "+1",
@@ -121,6 +120,7 @@ export default function UserDetails({ route }) {
             ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
         } else {
             hideModal1();
+            setImageLoading(true)
             let uri = result.assets[0].uri
             let filename = result.assets[0].fileName
             setImage1url(uri)
@@ -130,6 +130,7 @@ export default function UserDetails({ route }) {
             const downloadURL = await getDownloadURLFromFirebase(filename);
 
             setImage1(downloadURL)
+            setImageLoading(false)
 
         }
     };
@@ -156,13 +157,14 @@ export default function UserDetails({ route }) {
                 ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
             } else {
                 hideModal1();
-
+                setImageLoading(true)
                 let uri = result.assets[0].uri
                 let filename = result.assets[0].fileName
                 setImage1url(uri)
                 await uploadImageToFirebase(uri, filename);
                 const downloadURL = await getDownloadURLFromFirebase(filename);
                 setImage1(downloadURL)
+                setImageLoading(false)
 
 
 
@@ -204,10 +206,10 @@ export default function UserDetails({ route }) {
             return
         }
 
-        if (!signinData?.extendedAddress) {
-            ToastAndroid.show("Extended Address is missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (!signinData?.extendedAddress) {
+        //     ToastAndroid.show("Extended Address is missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
         if (!signinData?.state) {
             ToastAndroid.show("State is missing", ToastAndroid.SHORT)
@@ -230,7 +232,6 @@ export default function UserDetails({ route }) {
         }
 
 
-
         let dataToSend = {
 
             fullName: signinData.fullName,
@@ -249,16 +250,15 @@ export default function UserDetails({ route }) {
 
         }
 
-        console.log(dataToSend, "DATAtOsEND")
 
-        let values = Object.values(dataToSend)
+        // let values = Object.values(dataToSend)
 
-        let flag = values.some((e, i) => !e)
+        // let flag = values.some((e, i) => !e)
 
-        if (flag) {
-            ToastAndroid.show("Required Fields are missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (flag) {
+        //     ToastAndroid.show("Required Fields are missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
 
 
@@ -301,7 +301,7 @@ export default function UserDetails({ route }) {
 
                 <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 100, alignItems: "center", justifyContent: "center" }} >
 
-                    <Image source={image1url ? { uri: image1url } : require("../../Images/box.png")} style={image1url && { width: 100, height: 100, borderRadius: 100 }} />
+                    {imageLoading ? <ActivityIndicator color={Colors.black} size={"small"}  /> : <Image source={image1url ? { uri: image1url } : require("../../Images/box.png")} style={image1url && { width: 100, height: 100, borderRadius: 100 }} />}
 
                 </TouchableOpacity>
 
@@ -363,7 +363,7 @@ export default function UserDetails({ route }) {
                                         fontSize: 16,
                                         paddingHorizontal: 20,
                                     }}
-                                    value={signinData.mobileNumber}
+                                    value={signinData?.mobileNumber}
                                     keyboardType='phone-pad'
                                     onChangeText={(e) => setSigninData({ ...signinData, mobileNumber: e })}
                                     placeholder="Mobile Number"

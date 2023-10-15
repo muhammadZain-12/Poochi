@@ -365,7 +365,7 @@ function MedicalTrip({ navigation, route }) {
 
             let totalWaitingCharges = 0
 
-            if (!customWaitingTime && value !== "custom") {
+            if (value !== "custom") {
                 totalWaitingCharges = waitingCharges * Number(value)
             }
 
@@ -488,6 +488,7 @@ function MedicalTrip({ navigation, route }) {
             if (!value || (value == "custom" && !customWaitingTime)) {
 
                 ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
+                return
 
             }
 

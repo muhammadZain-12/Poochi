@@ -280,7 +280,7 @@ export default function UpdatePassword() {
                                 name={secureEntry.new ? 'eye' : 'eye-off'}
                                 color={Colors.gray}
                                 size={25}
-                                onPress={()=>togglePassword("new")}
+                                onPress={() => togglePassword("new")}
                                 style={{ width: '15%' }}
                             />
                         </View>

@@ -381,6 +381,8 @@ function FriendsAndFamily({ navigation, route }) {
         setDropoffToPickupMinutes(dropoffToPickupMin)
         setPickupToDropoffMinutes(pickupToDropffMin)
 
+        console.log(value,"valueeee")
+
         firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
 
             let data = doc.data()
@@ -400,7 +402,7 @@ function FriendsAndFamily({ navigation, route }) {
 
             let totalWaitingCharges = 0
 
-            if (!customWaitingTime && value !== "custom") {
+            if (value !== "custom") {
                 totalWaitingCharges = waitingCharges * Number(value)
             }
 
@@ -440,7 +442,7 @@ function FriendsAndFamily({ navigation, route }) {
         }
 
         if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && Object.keys(returnPickup).length > 0 && Object.keys(returnDropoff).length > 0 && !oneWay && (value || customWaitingTime)) {
-
+            console.log("hello geloooooo")
             handleCalculateTwoWayDistanceAndFare()
 
 
@@ -453,6 +455,7 @@ function FriendsAndFamily({ navigation, route }) {
 
 
     console.log(value, "value")
+    console.log(customWaitingTime,"customWaitingTIme")
 
     const removeSelectedPet = (ind) => {
 
@@ -516,7 +519,7 @@ function FriendsAndFamily({ navigation, route }) {
             if (!value || (value == "custom" && !customWaitingTime)) {
 
                 ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
-
+                return
             }
 
             if (selectedPets.length == 0) {
@@ -874,7 +877,7 @@ function FriendsAndFamily({ navigation, route }) {
                     />
                     }
 
-                    {value == "custom" && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
+                    {value == "custom" && !oneWay && <TextInput onChangeText={(e) => setCustomWaitingTime(e)} keyboardType="numeric" placeholder="Enter Waiting Time" placeholderTextColor={"gray"} style={{ padding: 5, color: Colors.black, fontFamily: "Poppins-Medium", borderBottomWidth: 1, marginTop: 10 }} />}
 
 
                     {!oneWay && <View style={{ borderRadius: 30, backgroundColor: Colors.buttonColor, padding: 10, marginTop: 15 }} >
