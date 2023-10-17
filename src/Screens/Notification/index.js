@@ -104,8 +104,9 @@ function Notification({ navigation }) {
 
                             <View style={{ marginLeft: 0, justifyContent: "center", width: "100%" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{item?.title}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item?.title}</Text>
                                 </View>
+                                
 
 
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 10, backgroundColor: "#aaa", marginTop: 10, padding: 0, width: "100%", padding: 10 }} >{item?.body}</Text>

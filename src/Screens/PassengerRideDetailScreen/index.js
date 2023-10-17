@@ -650,9 +650,9 @@ function PassengerRideDetail({ navigation, route }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{bookingData?.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, }} >{bookingData?.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
-                                    <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
+                                    <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
                                 </View>
                                 <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>

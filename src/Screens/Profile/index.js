@@ -169,21 +169,13 @@ function Profile({ navigation }) {
             <ScrollView>
 
                 <View style={{ paddingHorizontal: 20, marginTop: 20 }} >
-
                     <TouchableOpacity onPress={() => navigation.navigate("Pets")} style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
-
                         <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
-
                             <MaterialIcons name="pets" size={25} color={Colors.buttonColor} />
-
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Pets</Text>
-
                     </TouchableOpacity>
-
-
                 </View>
-
 
                 <TouchableOpacity onPress={() => navigation.navigate("History")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 

@@ -846,11 +846,11 @@ function MedicalTrip({ navigation, route }) {
                     </View>}
 
 
-                    {!oneWay && <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
+                    {!oneWay && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "medical")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1 }} >
 
-                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Soon you will also be able to schedule rides</Text>
+                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Schedule Ride</Text>
 
-                        {/* <Image source={require("../../Images/calender.png")} /> */}
+                        <Image source={require("../../Images/calender.png")} />
 
                     </TouchableOpacity>}
 
