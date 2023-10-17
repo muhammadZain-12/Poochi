@@ -52,7 +52,7 @@ export default function UserDetails({ route }) {
     const [goggleLoading, setGoogleLoading] = useState(false);
     const [secureEntry, setSecureEntry] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [imageLoading,setImageLoading] = useState(false)
+    const [imageLoading, setImageLoading] = useState(false)
     const [signinData, setSigninData] = useState({
         fullName: "",
         mobileNumber: "+1",
@@ -301,9 +301,11 @@ export default function UserDetails({ route }) {
 
                 <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 100, alignItems: "center", justifyContent: "center" }} >
 
-                    {imageLoading ? <ActivityIndicator color={Colors.black} size={"small"}  /> : <Image source={image1url ? { uri: image1url } : require("../../Images/box.png")} style={image1url && { width: 100, height: 100, borderRadius: 100 }} />}
+                    {imageLoading ? <ActivityIndicator color={Colors.black} size={"small"} /> : <Image source={image1url ? { uri: image1url } : require("../../Images/box.png")} style={image1url && { width: 100, height: 100, borderRadius: 100 }} />}
 
                 </TouchableOpacity>
+
+                <Text style={{ fontSize: 16, fontFamily: "Poppins-SemiBold", color: Colors.black, marginTop: 10 }} >Upload Profile Picture</Text>
 
             </View>
 
@@ -420,7 +422,7 @@ export default function UserDetails({ route }) {
                                 }}
                                 value={signinData.extendedAddress}
                                 onChangeText={(e) => setSigninData({ ...signinData, extendedAddress: e })}
-                                placeholder="Extended Address"
+                                placeholder="Extended Address (Optional) "
                                 placeholderTextColor={Colors.gray}
                             />
 

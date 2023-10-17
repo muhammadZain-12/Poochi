@@ -381,7 +381,7 @@ function FriendsAndFamily({ navigation, route }) {
         setDropoffToPickupMinutes(dropoffToPickupMin)
         setPickupToDropoffMinutes(pickupToDropffMin)
 
-        console.log(value,"valueeee")
+        console.log(value, "valueeee")
 
         firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
 
@@ -455,7 +455,7 @@ function FriendsAndFamily({ navigation, route }) {
 
 
     console.log(value, "value")
-    console.log(customWaitingTime,"customWaitingTIme")
+    console.log(customWaitingTime, "customWaitingTIme")
 
     const removeSelectedPet = (ind) => {
 
@@ -482,7 +482,7 @@ function FriendsAndFamily({ navigation, route }) {
 
             <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
             <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
-                <AntDesign name="close" color={Colors.white} size={20} />
+                <AntDesign name="close" color={Colors.buttonColor} size={20} />
             </TouchableOpacity>
             <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
             <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
@@ -516,7 +516,7 @@ function FriendsAndFamily({ navigation, route }) {
                 return
             }
 
-            if (!value || (value == "custom" && !customWaitingTime)) {
+            if (!value || (value == "custom" && !customWaitingTime) || customWaitingTime == 0) {
 
                 ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
                 return
@@ -791,7 +791,7 @@ function FriendsAndFamily({ navigation, route }) {
                                 <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
                                 <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>

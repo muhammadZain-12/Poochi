@@ -286,7 +286,7 @@ function PetWalk({ navigation, route }) {
 
             <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
             <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
-                <AntDesign name="close" color={Colors.white} size={20} />
+                <AntDesign name="close" color={Colors.buttonColor} size={20} />
             </TouchableOpacity>
             <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
             <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
@@ -843,7 +843,7 @@ function PetWalk({ navigation, route }) {
                                 <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetWalk")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
                                 <IonIcons name="add" color={Colors.gray} size={40} />
 
                             </TouchableOpacity>

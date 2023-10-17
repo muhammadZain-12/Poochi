@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image, BackHandler } from "react-native";
 import CustomHeader from "../../Components/CustomHeader";
 import Colors from "../../Constant/Color";
 import NotificationContext from "../../Context/NotificationContext/context";
@@ -64,6 +64,18 @@ function Notification({ navigation }) {
 
     }, [focus])
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack()
+            return true
+        });
+
+        return () => {
+            backHandler.remove(); // Cleanup the event listener
+        }
+    }, []);
+
+
 
     const renderNotificationData = ({ item }) => {
 
@@ -74,6 +86,7 @@ function Notification({ navigation }) {
         let year = notificationDate.getFullYear()
 
         let fullDate = `${date} / ${month} / ${year}`
+
 
 
         return (

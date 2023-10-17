@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking, TextInput, ActivityIndicator, BackHandler, ToastAndroid } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking, TextInput, ActivityIndicator, BackHandler, TouchableWithoutFeedback, ToastAndroid, Modal } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import MapView, { Marker } from "react-native-maps"
@@ -15,6 +15,11 @@ import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import { getPreciseDistance } from "geolib"
 import { useIsFocused } from "@react-navigation/native"
 import ChooseLocationContext from "../../Context/pickupanddropoffContext/context"
+import IonIcons from "react-native-vector-icons/Ionicons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+
+
 
 // import {MapViewDirections} from "react-native-maps-directions"
 
@@ -53,6 +58,7 @@ function PassengerRideDetail({ navigation, route }) {
     const [arriveDropoffMin, setArriveDropoffMin] = useState("")
     const [comment, setComment] = useState("")
     const [finalLoader, setFinalLoader] = useState(false)
+    const [imageModal, setImageModal] = useState(false)
 
     const [rating, setRating] = useState(null)
 
@@ -87,13 +93,29 @@ function PassengerRideDetail({ navigation, route }) {
 
 
 
+    const ShowLocationModal = useCallback(() => {
+        return (
+            <View style={styles.centeredView}>
+                <Modal animationType="slide" transparent={true} onRequestClose={() => setImageModal(false)} visible={imageModal}>
+                    <TouchableWithoutFeedback style={{ flex: 1, borderWidth: 4, width: "100%", height: "100%", zIndex: 100 }} onPress={() => setImageModal(false)} >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Image style={{ width: "100%", height: 300, borderRadius: 20 }} resizeMode='cover' source={{ uri: petImage }} />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </View>
+        );
+    }, [imageModal]);
+
+
 
 
     const getDriverRideStatus = () => {
 
 
         let id = auth().currentUser.uid
-
 
         const unsubscribe = firestore().collection("Request").doc(bookingData?.userData?.id).onSnapshot(querySnapshot => {
 
@@ -132,7 +154,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                 }
 
-                if (data.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse)) {
+                if (data.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse) && focus) {
 
                     setBookingData({
                         ...bookingData,
@@ -142,7 +164,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                     if (data?.driverLocation) {
 
-                        if (data?.rideStatus == "pickup" && bookingData?.pickupCords?.lat) {
+                        if (data?.rideStatus == "pickup" && bookingData?.pickupCords?.lat && focus) {
 
                             const dis = getPreciseDistance(
                                 {
@@ -164,7 +186,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         }
 
-                        if (data?.rideStatus == "dropoff" && data?.dropoffCoords) {
+                        if (data?.rideStatus == "dropoff" && data?.dropoffCoords && focus) {
 
                             const dis = getPreciseDistance(
                                 {
@@ -195,10 +217,7 @@ function PassengerRideDetail({ navigation, route }) {
 
 
 
-
-
-
-                    if (data.arrived) {
+                    if (data.arrived && focus) {
                         setArrived(true)
                         setBookingData({
                             ...bookingData,
@@ -206,7 +225,7 @@ function PassengerRideDetail({ navigation, route }) {
                         })
                     }
 
-                    if (data?.rideStartToDropoff) {
+                    if (data?.rideStartToDropoff && focus) {
 
                         setRideStartToDropoff(true)
                         setBookingData({
@@ -216,7 +235,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                     }
 
-                    if (data?.reachDropoff) {
+                    if (data?.reachDropoff && focus) {
 
                         setReachDropoff(true)
                         setBookingData({
@@ -226,14 +245,14 @@ function PassengerRideDetail({ navigation, route }) {
 
                     }
 
-                    if (data.startRide) {
+                    if (data.startRide && focus) {
                         setBookingData({
                             ...bookingData,
                             startRide: true
                         })
                         setStartRide(true)
                     }
-                    if (data.endRide) {
+                    if (data.endRide && focus) {
                         setEndRide(true)
                         setBookingData({
                             ...bookingData,
@@ -266,9 +285,6 @@ function PassengerRideDetail({ navigation, route }) {
 
     }, [focus])
 
-    console.log(focus, "focusss")
-
-    console.log(bookingData, "coords")
 
     const showDirection = useCallback(() => {
 
@@ -382,8 +398,6 @@ function PassengerRideDetail({ navigation, route }) {
 
     }
 
-    console.log(bookingData?.dropoffAddress, "addresss")
-
     const handleSubmitReview = () => {
 
 
@@ -410,8 +424,6 @@ function PassengerRideDetail({ navigation, route }) {
 
                 bookingData.UserRating = rating;
                 bookingData.userComment = comment;
-
-                console.log(bookingData, "bookingDatadata,")
 
                 firestore().collection("Booking").doc(id).set({
                     Bookings: [bookingData]
@@ -560,7 +572,6 @@ function PassengerRideDetail({ navigation, route }) {
             </View>
 
             <ScrollView>
-
                 <View style={{ paddingHorizontal: 20, marginTop: 20, flex: 1 }} >
 
 
@@ -625,7 +636,9 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                             <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Driver Package Deliver Picture</Text>
-                            {petImage ? <Image source={{ uri: petImage }} style={{ width: 50, height: 50, borderRadius: 10 }} /> : <ActivityIndicator color={Colors.black} size={"small"} />}
+                            {petImage ? <TouchableOpacity onPress={() => setImageModal(true)} >
+                                <Image source={{ uri: petImage }} style={{ width: 50, height: 50, borderRadius: 10 }} />
+                            </TouchableOpacity> : <ActivityIndicator color={Colors.black} size={"small"} />}
 
                         </View>
                     }
@@ -651,7 +664,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         <View style={{ alignItems: "flex-end" }} >
 
-                            <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${Number(bookingData.fare).toFixed(2)}</Text>
+                            <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22, marginRight: 5 }} >${Number(bookingData.fare).toFixed(2)}</Text>
 
                             <View style={{ flexDirection: "row" }} >
 
@@ -659,14 +672,14 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                                     <TouchableOpacity onPress={() => Linking.openURL(`tel:${bookingData?.driverData?.mobileNumber}`)} >
-                                        <Image source={require("../../Images/phone.png")} />
+                                        <MaterialIcons name="phone" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
                                     <TouchableOpacity onPress={() => navigation.replace("ChatSingle", { data: bookingData, screenName: "PassengerRideDetail", nested: false })} >
-                                        <Image source={require("../../Images/message.png")} />
+                                        <MaterialIcons name="chat" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
@@ -680,7 +693,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
 
-                            <Image source={require("../../Images/Location3.png")} />
+                            <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
                             <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
 
@@ -691,7 +704,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                         <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
 
-                            <Image source={require("../../Images/Location3.png")} />
+                            <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
                             <Text style={{ color: (!reachDropoff && arrived) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
 
@@ -701,7 +714,7 @@ function PassengerRideDetail({ navigation, route }) {
                         {bookingData?.bookingType == "twoWay" ? <View>
                             <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center", borderBottomWidth: bookingData?.type == "twoWay" ? 2 : 0, borderBottomColor: Colors.buttonColor }} >
 
-                                <Image source={require("../../Images/Location3.png")} />
+                                <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
                                 <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pickup: {bookingData?.returnPickupAddress}</Text>
 
@@ -709,7 +722,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                             <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
 
-                                <Image source={require("../../Images/Location3.png")} />
+                                <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
                                 <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Dropoff: {bookingData?.returnDropoffAddress}</Text>
 
@@ -754,12 +767,11 @@ function PassengerRideDetail({ navigation, route }) {
 
                     {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
 
-                    {!arrived && <CustomButton text={"Ride Cancel"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
+                    {!arrived && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
 
 
-
+                    {imageModal && ShowLocationModal()}
                 </View>
-
 
 
 
@@ -783,4 +795,46 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
 
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: '80%',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+
 })

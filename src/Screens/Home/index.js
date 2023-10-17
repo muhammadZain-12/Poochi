@@ -511,7 +511,7 @@ function Home({ navigation }) {
 
           <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
 
-            {unseenNotification && !unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
 
               <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
 
@@ -602,7 +602,7 @@ function Home({ navigation }) {
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Medical Trip</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
-              <Image source={require("../../Images/petWalk.png")} style={{ width: "100%", borderRadius: 10 }} />
+              <Image source={require("../../Images/dog.jpg")} style={{ width: "100%",height:180, borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Dog Hotel</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >

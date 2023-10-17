@@ -392,11 +392,11 @@ export default function ChatSingle({ navigation, route }) {
     const handleGoBack = () => {
 
         if (nested) {
-            navigation.navigate('Tab', {
+            navigation.replace('Tab', {
                 screen: screenName
             });
         } else {
-            navigation.navigate(screenName)
+            navigation.replace(screenName)
         }
     }
 

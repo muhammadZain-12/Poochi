@@ -672,7 +672,7 @@ function PetDetails({ navigation, route }) {
 
       <View style={{ paddingHorizontal: 15, marginTop: 10 }} >
 
-        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black }} >Upload Image</Text>
+        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black }} >Upload Pet Image</Text>
 
         <View style={{ width: "100%", flexDirection: "row", marginTop: 10, justifyContent: "center" }} >
 

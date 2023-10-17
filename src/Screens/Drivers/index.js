@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Dimensions, ToastAndroid } from "react-native"
+import React, { useState, useContext,useEffect } from "react"
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Dimensions, ToastAndroid,BackHandler } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
@@ -313,14 +313,28 @@ function Drivers({ navigation }) {
             }
 
 
-
-
         }).catch((error) => {
 
             ToastAndroid.show(error.message, ToastAndroid.SHORT)
 
         })
     }
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
 
 
     return <View style={{ flex: 1, backgroundColor: Colors.white }} >

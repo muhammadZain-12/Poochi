@@ -288,7 +288,7 @@ export default function EditProfile({ route }) {
                 <CustomHeader
                     // onPress={() => navigation.goBack()}
                     // iconname={"arrow-back-outline"}
-                    text="Complete Your Profile"
+                    text="Edit Your Profile"
                     color={Colors.black}
                 />
             </View>
@@ -417,7 +417,7 @@ export default function EditProfile({ route }) {
                                 }}
                                 value={signinData.extendedAddress}
                                 onChangeText={(e) => setSigninData({ ...signinData, extendedAddress: e })}
-                                placeholder="Extended Address"
+                                placeholder="Extended Address (Optional) "
                                 placeholderTextColor={Colors.gray}
                             />
 

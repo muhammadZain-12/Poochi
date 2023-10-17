@@ -9,6 +9,7 @@ import auth from "@react-native-firebase/auth"
 import BookingContext from "../../Context/bookingContext/context"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
+import axios from "axios"
 
 
 function RideCancel({ navigation }) {
@@ -32,6 +33,7 @@ function RideCancel({ navigation }) {
     const { cardDetails, setCardDetails } = cardCont
 
 
+    console.log(bookingData?.driverData?.token, "bookings")
 
     const handleCancelRide = () => {
 
@@ -111,10 +113,62 @@ function RideCancel({ navigation }) {
                         wallet: firestore.FieldValue.arrayUnion(walletToAdd)
                     }, { merge: true }).then((res) => {
 
+
+                        if (bookingData?.driverData?.token) {
+                            var data = JSON.stringify({
+                                notification: {
+                                    body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
+                                        contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
+                                            deniedPickup ? `You denies to come to pickup that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
+                                    title: `Hi ${bookingData?.driverData?.fullName} `,
+                                },
+                                to: bookingData?.driverData?.token,
+                            });
+                            let config = {
+                                method: 'post',
+                                url: 'https://fcm.googleapis.com/fcm/send',
+                                headers: {
+                                    Authorization:
+                                        'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                    'Content-Type': 'application/json',
+                                },
+                                data: data,
+                            };
+                            axios(config)
+                                .then(res => {
+
+                                    let notification = JSON.parse(data)
+
+                                    let notificationToSend = {
+                                        title: notification.notification.title,
+                                        body: notification.notification.body,
+                                        date: new Date()
+                                    }
+
+                                    firestore().collection("DriverNotification").doc(bookingData?.driverData?.id).set({
+                                        notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                    }, { merge: true }).then((res) => {
+
+                                        setBookingData("")
+                                        console.log("notification has been successfully send")
+
+                                    }).catch((error) => {
+
+
+                                    })
+
+                                })
+                                .catch(error => {
+                                    console.log(error, "error")
+                                });
+                        }
+
+
+
                         setLoading(false)
                         setSelectedPets("")
+                        // setBookingData("")
                         setCardDetails("")
-                        setBookingData("")
 
                         ToastAndroid.show("Ride has been succesfully cancelled", ToastAndroid.SHORT)
                         navigation.replace("Tab")
@@ -193,9 +247,7 @@ function RideCancel({ navigation }) {
                             {contactDriver && <Icons name="check" size={20} color={Colors.white} />}
 
                         </TouchableOpacity>
-
                         <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Unable to contact driver</Text>
-
                     </View>
                     <View style={{ padding: 10, borderWidth: 1, borderColor: deniedDestination ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
 
@@ -224,7 +276,7 @@ function RideCancel({ navigation }) {
 
                         </TouchableOpacity >
 
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Wrong address shown</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >I've changed my mind</Text>
 
                     </View>
                     <View style={{ padding: 10, borderWidth: 1, borderColor: priceNotReasonable ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >

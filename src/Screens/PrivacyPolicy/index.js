@@ -1081,11 +1081,10 @@ function PrivacyPolicy({ navigation }) {
 
                     Contact Us
                 </Text>
-                <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                <Text style={{ color: Colors.black, fontSize: 10, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
 
-                    If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at <TouchableOpacity onPress={() => Linking.openURL("tel:818-213-3884")} >
-                        <Text style={{ color: "blue", fontFamily: "Poppins-Bold" }} > 818-213-3884 </Text>
-                    </TouchableOpacity>
+                    If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at <Text style={{ color: "blue", fontFamily: "Poppins-Bold" }} > 818-213-3884 </Text>
+
 
 
                 </Text>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Text, FlatList, BackHandler, ToastAndroid } from 'react-native';
+import { View, Image, TouchableOpacity, Text, FlatList, BackHandler, ToastAndroid, } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
@@ -86,7 +86,7 @@ function Chat({ navigation }) {
     let driver = []
 
     firestore()
-      .collection('Drivers').onSnapshot((querySnapshot) => {
+      .collection('Drivers').get().then((querySnapshot) => {
 
         let data = querySnapshot.forEach((doc) => {
 
@@ -164,18 +164,61 @@ function Chat({ navigation }) {
 
         // console.log(chats,"chatsss")
 
-        const dataToChats = chats.filter((chat) => chat.length > 0);
+        let dataToChats = chats.filter((chat) => chat.length > 0);
 
         const updatedChats = dataToChats.map((chat) => {
           const pendingMessage = chat.filter((message) => !message.read && message.sentBy === message.driverData?.id);
+
+
+          // console.log(chat, "chatss")
+
+          // let myLastChats = dataToChats && dataToChats.length > 0 && dataToChats.map((e, i) => {
+
+          // let values = Object.values(e)
+
+          // console.log(values,"values")
+
+          let lastChatMessage;
+
+          if (chat.length > 0) {
+            // Sort the chats by createdAt property in descending order
+            chat.sort((a, b) => b?.createdAt - a?.createdAt);
+
+            lastChatMessage = chat[0].text;
+
+
+
+            console.log('Last chat message:', lastChatMessage);
+          } else {
+            console.log('No chat messages in the array.');
+          }
+
+
+          // const lastChatMessage = chat[chat.length - 1].text;
+
+          // console.log(lastChatMessage, "lastChatMessage")
+
+          // return {
+          //   ...e,
+          //   lastMessage: lastChatMessage.text
+          // }
+
+
+          // })
+
+          // console.log(dataToChats.lastMessage, "dataToChatsss")
+
+          // const lastChatMessage = chats[chats.length - 1];
 
           const latestObject = chat.reduce((prev, current) => {
             return prev.createdAt.toDate() > current.createdAt.toDate() ? prev : current;
           }, chat[0]);
 
+
           return {
             ...latestObject,
             pendingMsg: pendingMessage.length,
+            lastMessage: lastChatMessage,
             lastMsgTime: latestObject.createdAt.toDate().toLocaleTimeString(),
             userData: {
               id: auth().currentUser?.uid
@@ -213,11 +256,31 @@ function Chat({ navigation }) {
 
   }, [allDrivers.length, focus])
 
+
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+      if (focus) {
+        navigation.navigate('Tab', {
+          screen: "Home"
+        });
+      }
+      return true; // Return true to prevent the default back action
+    });
+
+    return () => {
+      backHandler.remove(); // Cleanup the event listener
+    }
+  }, [focus]);
+
+
+
   const renderDrivers = ({ item }) => {
 
     return (
       <TouchableOpacity
-        onPress={() => navigation.replace("ChatSingle", { data: item, screenName: "Home", nested: true })}
+        onPress={() => navigation.replace("ChatSingle", { data: item, screenName: "Chats", nested: true })}
         style={{
           flexDirection: 'row',
           width: "90%",
@@ -244,7 +307,7 @@ function Chat({ navigation }) {
                 fontFamily: 'Poppins-Medium',
                 color: Colors.gray,
               }}>
-              {item.driverData?.VehicleDetails?.vehicleName}
+              {item?.lastMessage}
             </Text>
           </View>
         </View>

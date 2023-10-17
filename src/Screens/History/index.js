@@ -17,6 +17,9 @@ import {
     Dimensions,
 } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
+import IonIcons from "react-native-vector-icons/Ionicons"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Colors from '../../Constant/Color';
 function History({ navigation }) {
     const [bookingData, setBookingData] = useState([]);
@@ -144,11 +147,11 @@ function History({ navigation }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{item.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
-                                    <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
+                                    <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
+                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray}} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
 
                             </View>
@@ -165,14 +168,14 @@ function History({ navigation }) {
 
 
                                     <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.driverData?.mobileNumber}`)} >
-                                        <Image source={require("../../Images/phone.png")} />
+                                        <MaterialIcons name="phone" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
                                     <TouchableOpacity onPress={() => navigation.navigate("ChatSingle", { data: item, screenName: "History", nested: false })} >
-                                        <Image source={require("../../Images/message.png")} />
+                                        <MaterialIcons name="chat" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
@@ -287,7 +290,7 @@ function History({ navigation }) {
 
 
                                     <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.driverData?.mobileNumber}`)} >
-                                        <Image source={require("../../Images/phone.png")} />
+                                        <MaterialIcons name="phone" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
@@ -296,7 +299,7 @@ function History({ navigation }) {
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate("ChatSingle", { data: item, screenName: "History", nested: false })}
                                     >
-                                        <Image source={require("../../Images/message.png")} />
+                                        <MaterialIcons name="chat" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
 
@@ -447,7 +450,7 @@ function History({ navigation }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Notifications"
+                    text="History"
                     color={Colors.black}
                 />
             </View>
