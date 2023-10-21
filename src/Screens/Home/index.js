@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChooseLocationContext from '../../Context/pickupanddropoffContext/context';
 import IonIcons from "react-native-vector-icons/Ionicons"
 import FontAwesome from "react-native-vector-icons/FontAwesome5"
+import ScheduleRideContext from '../../Context/ScheduleRideContext/context';
+import axios from 'axios';
 
 function Home({ navigation }) {
 
@@ -40,6 +42,8 @@ function Home({ navigation }) {
   const selectedPetCont = useContext(SelectedPetContext)
   const notificationCont = useContext(NotificationContext)
   const chooseLocationCont = useContext(ChooseLocationContext)
+  const scheduleRideCont = useContext(ScheduleRideContext)
+
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
@@ -49,8 +53,11 @@ function Home({ navigation }) {
   const { notification, setNotification, unseenNotification, setUnseenNotifications } = notificationCont
   const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
     , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+  const { scheduleData, setScheduleData } = scheduleRideCont
 
 
+
+  console.log(scheduleData, "scheduleData")
 
 
   const focus = useIsFocused()
@@ -76,80 +83,80 @@ function Home({ navigation }) {
   ];
 
 
-  const [scheduleData, setScheduleData] = useState([
+  // const [scheduleData, setScheduleData] = useState([
 
-    {
-      image: require("../../Images/driverProfile.png"),
-      name: "Robert",
-      car: "Toyota Prius",
-      rating: 4.9,
-      carModel: "AA 5841 AO",
-      currentLocation: "Chicago,US",
-      DropoffLocation: "PET Hospital",
-      scheduleDate: "09-Sep-2023",
-      scheduleTime: "06:30 PM",
-      fare: 30,
-      phoneNumber: "+921234567890",
-      pickupCords: {
-        latitude: -10.68860,
-        longitude: -106.27245
-      },
-      dropoffCords: {
-        latitude: -10.69860,
-        longitude: -106.30245
-      },
-      last4: "8970",
-      cardType: "visa"
-    },
-    {
-      image: require("../../Images/driverProfile.png"),
-      name: "Robert",
-      car: "Toyota Prius",
-      rating: 4.9,
-      carModel: "AA 5841 AO",
-      currentLocation: "Chicago,US",
-      DropoffLocation: "PET Hospital",
-      scheduleDate: "09-Sep-2023",
-      scheduleTime: "06:30 PM",
-      fare: 30,
-      phoneNumber: "+921234567890",
-      pickupCords: {
-        latitude: -10.68860,
-        longitude: -106.27245
-      },
-      dropoffCords: {
-        latitude: -10.69860,
-        longitude: -106.30245
+  //   {
+  //     image: require("../../Images/driverProfile.png"),
+  //     name: "Robert",
+  //     car: "Toyota Prius",
+  //     rating: 4.9,
+  //     carModel: "AA 5841 AO",
+  //     currentLocation: "Chicago,US",
+  //     DropoffLocation: "PET Hospital",
+  //     scheduleDate: "09-Sep-2023",
+  //     scheduleTime: "06:30 PM",
+  //     fare: 30,
+  //     phoneNumber: "+921234567890",
+  //     pickupCords: {
+  //       latitude: -10.68860,
+  //       longitude: -106.27245
+  //     },
+  //     dropoffCords: {
+  //       latitude: -10.69860,
+  //       longitude: -106.30245
+  //     },
+  //     last4: "8970",
+  //     cardType: "visa"
+  //   },
+  //   {
+  //     image: require("../../Images/driverProfile.png"),
+  //     name: "Robert",
+  //     car: "Toyota Prius",
+  //     rating: 4.9,
+  //     carModel: "AA 5841 AO",
+  //     currentLocation: "Chicago,US",
+  //     DropoffLocation: "PET Hospital",
+  //     scheduleDate: "09-Sep-2023",
+  //     scheduleTime: "06:30 PM",
+  //     fare: 30,
+  //     phoneNumber: "+921234567890",
+  //     pickupCords: {
+  //       latitude: -10.68860,
+  //       longitude: -106.27245
+  //     },
+  //     dropoffCords: {
+  //       latitude: -10.69860,
+  //       longitude: -106.30245
 
-      },
-      last4: "8970",
-      cardType: "visa"
-    },
-    {
-      image: require("../../Images/driverProfile.png"),
-      name: "Robert",
-      car: "Toyota Prius",
-      rating: 4.9,
-      carModel: "AA 5841 AO",
-      currentLocation: "Chicago,US",
-      DropoffLocation: "PET Hospital",
-      scheduleDate: "09-Sep-2023",
-      scheduleTime: "06:30 PM",
-      fare: 30,
-      phoneNumber: "+921234567890",
-      pickupCords: {
-        latitude: -10.68860,
-        longitude: -106.27245
-      },
-      dropoffCords: {
-        latitude: -10.69860,
-        longitude: -106.30245
+  //     },
+  //     last4: "8970",
+  //     cardType: "visa"
+  //   },
+  //   {
+  //     image: require("../../Images/driverProfile.png"),
+  //     name: "Robert",
+  //     car: "Toyota Prius",
+  //     rating: 4.9,
+  //     carModel: "AA 5841 AO",
+  //     currentLocation: "Chicago,US",
+  //     DropoffLocation: "PET Hospital",
+  //     scheduleDate: "09-Sep-2023",
+  //     scheduleTime: "06:30 PM",
+  //     fare: 30,
+  //     phoneNumber: "+921234567890",
+  //     pickupCords: {
+  //       latitude: -10.68860,
+  //       longitude: -106.27245
+  //     },
+  //     dropoffCords: {
+  //       latitude: -10.69860,
+  //       longitude: -106.30245
 
-      },
-      last4: "8970",
-      cardType: "visa"
-    }
-  ])
+  //     },
+  //     last4: "8970",
+  //     cardType: "visa"
+  //   }
+  // ])
 
 
   const [trackData, setTrackData] = useState({
@@ -176,6 +183,157 @@ function Home({ navigation }) {
     last4: "8970",
     cardType: "visa"
   })
+
+
+
+
+  const sendNotificationToUser = () => {
+
+    let acceptedRides = scheduleData && scheduleData.length > 0 && scheduleData.filter((e, i) => {
+      return e?.userData?.id == auth().currentUser.uid && e?.ScheduleRidestatus == "pending" && e?.getDriverStatus == "accepted"
+    })
+
+
+    acceptedRides && acceptedRides.length > 0 && acceptedRides.forEach((e, i) => {
+
+
+
+      const scheduledDateTime = new Date(
+        e?.scheduleDate?.toDate()?.getFullYear(),
+        e?.scheduleDate?.toDate()?.getMonth(),
+        e?.scheduleDate?.toDate()?.getDate(),
+        e?.scheduleTime?.toDate()?.getHours(),
+        e?.scheduleTime?.toDate()?.getMinutes(),
+        e?.scheduleTime?.toDate()?.getSeconds()
+      );
+
+      const nowDateTime = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate(),
+        new Date().getHours(),
+        new Date().getMinutes(),
+        new Date().getSeconds()
+      );
+
+      let scheduleGetTime = scheduledDateTime.getTime()
+      let nowGetTime = nowDateTime.getTime()
+
+
+      let diff = scheduleGetTime - nowGetTime
+
+      diffHours = diff / 1000 / 60 / 60
+
+
+
+      if (diffHours > 0 && diffHours < 3 && !e?.userAcknowledge) {
+
+
+        var notificationData = JSON.stringify({
+          notification: {
+            body: `Your next schedule ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
+            title: `Hi ${e?.userData?.fullName}`,
+          },
+          to: e?.userData?.token,
+        });
+        let config = {
+          method: 'post',
+          url: 'https://fcm.googleapis.com/fcm/send',
+          headers: {
+            Authorization:
+              'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+            'Content-Type': 'application/json',
+          },
+          data: notificationData,
+        };
+        axios(config)
+          .then(res => {
+
+
+            let notification = JSON.parse(notificationData)
+
+            let notificationToSend = {
+
+              title: notification.notification.title,
+              body: notification.notification.body,
+              date: new Date()
+
+
+            }
+
+            firestore().collection("Notification").doc(e?.userData?.id).set({
+              notification: firestore.FieldValue.arrayUnion(notificationToSend)
+            }, { merge: true }).then(() => {
+
+
+              firestore().collection("ScheduleRides").doc(e?.userData?.id).get().then((doc) => {
+
+                let data = doc?.data()
+
+                let scheduleRides = data?.scheduleRides
+
+                let otherData = scheduleRides.length > 0 && scheduleRides.filter((j, i) => j.bookingId !== e?.bookingId)
+                e.userAcknowledge = true
+
+                let allData = [...otherData, e]
+
+                firestore().collection("ScheduleRides").doc(e?.userData?.id).set({
+                  scheduleRides: allData
+                }).then((res) => {
+
+                  console.log("notification has been succesfully send")
+
+                }).catch((error) => {
+                  ToastAndroid.show(error?.message, ToastAndroid.SHORT)
+                })
+              })
+
+              // 
+              // console.log("Notification has been send successfully")
+              // setAcceptLoader(false)
+
+              // firestore().collection("")
+
+
+            })
+
+
+
+          })
+          .catch(error => {
+            console.log(error, "errorsssss")
+            // setAcceptLoader(false)
+          });
+      }
+
+    })
+
+
+
+  }
+
+
+
+  useEffect(() => {
+
+    let interval;
+
+    if (scheduleData && scheduleData.length > 0) {
+
+      interval = setInterval(() => {
+
+        sendNotificationToUser()
+
+      }, 60000);
+
+    }
+
+    return () => clearInterval(interval)
+
+
+  }, [scheduleData.length, focus])
+
+
 
 
   useEffect(() => {
@@ -273,9 +431,6 @@ function Home({ navigation }) {
         let allNotification = data?.notification
 
 
-        let unseenNotification = allNotification && allNotification.length > 0 && allNotification.filter((e, i) => !e.seen)
-
-        setUnseenNotifications(unseenNotification)
 
 
         let now = new Date().getDate()
@@ -298,6 +453,11 @@ function Home({ navigation }) {
           }
         })
 
+        let unseenNotification = filterNotification && filterNotification.length > 0 && filterNotification.filter((e, i) => !e.seen)
+
+        setUnseenNotifications(unseenNotification)
+
+
         let sorting = filterNotification && filterNotification.length > 0 && filterNotification.sort((a, b) => b?.date?.toDate() - a?.date.toDate())
         setNotification(sorting)
 
@@ -310,7 +470,55 @@ function Home({ navigation }) {
       unsubscribe()
     }
 
+  }
 
+  const getScheduleRides = () => {
+    const unsubscribe = firestore().collection("ScheduleRides").doc(loginData.id).onSnapshot(querySnapshot => {
+
+      let data = querySnapshot.data()
+
+      if (data && data?.scheduleRides) {
+
+
+
+        let rides = data?.scheduleRides && data?.scheduleRides.length > 0 && data?.scheduleRides.filter((e, i) => {
+
+          const scheduledDateTime = new Date(
+            e?.scheduleDate?.toDate()?.getFullYear(),
+            e?.scheduleDate?.toDate()?.getMonth(),
+            e?.scheduleDate?.toDate()?.getDate(),
+            e?.scheduleTime?.toDate()?.getHours(),
+            e?.scheduleTime?.toDate()?.getMinutes(),
+            e?.scheduleTime?.toDate()?.getSeconds()
+          );
+
+          const nowDateTime = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+            new Date().getHours(),
+            new Date().getMinutes(),
+            new Date().getSeconds()
+          );
+
+          let scheduleGetTime = scheduledDateTime.getTime()
+          let nowGetTime = nowDateTime.getTime()
+
+          return e?.ScheduleRidestatus == "pending" && (scheduleGetTime > nowGetTime)
+        })
+
+        setScheduleData(rides)
+
+
+      }
+
+
+
+    })
+
+    return () => {
+      unsubscribe()
+    }
 
   }
 
@@ -319,12 +527,12 @@ function Home({ navigation }) {
 
 
     getNotifications()
+    getScheduleRides()
 
 
   }, [focus])
 
-
-  console.log(currentIndex, "currentIndex")
+  console.log(scheduleData.length, "length")
 
   const nextImage = () => {
 
@@ -448,19 +656,21 @@ function Home({ navigation }) {
 
   }
 
+
+
   const handleRouteToTrackScreen = () => {
 
 
-    if (!bookingData) {
-      ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
-      return
-    }
+    // if (!bookingData) {
+    //   ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+    //   return
+    // }
 
-    firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+    firestore().collection("Request").doc(auth().currentUser?.uid).get().then((doc) => {
 
       let data = doc.data()
 
-      if ((data?.bookingStatus !== "running" && data?.userReponse) || data.bookingStatus == "cancelled") {
+      if ((data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
         ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
       }
 
@@ -487,20 +697,10 @@ function Home({ navigation }) {
 
     <ScrollView>
 
-      <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center" }} >
+      <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center", paddingBottom: 10 }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
           <Image source={{ uri: loginData.profile }} style={{ width: 70, height: 70, borderRadius: 100 }} />
         </TouchableOpacity>
-
-        {/* <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} >
-
-          <Image source={require("../../Images/location.png")} />
-
-          <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.black, fontSize: 16, marginLeft: 5 }} >{locationData?.currentAddress?.slice(0, 10)}...</Text>
-
-          <Icons size={20} color="gray" name="chevron-down" />
-
-        </TouchableOpacity> */}
 
         <View>
           <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 18 }} >Hi {loginData.fullName}</Text>
@@ -537,11 +737,11 @@ function Home({ navigation }) {
 
 
         <View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
+          <View style={{ flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }} >
 
-            {/* {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide", scheduleData)} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, height: 50, justifyContent: "center", alignItems: "center" }} >
-              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Schedule Ride <Image source={require("../../Images/callender.png")} style={{ width: 20, height: 20 }} /> </Text>
-            </TouchableOpacity>} */}
+            {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide")} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, justifyContent: "center", alignItems: "center" }} >
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Scheduled Rides <Image source={require("../../Images/callender.png")} style={{ width: 20, height: 20 }} /> </Text>
+            </TouchableOpacity>}
           </View>
 
 
@@ -603,7 +803,7 @@ function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/dog.jpg")} style={{ width: "100%", height: 180, borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Dog Hotel</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />

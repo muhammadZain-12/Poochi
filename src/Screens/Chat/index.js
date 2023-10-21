@@ -11,14 +11,20 @@ import { useIsFocused } from '@react-navigation/native';
 import BookingContext from '../../Context/bookingContext/context';
 import IonIcons from "react-native-vector-icons/Ionicons"
 import FontAwesome from "react-native-vector-icons/FontAwesome5"
+import NotificationContext from '../../Context/NotificationContext/context';
 
 function Chat({ navigation }) {
   const loginCont = useContext(LoginContext);
   const locationCont = useContext(LocationContext);
 
   const bookingCont = useContext(BookingContext)
+  const notificationCont = useContext(NotificationContext)
+
+
 
   const { bookingData, setBookingData } = bookingCont
+  const { notification, setNotification, unseenNotification, setUnseenNotifications } = notificationCont
+
 
   const focus = useIsFocused()
 
@@ -409,6 +415,13 @@ function Chat({ navigation }) {
         <View style={{ flexDirection: "row" }} >
 
           <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
+
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
+
+              <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
+
+
+            </View>}
 
             <IonIcons name="notifications" size={30} color={Colors.buttonColor} />
 

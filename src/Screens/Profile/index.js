@@ -87,21 +87,20 @@ function Profile({ navigation }) {
     const handleRouteToTrackScreen = () => {
 
 
-        if (!bookingData) {
-            ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
-            return
-        }
+        // if (!bookingData) {
+        //     ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+        //     return
+        // }
 
-        firestore().collection("Request").doc(bookingData?.userData?.id).get().then((doc) => {
+        firestore().collection("Request").doc(auth().currentUser?.uid).get().then((doc) => {
 
             let data = doc.data()
 
-            if ((data?.bookingStatus !== "running" && data?.userReponse) || data.bookingStatus == "cancelled") {
+            if ((data && data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
                 ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
             }
 
             else {
-
 
                 setBookingData(data)
                 navigation.navigate("PassengerRideDetail")

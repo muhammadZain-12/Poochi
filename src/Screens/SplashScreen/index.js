@@ -347,18 +347,10 @@ export default function SplashScreen({ navigation }) {
                   });
                 }
               });
-
             }
-
           }).catch((error) => {
-
             console.log(error, "error")
-
           })
-
-
-
-          // navigation.replace('Location');
 
         } else {
           navigation.replace("UserDetails", { email: CheckUser.email })

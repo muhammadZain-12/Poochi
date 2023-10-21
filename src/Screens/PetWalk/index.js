@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, BackHandler } from "react-native"
+import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, BackHandler, ActivityIndicator } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
@@ -16,7 +16,8 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
 import IonIcons from "react-native-vector-icons/Ionicons"
-
+import axios from "axios";
+import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
 
 function PetWalk({ navigation, route }) {
 
@@ -39,6 +40,10 @@ function PetWalk({ navigation, route }) {
 
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
+
+    const scheduleRideCont = useContext(ScheduleRideContext)
+    const { scheduleData, setScheduleData } = scheduleRideCont
+
 
 
     const chooseLocationCont = useContext(ChooseLocationContext)
@@ -587,9 +592,21 @@ function PetWalk({ navigation, route }) {
 
     }
 
-    console.log(loginData, "LOGINdATA")
 
-    const handleFindDriver = () => {
+    function generateRandomID(length) {
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomID = '';
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomID += characters.charAt(randomIndex);
+        }
+
+        return randomID;
+    }
+
+    const handleFindDriver = async () => {
 
 
 
@@ -632,60 +649,342 @@ function PetWalk({ navigation, route }) {
 
         let dataToSend;
         if (selectedOption?.name !== "Dog Park") {
-            dataToSend = {
-                pickupAddress: pickupAddress,
-                pickupCords: pickup,
-                dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
-                dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
-                selectedPets: selectedPets,
-                selectedOption: selectedOptions[0],
-                comment: comment,
-                cardDetails: cardDetails,
-                userData: loginData,
-                fare: fare,
-                serviceCharge: serviceCharges,
-                driverFare: driverFare,
-                duration: selectedTimeDuration,
-                bookingType: "oneWay",
-                requestDate: new Date(),
-                type: "PetWalk",
-                deductedFromWallet: deductedFromWallet
+
+            if (date && time) {
+
+
+
+
+                let bookingId = await generateRandomID(15)
+
+
+
+
+                dataToSend = {
+                    pickupAddress: pickupAddress,
+                    pickupCords: pickup,
+                    bookingId: bookingId,
+                    dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                    dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                    selectedPets: selectedPets,
+                    scheduleDate: date,
+                    scheduleTime: time,
+                    selectedOption: selectedOptions[0],
+                    comment: comment,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    driverFare: driverFare,
+                    duration: selectedTimeDuration,
+                    bookingType: "oneWay",
+                    requestDate: new Date(),
+                    type: "PetWalk",
+                    deductedFromWallet: deductedFromWallet,
+                    getDriverStatus: "pending",
+                    ScheduleRidestatus: "pending"
+                }
+
+            }
+
+            else {
+                dataToSend = {
+                    pickupAddress: pickupAddress,
+                    pickupCords: pickup,
+                    dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                    dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                    selectedPets: selectedPets,
+                    selectedOption: selectedOptions[0],
+                    comment: comment,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    driverFare: driverFare,
+                    duration: selectedTimeDuration,
+                    bookingType: "oneWay",
+                    requestDate: new Date(),
+                    type: "PetWalk",
+                    deductedFromWallet: deductedFromWallet
+                }
             }
         } else {
 
-            dataToSend = {
-                pickupAddress: pickupAddress,
-                pickupCords: pickup,
-                dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
-                dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
-                returnPickupCords: dropoff,
-                returnDropoffCords: pickup,
-                returnPickupAddress: dropoffAddress,
-                returnDropoffAddress: pickupAddress,
+            if (date && time) {
 
-                distance: distance,
-                pickupToDropDis: pickupToDropoffDistance,
-                dropoffToPickupDis: dropoffToPickupDistance,
-                minutes: minutes,
-                pickupToDropoffMinutes: pickupToDropoffMinutes,
-                dropoffToPickupMinutes: dropoffToPickupMinutes,
+                let bookingId = await generateRandomID(15)
 
-                selectedPets: selectedPets,
-                selectedOption: selectedOptions[0],
-                comment: comment,
-                cardDetails: cardDetails,
-                userData: loginData,
-                fare: fare,
-                serviceCharge: serviceCharges,
-                driverFare: driverFare,
-                duration: selectedTimeDuration,
-                bookingType: "twoWay",
-                requestDate: new Date(),
-                type: "PetWalk",
-                deductedFromWallet: deductedFromWallet
+                dataToSend = {
+                    pickupAddress: pickupAddress,
+                    pickupCords: pickup,
+                    bookingId: bookingId,
+                    scheduleDate: date,
+                    scheduleTime: time,
+                    dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                    dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                    returnPickupCords: dropoff,
+                    returnDropoffCords: pickup,
+                    returnPickupAddress: dropoffAddress,
+                    returnDropoffAddress: pickupAddress,
+                    distance: distance,
+                    pickupToDropDis: pickupToDropoffDistance,
+                    dropoffToPickupDis: dropoffToPickupDistance,
+                    minutes: minutes,
+                    pickupToDropoffMinutes: pickupToDropoffMinutes,
+                    dropoffToPickupMinutes: dropoffToPickupMinutes,
+                    selectedPets: selectedPets,
+                    selectedOption: selectedOptions[0],
+                    comment: comment,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    driverFare: driverFare,
+                    duration: selectedTimeDuration,
+                    bookingType: "twoWay",
+                    requestDate: new Date(),
+                    type: "PetWalk",
+                    deductedFromWallet: deductedFromWallet,
+                    getDriverStatus: "pending",
+                    ScheduleRidestatus: "pending"
+                }
+
+            }
+
+            else {
+                dataToSend = {
+                    pickupAddress: pickupAddress,
+                    pickupCords: pickup,
+                    dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
+                    dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
+                    returnPickupCords: dropoff,
+                    returnDropoffCords: pickup,
+                    returnPickupAddress: dropoffAddress,
+                    returnDropoffAddress: pickupAddress,
+                    distance: distance,
+                    pickupToDropDis: pickupToDropoffDistance,
+                    dropoffToPickupDis: dropoffToPickupDistance,
+                    minutes: minutes,
+                    pickupToDropoffMinutes: pickupToDropoffMinutes,
+                    dropoffToPickupMinutes: dropoffToPickupMinutes,
+                    selectedPets: selectedPets,
+                    selectedOption: selectedOptions[0],
+                    comment: comment,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    driverFare: driverFare,
+                    duration: selectedTimeDuration,
+                    bookingType: "twoWay",
+                    requestDate: new Date(),
+                    type: "PetWalk",
+                    deductedFromWallet: deductedFromWallet
+                }
             }
 
         }
+
+
+
+        if (date && time) {
+
+            let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
+
+                const scheduledDateTime = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    time.getHours(),
+                    time.getMinutes(),
+                    time.getSeconds()
+                );
+
+
+
+                let previousDate = e?.scheduleDate?.toDate()
+                let previousTime = e?.scheduleTime?.toDate()
+
+                const previousDateTime = new Date(
+                    previousDate.getFullYear(),
+                    previousDate.getMonth(),
+                    previousDate.getDate(),
+                    previousTime.getHours(),
+                    previousTime.getMinutes(),
+                    previousTime.getSeconds()
+                );
+
+
+                let previousDateGet = previousDateTime?.getTime()
+                let selectedDateGet = scheduledDateTime?.getTime()
+
+                let diff = selectedDateGet - previousDateGet
+
+                let diffHour = diff / 1000 / 60 / 60
+
+
+                return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
+
+
+            })
+
+
+            if (checkRideTime) {
+
+                ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                return
+            }
+
+
+            setLoading(true)
+
+
+
+
+
+            const drivers = [];
+            const tokens = [];
+
+            const driversSnapshot = await firestore().collection('Drivers').get();
+            const scheduleRidesPromises = [];
+
+            driversSnapshot.forEach((doc) => {
+                const data = doc?.data();
+
+                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                    const dis = getPreciseDistance(
+                        {
+                            latitude: pickup.lat,
+                            longitude: pickup.lng,
+                        },
+                        {
+                            latitude: data?.currentLocation?.latitude,
+                            longitude: data?.currentLocation?.longitude,
+                        }
+                    );
+
+                    const mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                    if (mileDistance <= 5) {
+                        const driverId = data.id;
+                        const driverToken = data.token;
+
+                        scheduleRidesPromises.push(
+                            firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
+                                let hasConflictingRide = false;
+
+                                scheduleSnapshot.forEach((scheduleDoc) => {
+                                    const scheduleData = scheduleDoc?.data();
+                                    const scheduledRides = scheduleData?.scheduleRides;
+
+                                    if (scheduledRides) {
+                                        scheduledRides.forEach((ride) => {
+                                            const scheduledDateTime = new Date(
+                                                date.getFullYear(),
+                                                date.getMonth(),
+                                                date.getDate(),
+                                                time.getHours(),
+                                                time.getMinutes(),
+                                                time.getSeconds()
+                                            );
+
+                                            if (
+                                                ride?.driverData?.id === driverId &&
+                                                ride?.getDriverStatus === 'accepted'
+                                            ) {
+                                                const previousDate = ride.scheduleDate.toDate();
+                                                const previousTime = ride.scheduleTime.toDate();
+                                                const previousDateTime = new Date(
+                                                    previousDate.getFullYear(),
+                                                    previousDate.getMonth(),
+                                                    previousDate.getDate(),
+                                                    previousTime.getHours(),
+                                                    previousTime.getMinutes(),
+                                                    previousTime.getSeconds()
+                                                );
+
+                                                const previousDateGet = previousDateTime.getTime();
+                                                const selectedDateGet = scheduledDateTime.getTime();
+                                                const diff = selectedDateGet - previousDateGet;
+                                                const diffHour = diff / 1000 / 60 / 60;
+
+                                                if (diffHour < 3 && diffHour > -3) {
+                                                    hasConflictingRide = true;
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+
+                                if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                    tokens.push(driverToken);
+                                    drivers.push(data);
+                                }
+                            })
+                        );
+                    }
+                }
+            });
+
+            await Promise.all(scheduleRidesPromises);
+
+            dataToSend.drivers = drivers
+
+
+
+
+
+            firestore().collection("ScheduleRides").doc(loginData.id).set(
+                { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
+            ).then(async (res) => {
+
+                var data = JSON.stringify({
+                    notification: {
+                        body: "You have got schedule ride request kindly respond it",
+                        title: `Schedule Ride Request`,
+                    },
+                    android: {
+                        priority: "high",
+                    },
+                    registration_ids: tokens,
+                });
+                let config = {
+                    method: 'post',
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    headers: {
+                        Authorization:
+                            'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                        'Content-Type': 'application/json',
+                    },
+                    data: data,
+                };
+                axios(config)
+                    .then(res => {
+
+                        setScheduleData([
+                            ...scheduleData,
+                            dataToSend
+                        ])
+                        setLoading(false)
+                        ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+                        navigation.replace("Tab", {
+                            screen: "Home"
+                        })
+
+                    })
+
+                    .catch(error => {
+                        setLoading(false)
+                        console.log(error, "error")
+                    });
+
+            }).catch((error) => {
+                setLoading(false)
+                console.log(error)
+            })
+            return
+        }
+
 
 
         setLoading(true)
@@ -729,7 +1028,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Dog Hotel"}
+                    text={"Pet Hotel"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -830,7 +1129,6 @@ function PetWalk({ navigation, route }) {
 
 
                         <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetWalk")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
-
                             <IonIcons name="add" color={Colors.gray} size={40} />
                         </TouchableOpacity>
 
@@ -886,11 +1184,17 @@ function PetWalk({ navigation, route }) {
 
 
 
-                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "medical")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "petWalk")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1, alignItems: "center" }} >
 
-                        <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Soon you will also be able to schedule rides</Text>
+                        {!date && <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Schedule For Future Ride</Text>}
 
-                        {/* <Image source={require("../../Images/calender.png")} /> */}
+                        <View>
+                            {date && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{date?.toLocaleDateString()}</Text>}
+
+                            {time && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{time?.toLocaleTimeString()}</Text>}
+                        </View>
+
+                        <Image source={require("../../Images/calender.png")} />
 
                     </TouchableOpacity>
 
@@ -957,7 +1261,7 @@ function PetWalk({ navigation, route }) {
 
                 </View>
 
-                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text="Find a Driver" />
+                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : date ? "Schedule Ride" : "Find a Driver"} />
 
 
             </ScrollView>

@@ -67,7 +67,184 @@ function RideCancel({ navigation }) {
         setLoading(true)
 
 
+
+
         let id = auth().currentUser?.uid
+
+
+
+        if (bookingData?.ScheduleRidestatus) {
+
+            firestore().collection("ScheduleRides").doc(bookingData?.userData?.id).get().then((doc) => {
+
+                let data = doc?.data()
+
+                let scheduleRides = data?.scheduleRides
+
+                let otherData = scheduleRides && scheduleRides?.length > 0 && scheduleRides.filter((e, i) => e?.bookingId !== bookingData?.bookingId)
+
+                let filterData = { ...bookingData }
+
+                filterData.ScheduleRidestatus = "Cancelled"
+
+                let allData = [...otherData, filterData]
+
+                firestore().collection("ScheduleRides").doc(bookingData?.userData?.id).set({
+                    scheduleRides: allData
+                }).then((res) => {
+
+                    firestore().collection("Request").doc(id).update({
+                        requestStatus: "cancelled",
+                        rideCancelByPassenger: true,
+                        bookingStatus: "cancelled",
+                        driverData: ""
+                    }).then((res) => {
+
+                        let cancelRideData = {
+
+                            ...bookingData,
+                            rideCancelByPassenger: true,
+                            cancelledTime: new Date(),
+                            cancelReason: cancelReason
+                        }
+
+                        firestore().collection("CancelRides").doc(id).set({
+                            cancelledBookings: firestore.FieldValue.arrayUnion(cancelRideData)
+                        }, { merge: true }).then((res) => {
+
+                            let dataToSend = {
+
+                                date: new Date(),
+                                deposit: 0,
+                                cancellationCharges: (Number(bookingData?.fare) * 10) / 100,
+                                spent: 0,
+                                remainingWallet: -(Number(bookingData?.fare) * 10) / 100
+
+                            }
+
+                            firestore().collection("UserWallet").doc(id).set({
+                                wallet: firestore.FieldValue.arrayUnion(dataToSend)
+                            }, { merge: true }).then(() => {
+
+                                let walletToAdd = {
+                                    date: new Date(),
+                                    earning: (Number(bookingData?.fare) * 10) / 100,
+                                    withdraw: 0,
+                                    remainingWallet: (Number(bookingData?.fare) * 10) / 100
+                                }
+
+                                firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
+                                    wallet: firestore.FieldValue.arrayUnion(walletToAdd)
+                                }, { merge: true }).then((res) => {
+
+
+                                    if (bookingData?.driverData?.token) {
+                                        var data = JSON.stringify({
+                                            notification: {
+                                                body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
+                                                    contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
+                                                        deniedPickup ? `You denies to come to pickup that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
+                                                title: `Hi ${bookingData?.driverData?.fullName} `,
+                                            },
+                                            to: bookingData?.driverData?.token,
+                                        });
+                                        let config = {
+                                            method: 'post',
+                                            url: 'https://fcm.googleapis.com/fcm/send',
+                                            headers: {
+                                                Authorization:
+                                                    'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                                'Content-Type': 'application/json',
+                                            },
+                                            data: data,
+                                        };
+                                        axios(config)
+                                            .then(res => {
+
+                                                let notification = JSON.parse(data)
+
+                                                let notificationToSend = {
+                                                    title: notification.notification.title,
+                                                    body: notification.notification.body,
+                                                    date: new Date()
+                                                }
+
+                                                firestore().collection("DriverNotification").doc(bookingData?.driverData?.id).set({
+                                                    notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                                }, { merge: true }).then((res) => {
+
+                                                    setBookingData("")
+                                                    console.log("notification has been successfully send")
+
+                                                }).catch((error) => {
+
+
+                                                })
+
+                                            })
+                                            .catch(error => {
+                                                console.log(error, "error")
+                                            });
+                                    }
+
+
+
+                                    setLoading(false)
+                                    setSelectedPets("")
+                                    // setBookingData("")
+                                    setCardDetails("")
+
+                                    ToastAndroid.show("Ride has been succesfully cancelled", ToastAndroid.SHORT)
+                                    navigation.replace("Tab")
+
+
+                                }).catch((error) => {
+
+                                    setLoading(false)
+                                    console.log(error, "error")
+
+                                })
+
+
+
+                            }).catch((error) => {
+
+                                setLoading(false)
+                                console.log(error)
+
+                            })
+
+
+
+                        }).catch((error) => {
+
+                            setLoading(false)
+                            console.log(error)
+
+                        })
+
+
+                    }).catch((error) => {
+
+                        setLoading(false)
+                        console.log(error)
+                    })
+
+
+
+                })
+
+            }).catch((error) => {
+
+                console.log(error)
+                setLoading(false)
+            })
+
+            return
+        }
+
+
+
 
         firestore().collection("Request").doc(id).update({
             requestStatus: "cancelled",

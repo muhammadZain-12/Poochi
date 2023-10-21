@@ -18,6 +18,8 @@ import BookingContext from "../../Context/bookingContext/context";
 import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
 import auth from "@react-native-firebase/auth";
 import IonIcons from "react-native-vector-icons/Ionicons"
+import axios from "axios";
+import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
 
 
 
@@ -37,6 +39,9 @@ function FriendsAndFamily({ navigation, route }) {
     const selectedPetsCont = useContext(SelectedPetContext)
     const { selectedPets, setSelectedPets } = selectedPetsCont
 
+
+    const scheduleRideCont = useContext(ScheduleRideContext)
+    const { scheduleData, setScheduleData } = scheduleRideCont
 
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
@@ -285,7 +290,6 @@ function FriendsAndFamily({ navigation, route }) {
             }
             let baseCharge = data?.BaseCharge
 
-            console.log(baseCharge, "baseCharge")
 
             let fare = mileCharge * Number(mileDistance) + (additionalPetCharge ? Number(additionalPetCharge) : 0)
             fare = Number(fare) + Number(baseCharge)
@@ -491,7 +495,20 @@ function FriendsAndFamily({ navigation, route }) {
     }
 
 
-    const handleFindDriver = () => {
+    function generateRandomID(length) {
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomID = '';
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomID += characters.charAt(randomIndex);
+        }
+
+        return randomID;
+    }
+
+    const handleFindDriver = async () => {
 
 
         if (!oneWay) {
@@ -520,6 +537,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                 ToastAndroid.show("Kindly enter waiting Time", ToastAndroid.SHORT)
                 return
+
             }
 
             if (selectedPets.length == 0) {
@@ -532,10 +550,261 @@ function FriendsAndFamily({ navigation, route }) {
                 return
             }
 
-
             let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
             let driverFare = Number(fare) - Number(serviceCharges)
             driverFare = Number(driverFare).toFixed(2)
+
+
+            if (date && time) {
+
+                console.log(date, time, "to,eee")
+
+
+
+                let bookingId = await generateRandomID(15)
+
+                console.log(bookingId, "iddd")
+
+
+
+                let dataToSend = {
+                    pickupAddress: pickupAddress,
+                    bookingId: bookingId,
+                    dropoffAddress: dropoffAddress,
+                    returnPickupAddress: returnPickupAddress,
+                    returnDropoffAddress: returnDropoffAddress,
+                    pickupCords: pickup,
+                    dropoffCoords: dropoff,
+                    returnPickupCords: returnPickup,
+                    returnDropoffCords: returnDropoff,
+                    scheduleDate: date,
+                    scheduleTime: time,
+                    selectedPets: selectedPets,
+                    comment: comment,
+                    driverFare: driverFare,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    distance: distance,
+                    pickupToDropDis: pickupToDropoffDistance,
+                    dropoffToPickupDis: dropoffToPickupDistance,
+                    minutes: minutes,
+                    pickupToDropoffMinutes: pickupToDropoffMinutes,
+                    dropoffToPickupMinutes: dropoffToPickupMinutes,
+                    waitingTime: customWaitingTime ? customWaitingTime : value,
+                    bookingType: "twoWay",
+                    requestDate: new Date(),
+                    type: "FriendsAndFamily",
+                    deductedFromWallet: deductedFromWallet,
+                    getDriverStatus: "pending",
+                    ScheduleRidestatus: "pending"
+                }
+
+
+
+                let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
+
+                    const scheduledDateTime = new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        time.getHours(),
+                        time.getMinutes(),
+                        time.getSeconds()
+                    );
+
+
+
+                    let previousDate = e?.scheduleDate?.toDate()
+                    let previousTime = e?.scheduleTime?.toDate()
+
+                    const previousDateTime = new Date(
+                        previousDate.getFullYear(),
+                        previousDate.getMonth(),
+                        previousDate.getDate(),
+                        previousTime.getHours(),
+                        previousTime.getMinutes(),
+                        previousTime.getSeconds()
+                    );
+
+
+                    let previousDateGet = previousDateTime?.getTime()
+                    let selectedDateGet = scheduledDateTime?.getTime()
+
+                    let diff = selectedDateGet - previousDateGet
+
+                    let diffHour = diff / 1000 / 60 / 60
+
+
+                    return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
+
+
+                })
+
+
+                if (checkRideTime) {
+
+                    ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                    return
+                }
+
+
+                setLoading(true)
+
+
+
+
+
+                const drivers = [];
+                const tokens = [];
+
+                const driversSnapshot = await firestore().collection('Drivers').get();
+                const scheduleRidesPromises = [];
+
+                driversSnapshot.forEach((doc) => {
+                    const data = doc?.data();
+
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                        const dis = getPreciseDistance(
+                            {
+                                latitude: pickup.lat,
+                                longitude: pickup.lng,
+                            },
+                            {
+                                latitude: data?.currentLocation?.latitude,
+                                longitude: data?.currentLocation?.longitude,
+                            }
+                        );
+
+                        const mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                        if (mileDistance <= 5) {
+                            const driverId = data.id;
+                            const driverToken = data.token;
+
+                            scheduleRidesPromises.push(
+                                firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
+                                    let hasConflictingRide = false;
+
+                                    scheduleSnapshot.forEach((scheduleDoc) => {
+                                        const scheduleData = scheduleDoc?.data();
+                                        const scheduledRides = scheduleData?.scheduleRides;
+
+                                        if (scheduledRides) {
+                                            scheduledRides.forEach((ride) => {
+                                                const scheduledDateTime = new Date(
+                                                    date.getFullYear(),
+                                                    date.getMonth(),
+                                                    date.getDate(),
+                                                    time.getHours(),
+                                                    time.getMinutes(),
+                                                    time.getSeconds()
+                                                );
+
+                                                if (
+                                                    ride?.driverData?.id === driverId &&
+                                                    ride?.getDriverStatus === 'accepted'
+                                                ) {
+                                                    const previousDate = ride.scheduleDate.toDate();
+                                                    const previousTime = ride.scheduleTime.toDate();
+                                                    const previousDateTime = new Date(
+                                                        previousDate.getFullYear(),
+                                                        previousDate.getMonth(),
+                                                        previousDate.getDate(),
+                                                        previousTime.getHours(),
+                                                        previousTime.getMinutes(),
+                                                        previousTime.getSeconds()
+                                                    );
+
+                                                    const previousDateGet = previousDateTime.getTime();
+                                                    const selectedDateGet = scheduledDateTime.getTime();
+                                                    const diff = selectedDateGet - previousDateGet;
+                                                    const diffHour = diff / 1000 / 60 / 60;
+
+                                                    if (diffHour < 3 && diffHour > -3) {
+                                                        hasConflictingRide = true;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                        tokens.push(driverToken);
+                                        drivers.push(data);
+                                    }
+                                })
+                            );
+                        }
+                    }
+                });
+
+                await Promise.all(scheduleRidesPromises);
+
+
+
+
+
+                dataToSend.drivers = drivers
+
+
+
+
+
+                firestore().collection("ScheduleRides").doc(loginData.id).set(
+                    { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
+                ).then(async (res) => {
+
+                    var data = JSON.stringify({
+                        notification: {
+                            body: "You have got schedule ride request kindly respond it",
+                            title: `Schedule Ride Request`,
+                        },
+                        android: {
+                            priority: "high",
+                        },
+                        registration_ids: tokens,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+
+                            setScheduleData([
+                                ...scheduleData,
+                                dataToSend
+                            ])
+                            setLoading(false)
+                            ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+                            navigation.replace("Tab", {
+                                screen: "Home"
+                            })
+
+                        })
+
+                        .catch(error => {
+                            setLoading(false)
+                            console.log(error, "error")
+                        });
+
+                }).catch((error) => {
+                    setLoading(false)
+                    console.log(error)
+                })
+
+
+                return;
+            }
+
 
             let dataToSend = {
                 pickupAddress: pickupAddress,
@@ -548,11 +817,11 @@ function FriendsAndFamily({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
+                driverFare: driverFare,
                 cardDetails: cardDetails,
                 userData: loginData,
                 fare: fare,
                 serviceCharge: serviceCharges,
-                driverFare: driverFare,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
                 dropoffToPickupDis: dropoffToPickupDistance,
@@ -608,8 +877,253 @@ function FriendsAndFamily({ navigation, route }) {
             }
 
             let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
-            let driverFare = Number(fare) - Number(serviceCharges)
+            let driverFare = Number(fare) - Number(serviceCharges).toFixed(2)
+
             driverFare = Number(driverFare).toFixed(2)
+
+            if (date && time) {
+
+
+                let bookingId = await generateRandomID(15)
+
+
+                let dataToSend = {
+                    pickupAddress: pickupAddress,
+                    bookingId: bookingId,
+                    dropoffAddress: dropoffAddress,
+                    pickupCords: pickup,
+                    dropoffCoords: dropoff,
+                    selectedPets: selectedPets,
+                    comment: comment,
+                    cardDetails: cardDetails,
+                    userData: loginData,
+                    fare: fare,
+                    serviceCharge: serviceCharges,
+                    scheduleDate: date,
+                    scheduleTime: time,
+                    driverFare: driverFare,
+                    distance: distance,
+                    minutes: minutes,
+                    bookingType: "oneWay",
+                    requestDate: new Date(),
+                    type: "FriendsAndFamily",
+                    deductedFromWallet: deductedFromWallet,
+                    getDriverStatus: "pending",
+                    ScheduleRidestatus: "pending"
+                }
+
+
+                let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
+
+                    const scheduledDateTime = new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        time.getHours(),
+                        time.getMinutes(),
+                        time.getSeconds()
+                    );
+
+
+
+                    let previousDate = e?.scheduleDate?.toDate()
+                    let previousTime = e?.scheduleTime?.toDate()
+
+                    const previousDateTime = new Date(
+                        previousDate.getFullYear(),
+                        previousDate.getMonth(),
+                        previousDate.getDate(),
+                        previousTime.getHours(),
+                        previousTime.getMinutes(),
+                        previousTime.getSeconds()
+                    );
+
+
+                    let previousDateGet = previousDateTime?.getTime()
+                    let selectedDateGet = scheduledDateTime?.getTime()
+
+                    let diff = selectedDateGet - previousDateGet
+
+                    let diffHour = diff / 1000 / 60 / 60
+
+
+                    return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
+
+
+                })
+
+
+                if (checkRideTime) {
+
+                    ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                    return
+                }
+
+
+                setLoading(true)
+
+
+
+
+
+                const drivers = [];
+                const tokens = [];
+
+                const driversSnapshot = await firestore().collection('Drivers').get();
+                const scheduleRidesPromises = [];
+
+                driversSnapshot.forEach((doc) => {
+                    const data = doc?.data();
+
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                        const dis = getPreciseDistance(
+                            {
+                                latitude: pickup.lat,
+                                longitude: pickup.lng,
+                            },
+                            {
+                                latitude: data?.currentLocation?.latitude,
+                                longitude: data?.currentLocation?.longitude,
+                            }
+                        );
+
+                        const mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                        if (mileDistance <= 5) {
+                            const driverId = data.id;
+                            const driverToken = data.token;
+
+                            scheduleRidesPromises.push(
+                                firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
+                                    let hasConflictingRide = false;
+
+                                    scheduleSnapshot.forEach((scheduleDoc) => {
+                                        const scheduleData = scheduleDoc?.data();
+                                        const scheduledRides = scheduleData?.scheduleRides;
+
+                                        if (scheduledRides) {
+                                            scheduledRides.forEach((ride) => {
+                                                const scheduledDateTime = new Date(
+                                                    date.getFullYear(),
+                                                    date.getMonth(),
+                                                    date.getDate(),
+                                                    time.getHours(),
+                                                    time.getMinutes(),
+                                                    time.getSeconds()
+                                                );
+
+                                                if (
+                                                    ride?.driverData?.id === driverId &&
+                                                    ride?.getDriverStatus === 'accepted'
+                                                ) {
+                                                    const previousDate = ride.scheduleDate.toDate();
+                                                    const previousTime = ride.scheduleTime.toDate();
+                                                    const previousDateTime = new Date(
+                                                        previousDate.getFullYear(),
+                                                        previousDate.getMonth(),
+                                                        previousDate.getDate(),
+                                                        previousTime.getHours(),
+                                                        previousTime.getMinutes(),
+                                                        previousTime.getSeconds()
+                                                    );
+
+                                                    const previousDateGet = previousDateTime.getTime();
+                                                    const selectedDateGet = scheduledDateTime.getTime();
+                                                    const diff = selectedDateGet - previousDateGet;
+                                                    const diffHour = diff / 1000 / 60 / 60;
+
+                                                    if (diffHour < 3 && diffHour > -3) {
+                                                        hasConflictingRide = true;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                    if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                        tokens.push(driverToken);
+                                        drivers.push(data);
+                                    }
+                                })
+                            );
+                        }
+                    }
+                });
+
+                await Promise.all(scheduleRidesPromises);
+
+
+                dataToSend.drivers = drivers
+
+                firestore().collection("ScheduleRides").doc(loginData.id).set(
+                    { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
+                ).then(async (res) => {
+
+                    var data = JSON.stringify({
+                        notification: {
+                            body: "You have got schedule ride request kindly respond it",
+                            title: `Schedule Ride Request`,
+                        },
+                        android: {
+                            priority: "high",
+                        },
+                        registration_ids: tokens,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+
+                            // let notification = JSON.parse(data)
+
+                            // let notificationToSend = {
+                            //     title: notification.notification.title,
+                            //     body: notification.notification.body,
+                            //     date: new Date()
+                            // }
+
+                            // firestore().collection("DriverNotification").doc(driver.id).set({
+                            //     notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                            // }, { merge: true }).then((res) => {
+
+                            setScheduleData([
+                                ...scheduleData,
+                                dataToSend
+                            ])
+                            setLoading(false)
+                            ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+                            navigation.replace("Tab", {
+                                screen: "Home"
+                            })
+
+                        })
+                        // .catch((error) => {
+
+                        //     setLoading(false)
+                        //     console.log(error,"error")
+
+                        // })
+
+                        // })
+                        .catch(error => {
+                            setLoading(false)
+                            console.log(error, "error")
+                        });
+
+                }).catch((error) => {
+                    setLoading(false)
+                    console.log(error)
+                })
+                return;
+            }
 
             let dataToSend = {
                 pickupAddress: pickupAddress,
@@ -628,11 +1142,15 @@ function FriendsAndFamily({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "FriendsAndFamily",
-                deductedFromWallet: deductedFromWallet
+                deductedFromWallet: deductedFromWallet,
+
             }
 
-
             setLoading(true)
+
+
+
+
 
             firestore().collection("Request").doc(loginData.id).set(dataToSend).then((res) => {
                 setLoading(false)
@@ -853,13 +1371,19 @@ function FriendsAndFamily({ navigation, route }) {
                     </View>}
 
 
-                    {!oneWay && <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, borderWidth: 0, marginTop: 10, borderRadius: 10, paddingVertical: 15 }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "friends")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1, alignItems: "center" }} >
 
-                        <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Soon you will also be able to schedule rides</Text>
+                        {!date && <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Schedule For Future Ride</Text>}
 
-                        {/* <Image source={require("../../Images/calender.png")} /> */}
+                        <View>
+                            {date && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{date?.toLocaleDateString()}</Text>}
 
-                    </TouchableOpacity>}
+                            {time && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{time?.toLocaleTimeString()}</Text>}
+                        </View>
+
+                        <Image source={require("../../Images/calender.png")} />
+
+                    </TouchableOpacity>
 
                     {!oneWay && <DropDownPicker
                         open={open}
@@ -945,7 +1469,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                 </View>
 
-                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Find a Driver"} />
+                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : date ? "Schedule Ride " : "Find a Driver"} />
 
 
 

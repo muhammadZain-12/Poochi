@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid } from "react-native"
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
@@ -20,24 +20,114 @@ function ScheduleRideDate({ navigation, route }) {
     const onChange = (event, selectedDate) => {
         setShowDatePicker(false)
         const currentDate = selectedDate || date;
-        // setShowDatePicker(Platform.OS === 'ios'); // Hide the picker on iOS when a date is selected
         setDate(currentDate);
     };
 
     const [time, setTime] = useState(new Date())
 
-
-
-
     const onChangeTime = (event, selectedDate) => {
+
         setShowTimePicker(false)
         const currentDate = selectedDate || date;
-        // setShowDatePicker(Platform.OS === 'ios'); // Hide the picker on iOS when a date is selected
         setTime(currentDate);
     };
 
 
 
+
+    const navigateToOtherPage = () => {
+
+
+
+
+        let now = new Date()
+
+        let nowYear = now.getFullYear()
+        let nowMonth = now.getMonth()
+        let nowDate = now.getDate()
+
+
+
+
+        let selectedDate = date.getTime()
+        let selectedYear = date.getFullYear()
+        let selectedMonth = date.getMonth()
+        let userSelectedDate = date.getDate()
+
+
+
+
+
+
+        if (nowYear > selectedYear) {
+
+            ToastAndroid.show("you cannot schedule ride of previous year", ToastAndroid.SHORT)
+            return
+
+
+        }
+
+        if (nowYear == selectedYear && nowMonth > selectedMonth) {
+            ToastAndroid.show("you cannot schedule ride of previous month", ToastAndroid.SHORT)
+            return
+        }
+
+        if (nowYear == selectedYear && nowMonth == selectedMonth && nowDate > userSelectedDate) {
+
+            ToastAndroid.show("you cannot schedule ride of previous Days", ToastAndroid.SHORT)
+            return
+
+        }
+
+        if (nowYear == selectedYear && nowMonth == selectedMonth && nowDate == userSelectedDate) {
+            let nowGetTime = now.getTime()
+
+            let selectedGetTime = time.getTime()
+
+            let diff = selectedGetTime - nowGetTime
+
+            let diffHours = diff / 1000 / 60 / 60
+
+            if (Number(diffHours) < 3) {
+                ToastAndroid.show("you must schedule ride atleast after 3 hours of current time", ToastAndroid.SHORT)
+                return
+            }
+
+            if (screen == "medical") {
+
+                navigation.navigate("MedicalTrip", { date: date, time: time })
+
+
+            }
+            else if (screen == "grooming") {
+                navigation.navigate("PetGrooming", { date: date, time: time })
+            }
+            else if (screen == "friends") {
+                navigation.navigate("FriendsAndFamily", { date: date, time: time })
+            }
+            else if (screen == "petWalk") {
+                navigation.navigate("PetWalk", { date: date, time: time })
+            }
+
+        } else {
+
+            if (screen == "medical") {
+                navigation.navigate("MedicalTrip", { date: date, time: time })
+            }
+            else if (screen == "grooming") {
+                navigation.navigate("PetGrooming", { date: date, time: time })
+            }
+            else if (screen == "friends") {
+                navigation.navigate("FriendsAndFamily", { date: date, time: time })
+            }
+            else if (screen == "petWalk") {
+                navigation.navigate("PetWalk", { date: date, time: time })
+            }
+
+
+        }
+
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -87,7 +177,7 @@ function ScheduleRideDate({ navigation, route }) {
 
             </View>
 
-            <CustomButton onPress={() => screen == "medical" && navigation.navigate("MedicalTrip", { date: date, time: time })} text={"Done"} styleContainer={{ position: "absolute", bottom: 40, width: "90%", alignSelf: "center" }} />
+            <CustomButton onPress={() => navigateToOtherPage()} text={"Done"} styleContainer={{ position: "absolute", bottom: 40, width: "90%", alignSelf: "center" }} />
 
         </View>
     )

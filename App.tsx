@@ -34,6 +34,7 @@ import BookingState from './src/Context/bookingContext/state';
 import IdleTimerManager from 'react-native-idle-timer';
 import NotificationState from './src/Context/NotificationContext/state';
 import ChooseLocationState from './src/Context/pickupanddropoffContext/state';
+import ScheduleRideState from './src/Context/ScheduleRideContext/state';
 
 function App() {
   useEffect(() => {
@@ -55,17 +56,19 @@ function App() {
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SelectedPetState>
           <NotificationState>
-            <BookingState>
-              <ChooseLocationState>
-                <CardDetailsState>
-                  <LoginState>
-                    <LocationState>
-                      <Navigation />
-                    </LocationState>
-                  </LoginState>
-                </CardDetailsState>
-              </ChooseLocationState>
-            </BookingState>
+            <ScheduleRideState>
+              <BookingState>
+                <ChooseLocationState>
+                  <CardDetailsState>
+                    <LoginState>
+                      <LocationState>
+                        <Navigation />
+                      </LocationState>
+                    </LoginState>
+                  </CardDetailsState>
+                </ChooseLocationState>
+              </BookingState>
+            </ScheduleRideState>
           </NotificationState>
         </SelectedPetState>
       </View>

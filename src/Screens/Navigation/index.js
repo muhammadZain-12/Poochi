@@ -46,6 +46,7 @@ import PrivacyPolicy from '../PrivacyPolicy';
 import ChatSingle from '../Home/singleChat';
 import TermsAndConditions from '../TermsAndCondition';
 import AntDesign from "react-native-vector-icons/AntDesign"
+import ScheduleCancelRide from '../ScheduleCancelRide';
 
 
 const Stack = createNativeStackNavigator();
@@ -202,6 +203,7 @@ export default function Navigation() {
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
         <Stack.Screen name="ChatSingle" component={ChatSingle} />
         <Stack.Screen name="TermsAndCondition" component={TermsAndConditions} />
+        <Stack.Screen name="ScheduleCancelRide" component={ScheduleCancelRide} />
       </Stack.Navigator>
     </NavigationContainer>
   );
