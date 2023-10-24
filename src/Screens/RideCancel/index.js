@@ -33,8 +33,6 @@ function RideCancel({ navigation }) {
     const { cardDetails, setCardDetails } = cardCont
 
 
-    console.log(bookingData?.driverData?.token, "bookings")
-
     const handleCancelRide = () => {
 
 

@@ -69,15 +69,13 @@ function GooglePlace({ navigation, route }) {
     };
 
 
-    console.log(markerAddress, "marker")
-
     const handleSelectLocation = () => {
 
         let dataToSend = {
             name: markerAddress,
             lat: markerPosition.latitude,
             lng: markerPosition.longitude,
-            type: data?.name == ("Pickup Location") ? "pickup" : data?.name == ("Dropoff Location") ? "dropoff" : data?.name == ("Return Pickup") ? "returnPick" : "returnDrop"
+            type: data?.name == ("Pickup Location") ? "pickup" : data?.name == ("Drop off Location") ? "dropoff" : data?.name == ("Return Pickup") ? "returnPick" : "returnDrop"
         }
 
 
@@ -88,8 +86,6 @@ function GooglePlace({ navigation, route }) {
 
     const handleRegionChange = async (region) => {
         // setCurrentRegion(region);
-
-        console.log(region, "regions")
 
 
 
@@ -103,8 +99,6 @@ function GooglePlace({ navigation, route }) {
         })
 
         setMarkerAddress(address)
-
-        console.log(address, "address")
 
         // You can access the latitude and longitude using region.latitude and region.longitude here
     };

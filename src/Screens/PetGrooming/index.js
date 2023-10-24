@@ -243,7 +243,6 @@ function PetGrooming({ navigation, route }) {
 
         mileDistance = (dis / 1609.34)?.toFixed(2);
 
-        console.log(mileDistance, "milesss")
 
         let averageMilePetMinutes = 0.40
 
@@ -271,7 +270,6 @@ function PetGrooming({ navigation, route }) {
 
 
             let fare = mileCharge * Number(mileDistance)
-            console.log(mileCharge, "mileChar")
 
             let baseCharge = data?.BaseCharge
 
@@ -283,7 +281,6 @@ function PetGrooming({ navigation, route }) {
 
             // fare = Number(fare)
 
-            console.log(fare, "fareee")
 
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -325,7 +322,6 @@ function PetGrooming({ navigation, route }) {
         );
 
 
-        console.log(dropoffToReturnPickupDis, "dissstancesss")
 
 
         const returnPickupToReturnDropoffDis = getPreciseDistance(
@@ -360,7 +356,6 @@ function PetGrooming({ navigation, route }) {
 
         let averageMilePetMinutes = 0.40
 
-        console.log(mileDistance, "milesss")
 
 
         setDistance(mileDistance)
@@ -389,8 +384,6 @@ function PetGrooming({ navigation, route }) {
             let baseCharge = Number(data?.BaseCharge)
 
 
-            console.log(mileCharge, "mileChar")
-
             let additionalPetCharge;
             let totalWaitingCharges = 0
 
@@ -412,7 +405,6 @@ function PetGrooming({ navigation, route }) {
             let fare = mileCharge * Number(mileDistance)
             fare = fare + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
 
-            console.log(fare, "fareee")
 
             fare = fare + totalWaitingCharges
             setFare(fare.toFixed(2))
@@ -454,7 +446,6 @@ function PetGrooming({ navigation, route }) {
     }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime, oneWay, selectedPets.length])
 
 
-    console.log(value, "value")
 
     const removeSelectedPet = (ind) => {
 
@@ -551,13 +542,10 @@ function PetGrooming({ navigation, route }) {
 
             if (date && time) {
 
-                console.log(date, time, "to,eee")
 
 
 
                 let bookingId = await generateRandomID(15)
-
-                console.log(bookingId, "iddd")
 
 
 
@@ -1266,7 +1254,7 @@ function PetGrooming({ navigation, route }) {
                         </View>
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Dropoff Location', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 

@@ -171,10 +171,19 @@ function PetDetails({ navigation, route }) {
   };
 
   const openCamera = async () => {
-    const granted = await PermissionsAndroid.request(
+    const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  ];
+
+
+  const granted = await PermissionsAndroid.requestMultiple(permissions);
+
+
+  if (
+      granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
+  ) {
       hideModal1();
       let options = {
         saveToPhotos: true,
@@ -211,10 +220,19 @@ function PetDetails({ navigation, route }) {
 
 
   const openCamera2 = async () => {
-    const granted = await PermissionsAndroid.request(
+    const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  ];
+
+
+  const granted = await PermissionsAndroid.requestMultiple(permissions);
+
+
+  if (
+      granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
+  ) {
       hideModal2();
       let options = {
         saveToPhotos: true,
@@ -284,10 +302,19 @@ function PetDetails({ navigation, route }) {
 
 
   const openCamera3 = async () => {
-    const granted = await PermissionsAndroid.request(
+    const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  ];
+
+
+  const granted = await PermissionsAndroid.requestMultiple(permissions);
+
+
+  if (
+      granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
+  ) {
       hideModal3();
       let options = {
         saveToPhotos: true,

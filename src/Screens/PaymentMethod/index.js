@@ -50,15 +50,13 @@ function PaymentMethod({ navigation, route }) {
         async function initialize() {
             await initStripe({
                 publishableKey:
-                    'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP',
+                    // 'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP',
+                    'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy'
             });
         }
         initialize().catch(console.error);
     }, []);
     const { createToken } = useStripe();
-
-
-
 
     const getSavedCards = () => {
 
@@ -369,144 +367,144 @@ function PaymentMethod({ navigation, route }) {
 
                     // axios.post(`${Base_Uri}doPayment`, dataToSend).then((res) => {
 
-                        // let responseData = res.data
+                    // let responseData = res.data
 
-                        // if (!responseData.status) {
-
-
-                        //     // ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
-                        //     setCardError(responseData?.error?.raw?.message)
-                        //     setModalVisible(true)
-                        //     setLoading(false)
-
-                        //     return
-
-                        // }
+                    // if (!responseData.status) {
 
 
+                    //     // ToastAndroid.show(responseData?.message, ToastAndroid.SHORT)
+                    //     setCardError(responseData?.error?.raw?.message)
+                    //     setModalVisible(true)
+                    //     setLoading(false)
 
-                        // let walletData = {
-                        //     deposit: data.amount,
-                        //     spent: 0,
-                        //     remainingWallet: data.amount,
-                        //     date: new Date()
-                        // }
+                    //     return
 
-                        let id = auth()?.currentUser?.uid
-
-
-                        let cardData = {
-                            cardHolderName: cardHolderName,
-                            token: token?.id,
-                            customerId: response?.customerId,
-                            last4: token?.card?.last4,
-                            otherDetails: token
-                        }
-
-
-                        firestore().collection("PassengerCards").doc(id).set({
-                            cards: firestore.FieldValue.arrayUnion(cardData)
-                        }, { merge: true }).then((res) => {
-
-                            setCardDetails(cardData)
-                            setLoading(false)
-                            navigation.navigate(data.type)
-
-                        }).catch((error) => {
-                            setLoading(false)
-                            console.log(error)
-                        })
-
-
-                        // firestore().collection("UserWallet").doc(id).set({
-                        //     wallet: firestore.FieldValue.arrayUnion(walletData)
-                        // }, { merge: true }).then((res) => {
-
-                        //     if (loginData?.token) {
-                        //         var notificationData = JSON.stringify({
-                        //             notification: {
-                        //                 body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
-                        //                 title: `Hi ${loginData?.fullName} `,
-                        //             },
-                        //             to: loginData.token,
-                        //         });
-                        //         let config = {
-                        //             method: 'post',
-                        //             url: 'https://fcm.googleapis.com/fcm/send',
-                        //             headers: {
-                        //                 Authorization:
-                        //                     'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
-                        //                 'Content-Type': 'application/json',
-                        //             },
-                        //             data: notificationData,
-                        //         };
-                        //         axios(config)
-                        //             .then(res => {
-
-                        //                 console.log("notification succesfully send")
-
-
-                        //                 let notification = JSON.parse(notificationData)
+                    // }
 
 
 
-                        //                 let notificationToSend = {
+                    // let walletData = {
+                    //     deposit: data.amount,
+                    //     spent: 0,
+                    //     remainingWallet: data.amount,
+                    //     date: new Date()
+                    // }
 
-                        //                     title: notification.notification.title,
-                        //                     body: notification.notification.body,
-                        //                     date: new Date()
-
-
-                        //                 }
-
-                        //                 firestore().collection("Notification").doc(loginData.id).set({
-                        //                     notification: firestore.FieldValue.arrayUnion(notificationToSend)
-                        //                 }, { merge: true }).then(() => {
-
-                        //                     console.log("Notification has been send successfully")
-
-                        //                 })
+                    let id = auth()?.currentUser?.uid
 
 
-
-                        //             })
-                        //             .catch(error => {
-                        //                 console.log(error, "errorsssss")
-                        //             });
-                        //     }
-
-
-                        //     let cardData = {
-                        //         cardHolderName: cardHolderName,
-                        //         token: token?.id,
-                        //         customerId: response?.customerId,
-                        //         last4: token?.card?.last4,
-                        //         otherDetails: token
-                        //     }
+                    let cardData = {
+                        cardHolderName: cardHolderName,
+                        token: token?.id,
+                        customerId: response?.customerId,
+                        last4: token?.card?.last4,
+                        otherDetails: token
+                    }
 
 
-                        //     firestore().collection("PassengerCards").doc(id).set({
-                        //         cards: firestore.FieldValue.arrayUnion(cardData)
-                        //     }, { merge: true }).then((res) => {
+                    firestore().collection("PassengerCards").doc(id).set({
+                        cards: firestore.FieldValue.arrayUnion(cardData)
+                    }, { merge: true }).then((res) => {
 
-                        //         setCardDetails(cardData)
-                        //         setLoading(false)
-                        //         navigation.navigate(data.type)
+                        setCardDetails(cardData)
+                        setLoading(false)
+                        navigation.navigate(data.type)
 
-                        //     }).catch((error) => {
-                        //         setLoading(false)
-                        //         console.log(error)
-                        //     })
-
-
+                    }).catch((error) => {
+                        setLoading(false)
+                        console.log(error)
+                    })
 
 
-                        // }).catch((error) => {
+                    // firestore().collection("UserWallet").doc(id).set({
+                    //     wallet: firestore.FieldValue.arrayUnion(walletData)
+                    // }, { merge: true }).then((res) => {
 
-                        //     setLoading(false)
-                        //     console.log(error, "eerrrororor")
+                    //     if (loginData?.token) {
+                    //         var notificationData = JSON.stringify({
+                    //             notification: {
+                    //                 body: `Your fare amount has been successfully deducted from your card and add in your wallet`,
+                    //                 title: `Hi ${loginData?.fullName} `,
+                    //             },
+                    //             to: loginData.token,
+                    //         });
+                    //         let config = {
+                    //             method: 'post',
+                    //             url: 'https://fcm.googleapis.com/fcm/send',
+                    //             headers: {
+                    //                 Authorization:
+                    //                     'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                    //                 'Content-Type': 'application/json',
+                    //             },
+                    //             data: notificationData,
+                    //         };
+                    //         axios(config)
+                    //             .then(res => {
 
-                        // })
+                    //                 console.log("notification succesfully send")
+
+
+                    //                 let notification = JSON.parse(notificationData)
+
+
+
+                    //                 let notificationToSend = {
+
+                    //                     title: notification.notification.title,
+                    //                     body: notification.notification.body,
+                    //                     date: new Date()
+
+
+                    //                 }
+
+                    //                 firestore().collection("Notification").doc(loginData.id).set({
+                    //                     notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                    //                 }, { merge: true }).then(() => {
+
+                    //                     console.log("Notification has been send successfully")
+
+                    //                 })
+
+
+
+                    //             })
+                    //             .catch(error => {
+                    //                 console.log(error, "errorsssss")
+                    //             });
+                    //     }
+
+
+                    //     let cardData = {
+                    //         cardHolderName: cardHolderName,
+                    //         token: token?.id,
+                    //         customerId: response?.customerId,
+                    //         last4: token?.card?.last4,
+                    //         otherDetails: token
+                    //     }
+
+
+                    //     firestore().collection("PassengerCards").doc(id).set({
+                    //         cards: firestore.FieldValue.arrayUnion(cardData)
+                    //     }, { merge: true }).then((res) => {
+
+                    //         setCardDetails(cardData)
+                    //         setLoading(false)
+                    //         navigation.navigate(data.type)
+
+                    //     }).catch((error) => {
+                    //         setLoading(false)
+                    //         console.log(error)
+                    //     })
+
+
+
+
+                    // }).catch((error) => {
+
+                    //     setLoading(false)
+                    //     console.log(error, "eerrrororor")
+
+                    // })
 
 
 

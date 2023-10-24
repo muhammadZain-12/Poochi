@@ -57,8 +57,6 @@ function Home({ navigation }) {
 
 
 
-  console.log(scheduleData, "scheduleData")
-
 
   const focus = useIsFocused()
 
@@ -532,8 +530,6 @@ function Home({ navigation }) {
 
   }, [focus])
 
-  console.log(scheduleData.length, "length")
-
   const nextImage = () => {
 
     if (currentIndex == HomePageBanner.length - 1) {
@@ -790,7 +786,7 @@ function Home({ navigation }) {
 
         <View style={{ paddingHorizontal: 20 }} >
 
-          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where would you like to go?</Text>
+          <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where Would You Like To Go?</Text>
 
 
           <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >
@@ -803,7 +799,7 @@ function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/dog.jpg")} style={{ width: "100%", height: 180, borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Dog Walk</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />

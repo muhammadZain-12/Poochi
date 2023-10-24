@@ -50,8 +50,8 @@ function App() {
   return (
     <StripeProvider
       publishableKey={
-        // 'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy'
-        'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP'
+        'pk_live_51NV3dXCcj0GzAQ3bNw68XeWwEbjWiZ6rLVXhwrMMbsSICdE90ujuXCnHxJ5wnbVVSKmOGnciPUERSre7j99rMwJV00UWbIphFy'
+        // 'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP'
       }>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SelectedPetState>

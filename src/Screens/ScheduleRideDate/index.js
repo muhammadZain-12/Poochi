@@ -35,9 +35,13 @@ function ScheduleRideDate({ navigation, route }) {
 
 
 
+
     const navigateToOtherPage = () => {
 
 
+
+
+        console.log(time, "timee")
 
 
         let now = new Date()
@@ -49,10 +53,13 @@ function ScheduleRideDate({ navigation, route }) {
 
 
 
+
         let selectedDate = date.getTime()
         let selectedYear = date.getFullYear()
         let selectedMonth = date.getMonth()
         let userSelectedDate = date.getDate()
+
+
 
 
 
@@ -80,16 +87,43 @@ function ScheduleRideDate({ navigation, route }) {
         }
 
         if (nowYear == selectedYear && nowMonth == selectedMonth && nowDate == userSelectedDate) {
-            let nowGetTime = now.getTime()
 
-            let selectedGetTime = time.getTime()
+
+            const scheduledDateTime = new Date(
+                date?.getFullYear(),
+                date?.getMonth(),
+                date?.getDate(),
+                time?.getHours(),
+                time?.getMinutes(),
+                time?.getSeconds()
+            );
+
+            const nowDateTime = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                new Date().getDate(),
+                new Date().getHours(),
+                new Date().getMinutes(),
+                new Date().getSeconds()
+            );
+
+            let nowGetTime = nowDateTime.getTime()
+
+            let selectedGetTime = scheduledDateTime.getTime()
 
             let diff = selectedGetTime - nowGetTime
 
             let diffHours = diff / 1000 / 60 / 60
 
+            console.log(diffHours, "hourss")
+
+
+            if (Number(diffHours) < 0) {
+                ToastAndroid.show("You cannot schedule ride of previous hours", ToastAndroid.SHORT)
+            }
+
             if (Number(diffHours) < 3) {
-                ToastAndroid.show("you must schedule ride atleast after 3 hours of current time", ToastAndroid.SHORT)
+                ToastAndroid.show("Ride must be scheduled 3 hours prior to current time", ToastAndroid.SHORT)
                 return
             }
 
@@ -137,7 +171,7 @@ function ScheduleRideDate({ navigation, route }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Schedule Ride"
+                    text="Schedule A Ride"
                     color={Colors.black}
                 />
             </View>
@@ -165,7 +199,7 @@ function ScheduleRideDate({ navigation, route }) {
                         testID="dateTimePicker"
                         value={time}
                         mode="time"
-                        is24Hour={true}
+                        is24Hour={false}
                         display="spinner"
                         onChange={onChangeTime}
                     />

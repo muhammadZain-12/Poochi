@@ -165,7 +165,6 @@ function FriendsAndFamily({ navigation, route }) {
         firestore().collection("Pets").doc(id).get().then((doc) => {
             let userPets = doc?.data()
 
-            console.log(userPets, "userPets")
 
 
             if (userPets?.pets) {
@@ -334,7 +333,6 @@ function FriendsAndFamily({ navigation, route }) {
         );
 
 
-        console.log(dropoffToReturnPickupDis, "dissstancesss")
 
 
         const returnPickupToReturnDropoffDis = getPreciseDistance(
@@ -384,8 +382,6 @@ function FriendsAndFamily({ navigation, route }) {
         setMinutes(totalMinutes)
         setDropoffToPickupMinutes(dropoffToPickupMin)
         setPickupToDropoffMinutes(pickupToDropffMin)
-
-        console.log(value, "valueeee")
 
         firestore().collection("fareCharges").doc("qweasdzxcfgrw").get().then((doc) => {
 
@@ -446,7 +442,7 @@ function FriendsAndFamily({ navigation, route }) {
         }
 
         if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && Object.keys(returnPickup).length > 0 && Object.keys(returnDropoff).length > 0 && !oneWay && (value || customWaitingTime)) {
-            console.log("hello geloooooo")
+
             handleCalculateTwoWayDistanceAndFare()
 
 
@@ -457,9 +453,6 @@ function FriendsAndFamily({ navigation, route }) {
 
     }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime, oneWay, selectedPets.length])
 
-
-    console.log(value, "value")
-    console.log(customWaitingTime, "customWaitingTIme")
 
     const removeSelectedPet = (ind) => {
 
@@ -472,8 +465,6 @@ function FriendsAndFamily({ navigation, route }) {
 
     }
 
-
-    console.log(distance, "distance")
 
 
 
@@ -557,13 +548,9 @@ function FriendsAndFamily({ navigation, route }) {
 
             if (date && time) {
 
-                console.log(date, time, "to,eee")
-
 
 
                 let bookingId = await generateRandomID(15)
-
-                console.log(bookingId, "iddd")
 
 
 
@@ -1245,7 +1232,7 @@ function FriendsAndFamily({ navigation, route }) {
                         </View>
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Dropoff Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 

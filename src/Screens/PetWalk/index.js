@@ -177,7 +177,6 @@ function PetWalk({ navigation, route }) {
         firestore().collection("Pets").doc(id).get().then((doc) => {
             let userPets = doc?.data()
 
-            console.log(userPets, "userPets")
 
 
             if (userPets?.pets) {
@@ -285,8 +284,6 @@ function PetWalk({ navigation, route }) {
 
     const renderSelectedPets = ({ item }, index) => {
 
-        console.log(index, "index")
-
         return <View style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
 
             <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
@@ -300,8 +297,6 @@ function PetWalk({ navigation, route }) {
     }
 
 
-
-    console.log(dropoffAddress, "dropoff")
 
 
     useEffect(() => {
@@ -443,7 +438,6 @@ function PetWalk({ navigation, route }) {
 
     }
 
-    console.log(selectedOption, "selectee")
 
 
     const handleSelectDuration = (e, ind) => {
@@ -519,7 +513,6 @@ function PetWalk({ navigation, route }) {
 
                     let walkFare = Number(data?.walkfareChargePlus30)
 
-                    console.log(walkFare, "walkFare")
 
                     let totalFare = selectedTimeDuration * Number(walkFare)
 
@@ -1028,7 +1021,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Pet Hotel"}
+                    text={"Dog Walk"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1076,7 +1069,7 @@ function PetWalk({ navigation, route }) {
                         </View>
                         {selectedOption.name == "Dog Park" && <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Dropoff Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 

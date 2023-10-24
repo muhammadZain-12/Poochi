@@ -363,8 +363,6 @@ export default function ChatSingle({ navigation, route }) {
 
     // }
 
-    console.log(messages, 'messages')
-
     // console.log(data, "dataa")
 
 
