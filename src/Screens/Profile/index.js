@@ -96,7 +96,7 @@ function Profile({ navigation }) {
 
             let data = doc.data()
 
-            if ((data && data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
+            if (!data || (data && data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
                 ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
             }
 

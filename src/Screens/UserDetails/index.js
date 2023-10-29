@@ -32,6 +32,8 @@ import LoginContext from '../../Context/loginContext/context';
 import countriesObject from '../../Constant/countries';
 import ModalDropdown from 'react-native-modal-dropdown';
 import CustomDropDown from '../../Components/dropdown';
+import axios from 'axios';
+import { Base_Uri } from '../../Constant/BaseUri';
 
 
 
@@ -277,11 +279,39 @@ export default function UserDetails({ route }) {
 
         firestore().collection("Users").doc(uid).update(dataToSend).then((res) => {
 
-            ToastAndroid.show("Details has been submitted Succesfully", ToastAndroid.SHORT)
-            setLoginData(dataToSend)
-            setLoading(false)
-            navigation.navigate("Location")
+            let data = {
+                subject: "Welcome To Poochie",
+                body: "Thank you for registering yourself to poochie",
+                to: auth().currentUser.email,
+            };
 
+            axios
+                .post(`${Base_Uri}sendEmail`, data)
+                .then(async (res) => {
+                    let { data } = res;
+
+                    if (!data.status) {
+
+                        ToastAndroid.show(data?.message, ToastAndroid.SHORT)
+                        setLoading(false)
+                        // aler/t(data.message);
+                    } else {
+
+
+
+                        ToastAndroid.show("Details has been submitted Succesfully", ToastAndroid.SHORT)
+                        setLoginData(dataToSend)
+                        setLoading(false)
+                        navigation.navigate("Location")
+
+
+                    }
+
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    // alert("Internal Server Error Failed to send email");
+                });
 
         }).catch((error) => {
             setLoading(false)

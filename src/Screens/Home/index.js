@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView, ToastAndroid } from 'react-native';
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
+import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView, ToastAndroid, Modal, StyleSheet, ActivityIndicator, Linking } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
 import LoginContext from '../../Context/loginContext/context';
@@ -10,7 +10,7 @@ import messaging from '@react-native-firebase/messaging';
 import BookingContext from '../../Context/bookingContext/context';
 import cardDetailsContext from '../../Context/CardDetailsContext/context';
 import SelectedPetContext from '../../Context/SelectedPetContext/context';
-import { useIsFocused } from '@react-navigation/native';
+import { Link, useIsFocused } from '@react-navigation/native';
 import NotificationContext from '../../Context/NotificationContext/context';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +19,8 @@ import IonIcons from "react-native-vector-icons/Ionicons"
 import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import ScheduleRideContext from '../../Context/ScheduleRideContext/context';
 import axios from 'axios';
+import CustomButton from '../../Components/CustomButton';
+import RadiusContext from '../../Context/RadiusContext/context';
 
 function Home({ navigation }) {
 
@@ -43,6 +45,8 @@ function Home({ navigation }) {
   const notificationCont = useContext(NotificationContext)
   const chooseLocationCont = useContext(ChooseLocationContext)
   const scheduleRideCont = useContext(ScheduleRideContext)
+  let radiusCont = useContext(RadiusContext)
+
 
 
   const { loginData, setLoginData } = context
@@ -54,6 +58,7 @@ function Home({ navigation }) {
   const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
     , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
   const { scheduleData, setScheduleData } = scheduleRideCont
+  let { radius, setRadius } = radiusCont
 
 
 
@@ -62,7 +67,9 @@ function Home({ navigation }) {
 
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false)
   const flatListRef = useRef(null);
+
 
   const HomePageBanner = [
 
@@ -347,11 +354,27 @@ function Home({ navigation }) {
       setReturnDropoffAddress("")
       setDropoffAddress("")
 
-
     }
 
   }, [focus])
 
+
+  const getRadius = () => {
+
+    firestore().collection("fareCharges").doc("qweasdzxcfgrw").onSnapshot(querySnapshot => {
+      let data = querySnapshot?.data()
+
+      let radius = data?.mileRadius
+
+      setRadius(radius)
+
+    })
+
+  }
+
+  useEffect(() => {
+    getRadius()
+  }, [])
 
   const handleLogoutUser = async () => {
 
@@ -401,17 +424,104 @@ function Home({ navigation }) {
 
   }
 
+
+  const handleRouteToSupport = () => {
+
+    Linking.openURL("mailto:apppoochie@gmail.com")
+    setModalVisible(false)
+    handleLogoutUser()
+
+  }
+
+  const handleCancel = () => {
+
+    setModalVisible(false)
+    handleLogoutUser()
+
+  }
+
+  const ShowLocationModal = useCallback(() => {
+    return (
+      <View style={styles.centeredView}>
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Image style={{ width: 100, height: 100 }} resizeMode='cover' source={require('../../Images/alert.png')} />
+              <Text
+                style={[
+                  styles.modalText,
+                  {
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Poppins-SemiBold',
+                    marginTop: 10,
+                    fontWeight: '600',
+                    marginBottom: 5,
+                  },
+                ]}>
+                Your Id has been blocked
+              </Text>
+
+              <Text
+                style={[
+                  styles.modalText,
+                  {
+                    color: Colors.gray,
+                    fontSize: 14,
+                    fontFamily: 'Poppins-SemiBold',
+                    marginTop: 0,
+                    padding: 0,
+                    width: '100%',
+                  },
+                ]}>
+                contact to the app support if you don't know the reason
+              </Text>
+              <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row" }} >
+                <CustomButton
+                  text={'Support'}
+                  styleContainer={{ width: '49%', marginTop: 10 }}
+                  onPress={() => handleRouteToSupport()}
+                  linearStyle={{ borderRadius: 5, padding: 0 }}
+                />
+
+                <CustomButton
+                  text={'Cancel'}
+                  styleContainer={{ width: '49%', marginTop: 10 }}
+                  onPress={() => handleCancel()}
+                  linearStyle={{ borderRadius: 5, padding: 0 }}
+                  bgColor={true}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  }, [modalVisible]);
+
+
+
   useEffect(() => {
 
-    if (loginData?.status == "blocked") {
+    firestore().collection("Users").doc(loginData?.id).onSnapshot(querySnapshot => {
 
-      ToastAndroid.show("You have been blocked", ToastAndroid.SHORT)
+      let userData = querySnapshot?.data()
 
-      handleLogoutUser()
+      let blockStatus = userData?.status
 
-    }
+      if (blockStatus == "blocked") {
+        // ToastAndroid.show("You have been blocked", ToastAndroid.SHORT)
+        setModalVisible(true)
+        // handleLogoutUser()
+      }
+
+    })
 
   }, [focus])
+
+
+
+
 
 
   const getNotifications = () => {
@@ -666,7 +776,7 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-      if ((data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
+      if (!data || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
         ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
       }
 
@@ -820,6 +930,8 @@ function Home({ navigation }) {
       </View>
 
 
+      {modalVisible && ShowLocationModal()}
+
     </ScrollView>
 
 
@@ -827,3 +939,50 @@ function Home({ navigation }) {
 }
 
 export default Home;
+
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    paddingVertical: 30,
+    width: '85%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});

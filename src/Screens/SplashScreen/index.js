@@ -19,6 +19,7 @@ import LocationContext from '../../Context/locationContext/context';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
 import Geolocation from 'react-native-geolocation-service';
+import RadiusContext from '../../Context/RadiusContext/context';
 
 export default function SplashScreen({ navigation }) {
 
@@ -31,10 +32,11 @@ export default function SplashScreen({ navigation }) {
   let bookingCont = useContext(BookingContext)
   let locationCont = useContext(LocationContext)
 
+
+
   let { bookingData, setBookingData } = bookingCont
   let { loginData, setLoginData } = context
   let { locationData, setLocationData } = locationCont
-
 
 
   const locationPermission = () =>
@@ -361,6 +363,10 @@ export default function SplashScreen({ navigation }) {
     } else {
 
       setTimeout(() => {
+
+
+
+
         navigation.replace('OnBoardingScreen');
       }, 3000);
     };

@@ -8,15 +8,17 @@ import firestore from "@react-native-firebase/firestore"
 import { getPreciseDistance } from "geolib"
 import { useIsFocused } from "@react-navigation/native"
 import axios from "axios"
+import RadiusContext from "../../Context/RadiusContext/context"
 
 
 function Drivers({ navigation }) {
 
 
     const bookingCont = useContext(BookingContext)
+    const radiusCont = useContext(RadiusContext)
 
     const { bookingData, setBookingData } = bookingCont
-
+    const { radius, setRadius } = radiusCont
 
     const [driverData, setDriverData] = useState([])
     const [selectedDriver, setSelectedDriver] = useState("")
@@ -25,7 +27,10 @@ function Drivers({ navigation }) {
 
 
 
+
     const focus = useIsFocused()
+
+    console.log(radius,"radius")
 
 
     const getDriver = () => {
@@ -64,22 +69,15 @@ function Drivers({ navigation }) {
 
                             mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                            if (mileDistance <= 5 && !flag) {
-
+                            if (mileDistance <= Number(radius) && !flag) {
                                 drivers.push(data)
-
                             }
-
-
 
                         }
                     }
                 })
 
             }
-
-
-
 
             setDriverData(drivers)
         })
@@ -93,10 +91,9 @@ function Drivers({ navigation }) {
     }
 
 
-
     React.useEffect(() => {
         getDriver()
-    }, [rejectDrivers.length])
+    }, [rejectDrivers.length,radius])
 
 
     function generateRandomId(length) {
@@ -311,7 +308,6 @@ function Drivers({ navigation }) {
                         console.log(error, "error")
                     });
             }
-
 
         }).catch((error) => {
 

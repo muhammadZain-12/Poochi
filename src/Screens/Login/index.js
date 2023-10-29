@@ -142,12 +142,12 @@ export default function Login() {
 
 
 
-      if (data && data?.status == "blocked") {
-        await GoogleSignin.signOut()
-        await auth().signOut()
-        ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
-        return
-      }
+      // if (data && data?.status == "blocked") {
+      //   await GoogleSignin.signOut()
+      //   await auth().signOut()
+      //   ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
+      //   return
+      // }
 
       let email = user.email
 
