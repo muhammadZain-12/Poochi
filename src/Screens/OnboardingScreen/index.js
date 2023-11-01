@@ -19,7 +19,7 @@ const slides = [
   {
     id: '1',
     image: require('../../Images/onboard1.png'),
-    title: 'Taxi  For Pets. we Drive You pets to any appointment.',
+    title: 'Taxi  For Pets. we Drive Your pets to any appointment.',
     // subtitle:
     //   'Just turn on your location and you will find the nearest pet care you wish.',
   },
@@ -33,7 +33,7 @@ const slides = [
   {
     id: '3',
     image: require('../../Images/onboard3.png'),
-    title: 'Book a ride with poochie. one way or round trip, quick safe & reliable.',
+    title: 'Book a ride with poochie. one way or round trip, Quick, safe & reliable.',
     // subtitle: 'What do you think? book our veterinanians now ',
   },
 ];

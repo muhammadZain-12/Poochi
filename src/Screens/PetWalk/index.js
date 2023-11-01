@@ -400,7 +400,6 @@ function PetWalk({ navigation, route }) {
             handleCalculateTwoWayDistance()
         }
 
-
     }, [pickupAddress, dropoffAddress])
 
 
@@ -504,8 +503,6 @@ function PetWalk({ navigation, route }) {
 
                     totalFare = Number(totalFare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0) + totalMileCharges
 
-
-
                     setFare(totalFare)
                     setServiceCharge(data?.serviceCharge)
                 }
@@ -563,6 +560,8 @@ function PetWalk({ navigation, route }) {
 
     }, [selectedTimeDuration, selectedPets.length, distance])
 
+
+    console.log(selectedTimeDuration,"selected")
 
     const handleNavigateToPayment = () => {
 
@@ -1014,14 +1013,13 @@ function PetWalk({ navigation, route }) {
     }
 
 
-
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Dog Walk"}
+                    text={"Pet Hotel"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1050,7 +1048,7 @@ function PetWalk({ navigation, route }) {
 
                         <View style={{ marginTop: 5 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pick up Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -1200,7 +1198,7 @@ function PetWalk({ navigation, route }) {
                         <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ Fare</Text>
 
 
-                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ {fare ? fare?.toFixed(2) : "0.00"}</Text>
+                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ { (selectedTimeDuration && fare) ? fare?.toFixed(2) : "0.00"}</Text>
 
                     </TouchableOpacity>
 

@@ -8,6 +8,13 @@ function PassengerDeposits({ route, navigation }) {
     const [allWalletData, setAllWalletData] = useState(true)
     const [allMonthlyData, setAllMonthlyData] = useState(false)
 
+
+    var options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
     let data = route.params.data
 
     let { allData, monthlyData, todayData } = data
@@ -37,7 +44,7 @@ function PassengerDeposits({ route, navigation }) {
 
     const renderDepositData = ({ item, index }) => {
 
-        let date = item.date.toDate().toString().slice(0, 15)
+        let date = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
 
         if (item && item?.deposit) {
 

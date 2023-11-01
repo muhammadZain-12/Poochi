@@ -140,8 +140,6 @@ export default function Login() {
         return
       }
 
-
-
       // if (data && data?.status == "blocked") {
       //   await GoogleSignin.signOut()
       //   await auth().signOut()
@@ -542,7 +540,7 @@ export default function Login() {
                 fontSize: 14,
                 textAlign: 'right',
               }}>
-              Forget Password?
+              Forgot Password?
             </Text>
           </TouchableOpacity>
 

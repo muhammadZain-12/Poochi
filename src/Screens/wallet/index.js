@@ -356,7 +356,6 @@ const Wallet = ({ navigation, route }) => {
                                             resizeMode="contain"
                                             style={{
                                                 height: 45,
-                                                color: COLORS.black,
                                             }}
                                         />
                                     </TouchableOpacity>

@@ -21,6 +21,8 @@ import ScheduleRideContext from '../../Context/ScheduleRideContext/context';
 import axios from 'axios';
 import CustomButton from '../../Components/CustomButton';
 import RadiusContext from '../../Context/RadiusContext/context';
+import Font from "react-native-vector-icons/FontAwesome"
+
 
 function Home({ navigation }) {
 
@@ -570,16 +572,12 @@ function Home({ navigation }) {
         setNotification(sorting)
 
       }
-
     })
-
-
     return () => {
       unsubscribe()
     }
-
   }
-
+  
   const getScheduleRides = () => {
     const unsubscribe = firestore().collection("ScheduleRides").doc(loginData.id).onSnapshot(querySnapshot => {
 
@@ -611,6 +609,7 @@ function Home({ navigation }) {
 
           let scheduleGetTime = scheduledDateTime.getTime()
           let nowGetTime = nowDateTime.getTime()
+
 
           return e?.ScheduleRidestatus == "pending" && (scheduleGetTime > nowGetTime)
         })
@@ -776,8 +775,9 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-      if (!data || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
+      if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
         ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+        return
       }
 
       else {
@@ -786,10 +786,7 @@ function Home({ navigation }) {
         setBookingData(data)
         navigation.navigate("PassengerRideDetail")
 
-
-
       }
-
     })
 
 
@@ -846,7 +843,7 @@ function Home({ navigation }) {
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }} >
 
             {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide")} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, justifyContent: "center", alignItems: "center" }} >
-              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Scheduled Rides <Image source={require("../../Images/callender.png")} style={{ width: 20, height: 20 }} /> </Text>
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 14 }} >Scheduled Rides <Font size={25} name="calendar-plus-o" color={Colors.buttonColor} /> </Text>
             </TouchableOpacity>}
           </View>
 
@@ -909,7 +906,7 @@ function Home({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
               <Image source={require("../../Images/dog.jpg")} style={{ width: "100%", height: 180, borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Dog Walk</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />

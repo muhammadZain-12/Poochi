@@ -245,7 +245,7 @@ export default function EditProfile({ route }) {
             country: selectedCountry,
             city: signinData.city,
             streetAddress: signinData.streetAddress,
-            extendedAddress: signinData?.extendedAddress,
+            extendedAddress: signinData?.extendedAddress ? signinData?.extendedAddress : "",
             profile: image1,
             state: signinData?.state,
             zipCode: signinData?.zipCode,
@@ -255,7 +255,6 @@ export default function EditProfile({ route }) {
             id: auth().currentUser.uid
 
         }
-
 
 
         // let values = Object.values(dataToSend)
@@ -295,8 +294,8 @@ export default function EditProfile({ route }) {
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
-                    // onPress={() => navigation.goBack()}
-                    // iconname={"arrow-back-outline"}
+                    onPress={() => navigation.goBack()}
+                    iconname={"arrow-back-outline"}
                     text="Edit Your Profile"
                     color={Colors.black}
                 />

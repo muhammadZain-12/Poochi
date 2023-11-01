@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from "react"
-import { View, Text, StyleSheet } from "react-native"
+import React, { useState, useContext, useRef,useEffect } from "react"
+import { View, Text, StyleSheet,BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import { Dimensions } from "react-native"
@@ -75,7 +75,7 @@ function GooglePlace({ navigation, route }) {
             name: markerAddress,
             lat: markerPosition.latitude,
             lng: markerPosition.longitude,
-            type: data?.name == ("Pickup Location") ? "pickup" : data?.name == ("Drop off Location") ? "dropoff" : data?.name == ("Return Pickup") ? "returnPick" : "returnDrop"
+            type: data?.name == ("Pick up Location") ? "pickup" : data?.name == ("Drop off Location") ? "dropoff" : data?.name == ("Return Pickup") ? "returnPick" : "returnDrop"
         }
 
 
@@ -103,6 +103,22 @@ function GooglePlace({ navigation, route }) {
         // You can access the latitude and longitude using region.latitude and region.longitude here
     };
 
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
 
 
     return (

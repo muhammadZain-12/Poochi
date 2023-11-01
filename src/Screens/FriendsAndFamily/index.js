@@ -1213,7 +1213,7 @@ function FriendsAndFamily({ navigation, route }) {
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pickup Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pick up Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 

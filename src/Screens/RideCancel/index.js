@@ -64,9 +64,6 @@ function RideCancel({ navigation }) {
 
         setLoading(true)
 
-
-
-
         let id = auth().currentUser?.uid
 
 

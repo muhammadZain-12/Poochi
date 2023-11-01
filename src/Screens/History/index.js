@@ -38,6 +38,12 @@ function History({ navigation }) {
         },
     ]);
 
+    var options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
     const getBookingData = () => {
         setLoading(true);
         const id = auth().currentUser.uid;
@@ -127,7 +133,7 @@ function History({ navigation }) {
 
 
     const renderBookingData = ({ item, index }) => {
-        let date = item?.requestDate?.toDate();
+        let date = new Intl.DateTimeFormat('en-US', options).format(item?.requestDate?.toDate());
         let stringDate = date.toString();
         stringDate = stringDate.slice(0, 15);
 
@@ -136,7 +142,7 @@ function History({ navigation }) {
             <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
-                    {stringDate}
+                    {date}
                 </Text>
 
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >
@@ -249,7 +255,8 @@ function History({ navigation }) {
 
 
     const renderCancelBookingData = ({ item, index }) => {
-        let date = item?.requestDate?.toDate();
+        
+        let date = new Intl.DateTimeFormat('en-US', options).format(item?.requestDate?.toDate());
         let stringDate = date.toString();
         stringDate = stringDate.slice(0, 15);
 
@@ -258,7 +265,7 @@ function History({ navigation }) {
             <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10, alignSelf: "center" }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
-                    {stringDate}
+                    {date}
                 </Text>
 
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >

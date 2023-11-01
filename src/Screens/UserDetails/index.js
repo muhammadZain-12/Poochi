@@ -297,16 +297,11 @@ export default function UserDetails({ route }) {
                         // aler/t(data.message);
                     } else {
 
-
-
                         ToastAndroid.show("Details has been submitted Succesfully", ToastAndroid.SHORT)
                         setLoginData(dataToSend)
                         setLoading(false)
                         navigation.navigate("Location")
-
-
                     }
-
                 })
                 .catch((error) => {
                     setLoading(false);

@@ -18,6 +18,13 @@ function PassengerSpents({ route, navigation }) {
 
     let data = route.params.data;
 
+
+    var options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
     let { allData, monthlyData, todayData } = data;
 
     const getSortedDetails = () => {
@@ -38,7 +45,8 @@ function PassengerSpents({ route, navigation }) {
     };
 
     const renderDepositData = ({ item, index }) => {
-        let date = item?.date?.toDate().toString().slice(0, 15);
+        
+        let date = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
 
         if ((item && item?.spent) || item?.cancellationCharges) {
             return (

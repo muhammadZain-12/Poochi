@@ -230,13 +230,9 @@ function Drivers({ navigation }) {
                         setRequestInProcess(false)
 
                     })
-
-
                 }
             }, 60000);
         }
-
-        // Clear the timeout if driverData becomes available before 5 seconds
         return () => {
             if (timeoutId) {
                 clearTimeout(timeoutId);
@@ -261,7 +257,7 @@ function Drivers({ navigation }) {
             if (token) {
                 var data = JSON.stringify({
                     notification: {
-                        body: `You have got request from ${bookingData?.userData?.fullName} kindly response it ASAP`,
+                        body: `You have request from ${bookingData?.userData?.fullName} kindly respond back`,
                         title: `Hi ${driver.fullName} `,
                     },
                     to: token,

@@ -11,6 +11,13 @@ function ScheduleRideDate({ navigation, route }) {
     let screen = route.params
 
 
+
+    var options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+
     const [date, setDate] = useState(new Date());
 
 
@@ -19,9 +26,21 @@ function ScheduleRideDate({ navigation, route }) {
 
     const onChange = (event, selectedDate) => {
         setShowDatePicker(false)
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
+        const currentDate = selectedDate || date.toDate();
+
+        // var options = {
+        //     year: 'numeric',
+        //     month: 'long',
+        //     day: 'numeric'
+        //   };
+
+        //   var formattedDate = new Intl.DateTimeFormat('en-US', options).format(currentDate);
+
+
+        setDate(selectedDate);
     };
+
+
 
     const [time, setTime] = useState(new Date())
 
@@ -179,7 +198,7 @@ function ScheduleRideDate({ navigation, route }) {
             <View style={{ paddingHorizontal: 20, marginTop: 40 }} >
 
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ backgroundColor: "#e6e6e6", padding: 10, borderRadius: 10, paddingVertical: 15 }} >
-                    <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{date ? date?.toString() : "Select Date"}</Text>
+                    <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{date ? new Intl.DateTimeFormat('en-US', options).format(date) : "Select Date"}</Text>
                 </TouchableOpacity>
                 {showDatePicker && (
                     <DateTimePicker

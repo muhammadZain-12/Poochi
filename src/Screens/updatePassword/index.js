@@ -189,6 +189,14 @@ export default function UpdatePassword() {
             behavior="height"
             style={{ flex: 1, backgroundColor: Colors.white }}>
             <ScrollView>
+            <View style={{ marginTop: 5 }} >
+                <CustomHeader
+                    onPress={() => navigation.goBack()}
+                    iconname={"arrow-back-outline"}
+                    text="Update Password"
+                    color={Colors.black}
+                />
+            </View>
                 <View style={{ flex: 1, backgroundColor: Colors.white }}>
                     <StatusBar
                         animated={true}

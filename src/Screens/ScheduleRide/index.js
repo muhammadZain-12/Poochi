@@ -20,13 +20,20 @@ function ScheduleRide({ navigation, route }) {
 
     const renderScheduleData = ({ item }) => {
 
+        var options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          };
+
+          var formattedDate = new Intl.DateTimeFormat('en-US', options).format(item?.scheduleDate?.toDate());
 
         return (
 
             <TouchableOpacity style={{ marginBottom: 20 }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
-                    {item?.scheduleDate?.toDate().toLocaleDateString()} {item?.scheduleTime?.toDate()?.toLocaleTimeString()}
+                    {formattedDate} {item?.scheduleTime?.toDate()?.toLocaleTimeString()}
                 </Text>
 
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >
