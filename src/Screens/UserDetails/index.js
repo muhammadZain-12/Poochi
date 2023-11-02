@@ -281,9 +281,17 @@ export default function UserDetails({ route }) {
 
             let data = {
                 subject: "Welcome To Poochie",
-                body: "Thank you for registering yourself to poochie",
+                html: ` <p>Hello there, Thank you for signing up with Poochie. Our team members are standing by to assist you with any requests. </p>
+                    </br>
+                    </br>
+                    </br>
+                <p>Blessings,
+                <br>
+                Team Poochie!
+                </p>`,
                 to: auth().currentUser.email,
             };
+
 
             axios
                 .post(`${Base_Uri}sendEmail`, data)
@@ -301,12 +309,17 @@ export default function UserDetails({ route }) {
                         setLoginData(dataToSend)
                         setLoading(false)
                         navigation.navigate("Location")
+
                     }
                 })
                 .catch((error) => {
                     setLoading(false);
                     // alert("Internal Server Error Failed to send email");
                 });
+
+
+
+
 
         }).catch((error) => {
             setLoading(false)

@@ -25,7 +25,8 @@ import { useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import LoginContext from '../../Context/loginContext/context';
-
+import axios from 'axios';
+import { Base_Uri } from '../../Constant/BaseUri';
 
 export default function Signup() {
   const navigation = useNavigation();
@@ -79,9 +80,20 @@ export default function Signup() {
     firestore().collection("Users").doc(uid).get().then((doc) => {
       let data = doc.data()
 
-      if (data) {
+
+      if (!data?.agree) {
+        navigation.replace("TermsAndCondition")
+        return
+      }
+
+      if (data && data?.fullName) {
+
+
+        setLoading(false)
         setLoginData(data)
         navigation.replace('Location');
+
+
       } else {
         navigation.replace("UserDetails", { email: user.email })
       }
@@ -142,8 +154,6 @@ export default function Signup() {
 
     setLoading(true)
 
-
-
     try {
       const isUserCreated = await auth().createUserWithEmailAndPassword(
         signupData.email,
@@ -155,11 +165,9 @@ export default function Signup() {
 
       let { uid } = user
 
-
       setLoading(false)
       ToastAndroid.show("Signup Successfully", ToastAndroid.SHORT)
       navigation.navigate("Login")
-
 
 
     } catch (error) {
@@ -386,7 +394,7 @@ export default function Signup() {
                 marginHorizontal: 20,
                 marginVertical: 15,
                 fontSize: 16,
-                textAlign:"center",
+                textAlign: "center",
                 color: Colors.black,
                 fontFamily: 'Poppins-Regular',
               }}>

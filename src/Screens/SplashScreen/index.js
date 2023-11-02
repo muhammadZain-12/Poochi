@@ -98,6 +98,12 @@ export default function SplashScreen({ navigation }) {
           return
         }
 
+        if(data?.agree && !data?.fullName ){
+
+          navigation.replace("UserDetails")
+          return
+
+        }
 
 
         if (data) {

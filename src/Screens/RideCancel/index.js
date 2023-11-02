@@ -66,8 +66,6 @@ function RideCancel({ navigation }) {
 
         let id = auth().currentUser?.uid
 
-
-
         if (bookingData?.ScheduleRidestatus) {
 
             firestore().collection("ScheduleRides").doc(bookingData?.userData?.id).get().then((doc) => {
