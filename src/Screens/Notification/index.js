@@ -22,7 +22,7 @@ function Notification({ navigation }) {
 
         let id = auth()?.currentUser?.uid
 
-        firestore().collection("Notification").doc(id).get().then((doc) => {
+        firestore().collection("PassengerNotification").doc(id).get().then((doc) => {
 
             let data = doc?.data()
 
@@ -39,7 +39,7 @@ function Notification({ navigation }) {
 
                 setNotification(allNotifications)
 
-                firestore().collection("Notification").doc(id).set({
+                firestore().collection("PassengerNotification").doc(id).set({
                     notification: allNotifications
                 }).then(() => {
                     console.log("seen property succesfully send")
@@ -75,19 +75,24 @@ function Notification({ navigation }) {
         }
     }, []);
 
+    var options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
 
 
     const renderNotificationData = ({ item }) => {
 
-        let notificationDate = item?.date?.toDate()
-
-        let date = notificationDate.getDate()
-        let month = notificationDate.getMonth() + 1
-        let year = notificationDate.getFullYear()
-
-        let fullDate = `${date} / ${month} / ${year}`
+        // let notificationDate = item?.date?.toDate()
+        // let date = notificationDate.getDate()
+        // let month = notificationDate.getMonth() + 1
+        // let year = notificationDate.getFullYear()
+        // let fullDate = `${date} / ${month} / ${year}`
 
 
+        let fullDate = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
+    
 
         return (
 

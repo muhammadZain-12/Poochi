@@ -148,8 +148,18 @@ function Chat({ navigation }) {
 
             querySnapshot.forEach((doc) => {
               const data = doc?.data();
-              data.driverData = driver
-              chatData.push(data);
+
+
+              let now = new Date()
+              let nowGetTime = now.getTime()
+              let chatDate = data?.createdAt?.toDate()
+              let chatGetTime = chatDate?.getTime()
+              let diff = nowGetTime - chatGetTime
+              let diffHours = diff / 1000 / 60 / 60
+              if (diffHours < 36) {
+                data.driverData = driver
+                chatData.push(data);
+              }
             });
 
             resolve(chatData); // Resolve the promise after accumulating chat messages
@@ -414,7 +424,7 @@ function Chat({ navigation }) {
 
         <View style={{ flexDirection: "row" }} >
 
-          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
+          <TouchableOpacity onPress={() => navigation.navigate("PassengerNotification")} style={{ padding: 5 }} >
 
             {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
 

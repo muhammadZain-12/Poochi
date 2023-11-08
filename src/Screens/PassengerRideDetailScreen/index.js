@@ -446,7 +446,7 @@ function PassengerRideDetail({ navigation, route }) {
                         setDropoffAddress("")
                         setRating(0)
                         setComment("")
-                        ToastAndroid.show("Successfully Submitted Reveiew", ToastAndroid.SHORT)
+                        ToastAndroid.show("Successfully Submitted Review", ToastAndroid.SHORT)
                         navigation.replace("Tab")
                     }).catch((error) => {
                         setFinalLoader(false)
@@ -506,7 +506,7 @@ function PassengerRideDetail({ navigation, route }) {
                         setDropoffAddress("")
                         setRating(0)
                         setComment("")
-                        ToastAndroid.show("Successfully Submitted Reveiew", ToastAndroid.SHORT)
+                        ToastAndroid.show("Successfully Submitted Review", ToastAndroid.SHORT)
                         navigation.replace("Tab")
                     }).catch((error) => {
                         setFinalLoader(false)
@@ -635,7 +635,7 @@ function PassengerRideDetail({ navigation, route }) {
                         endRide && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
 
 
-                            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Driver Package Deliver Picture</Text>
+                            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Confirmation photo of your pet</Text>
                             {petImage ? <TouchableOpacity onPress={() => setImageModal(true)} >
                                 <Image source={{ uri: petImage }} style={{ width: 50, height: 50, borderRadius: 10 }} />
                             </TouchableOpacity> : <ActivityIndicator color={Colors.black} size={"small"} />}
@@ -716,7 +716,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                                 <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
-                                <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pickup: {bookingData?.returnPickupAddress}</Text>
+                                <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pick up: {bookingData?.returnPickupAddress}</Text>
 
                             </View>
 
@@ -724,7 +724,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                                 <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
-                                <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Dropoff: {bookingData?.returnDropoffAddress}</Text>
+                                <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Drop off: {bookingData?.returnDropoffAddress}</Text>
 
                             </View>
                         </View>
@@ -742,13 +742,13 @@ function PassengerRideDetail({ navigation, route }) {
                     <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at dropoff waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to dropoff location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
+                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at drop off waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to drop off location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
                     </View>
 
                     {endRide && <View style={{ marginTop: 10 }} >
 
-                        <Text style={{ textAlign: "center", fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >Reveiws</Text>
+                        <Text style={{ textAlign: "center", fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >Review</Text>
 
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }} >
                             {stars && stars.length > 0 && stars.map((e, i) => {

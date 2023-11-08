@@ -136,7 +136,7 @@ function RideCancel({ navigation }) {
                                             notification: {
                                                 body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
                                                     contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
-                                                        deniedPickup ? `You denies to come to pickup that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
+                                                        deniedPickup ? `You denies to come to pick up that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Passenger has cancelled ride due to other reasons`,
                                                 title: `Hi ${bookingData?.driverData?.fullName} `,
                                             },
                                             to: bookingData?.driverData?.token,
@@ -289,7 +289,7 @@ function RideCancel({ navigation }) {
                                 notification: {
                                     body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
                                         contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
-                                            deniedPickup ? `You denies to come to pickup that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
+                                            deniedPickup ? `You denies to come to pick up that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Passneger has cancelled ride due to other reasons`,
                                     title: `Hi ${bookingData?.driverData?.fullName} `,
                                 },
                                 to: bookingData?.driverData?.token,
@@ -436,7 +436,7 @@ function RideCancel({ navigation }) {
 
                         </TouchableOpacity >
 
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pickup</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pick up</Text>
 
                     </View>
                     <View style={{ padding: 10, borderWidth: 1, borderColor: wrongAddress ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >

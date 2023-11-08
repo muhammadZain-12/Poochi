@@ -161,6 +161,9 @@ function ScheduleRideDate({ navigation, route }) {
             else if (screen == "petWalk") {
                 navigation.navigate("PetWalk", { date: date, time: time })
             }
+            else if (screen == 'hotel'){
+                navigation.navigate("PetHotel", { date: date, time: time })
+            }
 
         } else {
 
@@ -175,6 +178,9 @@ function ScheduleRideDate({ navigation, route }) {
             }
             else if (screen == "petWalk") {
                 navigation.navigate("PetWalk", { date: date, time: time })
+            }
+            else if (screen == 'hotel'){
+                navigation.navigate("PetHotel", { date: date, time: time })
             }
 
 

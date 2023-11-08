@@ -13,7 +13,7 @@ function PassengerDeposits({ route, navigation }) {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      };
+    };
 
     let data = route.params.data
 
@@ -42,11 +42,16 @@ function PassengerDeposits({ route, navigation }) {
     }
 
 
+    allData = allData && allData.length>0 && allData.filter((e,i)=>e.deposit)
+    monthlyData = monthlyData && monthlyData.length>0 && monthlyData.filter((e,i)=>e.deposit)
+    todayData = todayData && todayData.length>0 && todayData.filter((e,i)=>e.deposit)
+
+
     const renderDepositData = ({ item, index }) => {
 
         let date = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
 
-        if (item && item?.deposit) {
+        if (item) {
 
             return (
                 <View>
@@ -67,7 +72,7 @@ function PassengerDeposits({ route, navigation }) {
                                 styles.text,
                                 { paddingTop: 5, marginBottom: 5, fontSize: 18, fontFamily: "Poppins-Medium" },
                             ]}>
-                            Deposit: <Text style={{ color: "#080808" }} > ${item?.deposit} </Text>
+                            Deposits: <Text style={{ color: "#080808" }} > ${item?.deposit} </Text>
                         </Text>
 
 
@@ -80,18 +85,18 @@ function PassengerDeposits({ route, navigation }) {
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
-            <ScrollView style={{ flex: 1 }} >
+            <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true}  >
                 <View style={{ marginTop: 5 }} >
                     <CustomHeader
                         onPress={() => navigation.goBack()}
                         iconname={"arrow-back-outline"}
-                        text="Deposit"
+                        text="Deposits"
                         color={Colors.black}
                     />
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", borderBottomColor: Colors.black, borderBottomWidth: 3 }} >
                     <Text style={{ color: Colors.black, fontSize: 32, padding: 20, fontWeight: "500", fontFamily: "Poppins-SemiBold" }}>
-                        Your Deposits
+                        Deposits
                     </Text>
 
                     <TouchableOpacity
@@ -117,8 +122,8 @@ function PassengerDeposits({ route, navigation }) {
                 </View>
                     :
                     <View>
-
                         <FlatList
+                            nestedScrollEnabled={true}
                             data={allWalletData ? allData : allMonthlyData ? monthlyData : todayData}
                             renderItem={renderDepositData}
                             keyExtractor={(item, i) => i}

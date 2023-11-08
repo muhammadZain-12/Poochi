@@ -7,6 +7,8 @@ import { name as appName } from './app.json';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 
+
+
 messaging().setBackgroundMessageHandler(async remoteMessage => {
     // console.log('Message handled in the background!', remoteMessage);
     DisplayNotification(remoteMessage);
@@ -17,14 +19,11 @@ messaging().getInitialNotification(async remoteMessage => {
 })
 
 
+
 messaging().onMessage(async remoteMessage => {
     // console.log('Message handled in the background!', remoteMessage);
     DisplayNotification(remoteMessage);
 })
-
-
-
-
 
 
 async function DisplayNotification(remoteMessage) {
@@ -33,7 +32,7 @@ async function DisplayNotification(remoteMessage) {
         id: 'default',
         name: 'Default Channel',
         importance: AndroidImportance.HIGH,
-        sound: 'default', // Set the default notification sound
+        sound: 'my_sound', // Set the default notification sound
         icon: 'ic_launcher', // Set the icon launcher
     });
 
@@ -45,7 +44,7 @@ async function DisplayNotification(remoteMessage) {
             channelId,
             smallIcon: 'ic_launcher', // Set the small icon for the notification
             largeIcon: 'ic_launcher', // Set the large icon for the notification
-            sound: 'default', // Set the default notification sound
+            sound: 'my_sound', // Set the default notification sound
         },
     });
 }

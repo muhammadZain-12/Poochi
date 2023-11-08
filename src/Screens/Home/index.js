@@ -238,7 +238,7 @@ function Home({ navigation }) {
 
         var notificationData = JSON.stringify({
           notification: {
-            body: `Your next schedule ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
+            body: `Your next Scheduled Ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
             title: `Hi ${e?.userData?.fullName}`,
           },
           to: e?.userData?.token,
@@ -268,7 +268,7 @@ function Home({ navigation }) {
 
             }
 
-            firestore().collection("Notification").doc(e?.userData?.id).set({
+            firestore().collection("PassengerNotification").doc(e?.userData?.id).set({
               notification: firestore.FieldValue.arrayUnion(notificationToSend)
             }, { merge: true }).then(() => {
 
@@ -530,7 +530,7 @@ function Home({ navigation }) {
 
     let id = auth().currentUser?.uid
 
-    const unsubscribe = firestore().collection("Notification").doc(id).onSnapshot(querySnapshot => {
+    const unsubscribe = firestore().collection("PassengerNotification").doc(id).onSnapshot(querySnapshot => {
 
       if (querySnapshot.exists) {
 
@@ -538,8 +538,10 @@ function Home({ navigation }) {
         let data = querySnapshot.data()
 
 
+
         let allNotification = data?.notification
 
+        console.log(allNotification, "noti")
 
 
 
@@ -577,15 +579,14 @@ function Home({ navigation }) {
       unsubscribe()
     }
   }
-  
+
   const getScheduleRides = () => {
     const unsubscribe = firestore().collection("ScheduleRides").doc(loginData.id).onSnapshot(querySnapshot => {
 
       let data = querySnapshot.data()
 
+
       if (data && data?.scheduleRides) {
-
-
 
         let rides = data?.scheduleRides && data?.scheduleRides.length > 0 && data?.scheduleRides.filter((e, i) => {
 
@@ -610,13 +611,13 @@ function Home({ navigation }) {
           let scheduleGetTime = scheduledDateTime.getTime()
           let nowGetTime = nowDateTime.getTime()
 
-
           return e?.ScheduleRidestatus == "pending" && (scheduleGetTime > nowGetTime)
         })
 
         setScheduleData(rides)
 
-
+      } else {
+        setScheduleData([])
       }
 
 
@@ -776,7 +777,7 @@ function Home({ navigation }) {
       let data = doc.data()
 
       if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
-        ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+        ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
         return
       }
 
@@ -904,7 +905,7 @@ function Home({ navigation }) {
 
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Medical Trip</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigateToBooking("PetWalk")} style={{ width: "49%" }} >
+            <TouchableOpacity onPress={() => handleNavigateToBooking("PetHotel")} style={{ width: "49%" }} >
               <Image source={require("../../Images/dog.jpg")} style={{ width: "100%", height: 180, borderRadius: 10 }} />
               <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
             </TouchableOpacity>

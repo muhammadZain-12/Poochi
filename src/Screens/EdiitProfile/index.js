@@ -11,6 +11,7 @@ import {
     ActivityIndicator,
     Image,
     StatusBar,
+    Linking,
     PermissionsAndroid,
     KeyboardAvoidingView,
 } from 'react-native';
@@ -174,6 +175,8 @@ export default function EditProfile({ route }) {
                 setImageLoading(false)
 
             }
+        }else{
+            Linking.openSettings()
         }
     };
 

@@ -1,18 +1,18 @@
 import React, { useEffect } from "react"
-import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator, BackHandler, Linking } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState } from 'react';
-import { getEnforcing } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Icons from 'react-native-vector-icons/Feather';
 import CustomButton from '../../Components/CustomButton';
 import ModalImg from '../../Components/modalimg';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker"
+import { Permissions, PermissionStatus, openSettings } from 'react-native-permissions'
 import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { toDecimal } from "geolib";
+import { Link } from "@react-navigation/native";
 
 function PetDetails({ navigation, route }) {
 
@@ -174,16 +174,15 @@ function PetDetails({ navigation, route }) {
     const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  ];
+    ];
+
+    const granted = await PermissionsAndroid.requestMultiple(permissions);
 
 
-  const granted = await PermissionsAndroid.requestMultiple(permissions);
-
-
-  if (
+    if (
       granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
       granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
-  ) {
+    ) {
       hideModal1();
       let options = {
         saveToPhotos: true,
@@ -197,7 +196,9 @@ function PetDetails({ navigation, route }) {
         hideModal1();
         ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
       } else if (result.errorCode == 'others') {
+        Linking.openSettings();
         hideModal1();
+        console.log(result,"result")
         ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
       } else {
         hideModal1();
@@ -213,6 +214,7 @@ function PetDetails({ navigation, route }) {
 
       }
     } else {
+      Linking.openSettings()
       ToastAndroid.show("Permission not granted", ToastAndroid.SHORT)
     }
   };
@@ -223,16 +225,16 @@ function PetDetails({ navigation, route }) {
     const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  ];
+    ];
 
 
-  const granted = await PermissionsAndroid.requestMultiple(permissions);
+    const granted = await PermissionsAndroid.requestMultiple(permissions);
 
 
-  if (
+    if (
       granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
       granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
-  ) {
+    ) {
       hideModal2();
       let options = {
         saveToPhotos: true,
@@ -247,6 +249,7 @@ function PetDetails({ navigation, route }) {
         ToastAndroid.show("Image Permission Not Satisfied", ToastAndroid.SHORT)
       } else if (result.errorCode == 'others') {
         hideModal2();
+        Linking.openSettings();
         ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
       } else {
         hideModal2();
@@ -305,16 +308,16 @@ function PetDetails({ navigation, route }) {
     const permissions = [
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  ];
+    ];
 
 
-  const granted = await PermissionsAndroid.requestMultiple(permissions);
+    const granted = await PermissionsAndroid.requestMultiple(permissions);
 
 
-  if (
+    if (
       granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED &&
       granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED
-  ) {
+    ) {
       hideModal3();
       let options = {
         saveToPhotos: true,

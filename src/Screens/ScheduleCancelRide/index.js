@@ -136,8 +136,8 @@ function ScheduleCancelRide({ navigation, route }) {
                         notification: {
                             body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Driver was waiting for long time that's why Driver cancelled ride` :
                                 contactDriver ? `Driver was unable to contact you that's why Driver cancelled ride` : deniedDestination ? `You denied to go to destination that's why Driver cancelled ride` :
-                                    deniedPickup ? `You denies to come to pickup that's why Driver cancelled ride` : wrongAddress ? `Driver changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
-                            title: `Hi ${items?.driverData?.fullName} `,
+                                    deniedPickup ? `You denies to come to pick up that's why Driver cancelled ride` : wrongAddress ? `Driver changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
+                            title: `Hi ${items?.driverData?.fullName}`,
                         },
                         to: driverData?.token,
                     });
@@ -246,7 +246,7 @@ function ScheduleCancelRide({ navigation, route }) {
 
                         </TouchableOpacity >
 
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pickup</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pick up</Text>
 
                     </View>
                     <View style={{ padding: 10, borderWidth: 1, borderColor: wrongAddress ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >

@@ -8,6 +8,7 @@ import {
     //   TextInput,
     ScrollView,
     ToastAndroid,
+    Linking,
     ActivityIndicator,
     Image,
     StatusBar,
@@ -180,6 +181,8 @@ export default function UserDetails({ route }) {
 
 
             }
+        }else{
+            Linking.openSettings()
         }
     };
 

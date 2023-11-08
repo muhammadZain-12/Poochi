@@ -108,9 +108,18 @@ export default function ChatSingle({ navigation, route }) {
             const allMessages = querySnap?.docs?.map((item) => {
 
 
+                let now = new Date()
+                let nowGetTime = now.getTime()
+                let chatDate = item?._data?.createdAt?.toDate()
+                let chatGetTime = chatDate?.getTime()
+
+                let diff = nowGetTime - chatGetTime
+
+                let diffHours = diff / 1000 / 60 / 60
 
 
-                if ((item?._data?.sentBy == data?.driverData?.id) && !item?._data?.read) {
+
+                if ((item?._data?.sentBy == data?.driverData?.id) && !item?._data?.read && Number(diffHours) < 36) {
 
                     ReadAllMessages(item?._data);
                     return {
@@ -121,15 +130,19 @@ export default function ChatSingle({ navigation, route }) {
                     }
                 }
 
-                return ({
-                    ...item?._data,
-                    createdAt: Date.parse(new Date()),
+                else if (Number(diffHours) < 36) {
+                    return {
+                        ...item?._data,
+                        createdAt: Date.parse(new Date()),
 
-                })
+                    }
 
-            });
+                }
 
-            setMessages(allMessages)
+            }).filter(Boolean);
+
+
+            setMessages(allMessages && allMessages.length > 0 ? allMessages : [])
 
         })
         return () => {

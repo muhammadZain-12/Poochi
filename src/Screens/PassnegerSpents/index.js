@@ -23,9 +23,20 @@ function PassengerSpents({ route, navigation }) {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      };
+    };
 
     let { allData, monthlyData, todayData } = data;
+
+
+
+
+    allData = allData && allData.length > 0 && allData.filter((e, i) => e.spent || e.cancellationCharges)
+    monthlyData = monthlyData && monthlyData.length > 0 && monthlyData.filter((e, i) => e.spent || e.cancellationCharges)
+    todayData = todayData && todayData.length > 0 && todayData.filter((e, i) => e.spent || e.cancellationCharges)
+
+
+
+
 
     const getSortedDetails = () => {
         if (allWalletData) {
@@ -45,7 +56,7 @@ function PassengerSpents({ route, navigation }) {
     };
 
     const renderDepositData = ({ item, index }) => {
-        
+
         let date = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
 
         if ((item && item?.spent) || item?.cancellationCharges) {
@@ -101,7 +112,7 @@ function PassengerSpents({ route, navigation }) {
                     <CustomHeader
                         onPress={() => navigation.goBack()}
                         iconname={"arrow-back-outline"}
-                        text="Spents"
+                        text="Spendings"
                         color={Colors.black}
                     />
                 </View>
@@ -117,11 +128,11 @@ function PassengerSpents({ route, navigation }) {
                         style={{
                             color: Colors.black,
                             fontFamily: 'Poppins-SemiBold',
-                            fontSize: 32,
+                            fontSize: 28,
                             padding: 20,
                             fontWeight: '600',
                         }}>
-                        Your Spents
+                        Spendings
                     </Text>
 
                     <TouchableOpacity

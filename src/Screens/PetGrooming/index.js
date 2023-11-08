@@ -493,28 +493,30 @@ function PetGrooming({ navigation, route }) {
 
 
 
+
+
     const handleFindDriver = async () => {
 
 
         if (!oneWay) {
 
             if (!pickupAddress) {
-                ToastAndroid.show("Kindly Enter Pickup Point", ToastAndroid.SHORT)
+                ToastAndroid.show("Kindly Enter Pick up Point", ToastAndroid.SHORT)
                 return
             }
 
             if (!dropoffAddress) {
-                ToastAndroid.show("kindly enter dropoff point", ToastAndroid.SHORT)
+                ToastAndroid.show("kindly enter drop off point", ToastAndroid.SHORT)
                 return
             }
 
             if (!returnPickupAddress) {
-                ToastAndroid.show("Kindly enter return pickup point", ToastAndroid.SHORT)
+                ToastAndroid.show("Kindly enter return pick up point", ToastAndroid.SHORT)
                 return
             }
 
             if (!returnDropoffAddress) {
-                ToastAndroid.show("Kindly enter return dropoff point", ToastAndroid.SHORT)
+                ToastAndroid.show("Kindly enter return drop off point", ToastAndroid.SHORT)
                 return
             }
 
@@ -647,7 +649,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -712,7 +714,7 @@ function PetGrooming({ navigation, route }) {
                                         }
                                     });
 
-                                    if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                    if (!hasConflictingRide) {
                                         tokens.push(driverToken);
                                         drivers.push(data);
                                     }
@@ -732,16 +734,14 @@ function PetGrooming({ navigation, route }) {
 
 
 
-
-
                 firestore().collection("ScheduleRides").doc(loginData.id).set(
                     { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
                 ).then(async (res) => {
 
                     var data = JSON.stringify({
                         notification: {
-                            body: "You have got schedule ride request kindly respond it",
-                            title: `Schedule Ride Request`,
+                            body: "You have got Scheduled Ride request kindly respond back",
+                            title: `Scheduled Ride Request`,
                         },
                         android: {
                             priority: "high",
@@ -759,7 +759,26 @@ function PetGrooming({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(res => {
+                        .then(async (res) => {
+
+
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+
+                                let id = e?.id
+
+                                let dataToSend = {
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
+                                }
+
+                                firestore().collection("DriverNotification").doc(id).set({
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
+
+                            })
+
+                            await Promise.all(promises)
 
                             setScheduleData([
                                 ...scheduleData,
@@ -839,12 +858,12 @@ function PetGrooming({ navigation, route }) {
         if (oneWay) {
 
             if (!pickupAddress) {
-                ToastAndroid.show("Kindly Enter Pickup Point", ToastAndroid.SHORT)
+                ToastAndroid.show("Kindly Enter Pick up Point", ToastAndroid.SHORT)
                 return
             }
 
             if (!dropoffAddress) {
-                ToastAndroid.show("kindly enter dropoff point", ToastAndroid.SHORT)
+                ToastAndroid.show("kindly enter drop off point", ToastAndroid.SHORT)
                 return
             }
 
@@ -946,8 +965,6 @@ function PetGrooming({ navigation, route }) {
 
 
 
-
-
                 const drivers = [];
                 const tokens = [];
 
@@ -957,7 +974,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1022,7 +1039,7 @@ function PetGrooming({ navigation, route }) {
                                         }
                                     });
 
-                                    if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                    if (!hasConflictingRide) {
                                         tokens.push(driverToken);
                                         drivers.push(data);
                                     }
@@ -1043,8 +1060,8 @@ function PetGrooming({ navigation, route }) {
 
                     var data = JSON.stringify({
                         notification: {
-                            body: "You have got schedule ride request kindly respond it",
-                            title: `Schedule Ride Request`,
+                            body: "You have got Scheduled Ride request kindly respond back",
+                            title: `Scheduled Ride Request`,
                         },
                         android: {
                             priority: "high",
@@ -1062,7 +1079,7 @@ function PetGrooming({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(res => {
+                        .then(async (res) => {
 
                             // let notification = JSON.parse(data)
 
@@ -1075,6 +1092,26 @@ function PetGrooming({ navigation, route }) {
                             // firestore().collection("DriverNotification").doc(driver.id).set({
                             //     notification: firestore.FieldValue.arrayUnion(notificationToSend)
                             // }, { merge: true }).then((res) => {
+
+
+
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+
+                                let id = e?.id
+
+                                let dataToSend = {
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
+                                }
+
+                                firestore().collection("DriverNotification").doc(id).set({
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
+
+                            })
+
+                            await Promise.all(promises)
 
                             setScheduleData([
                                 ...scheduleData,
@@ -1155,7 +1192,7 @@ function PetGrooming({ navigation, route }) {
 
 
         if (!pickupAddress || !dropoffAddress) {
-            ToastAndroid.show("First add pickup and dropoff location", ToastAndroid.SHORT)
+            ToastAndroid.show("First add pick up and drop off location", ToastAndroid.SHORT)
             return
         }
 
@@ -1239,7 +1276,7 @@ function PetGrooming({ navigation, route }) {
 
 
 
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
+                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pick up"}</Text>
 
                                 </View>
 
@@ -1351,7 +1388,7 @@ function PetGrooming({ navigation, route }) {
 
                                     <IonIcons name="location-outline" color={Colors.gray} size={25} />
 
-                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pickup"}</Text>
+                                    <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pick up"}</Text>
 
                                 </View>
 
@@ -1368,10 +1405,10 @@ function PetGrooming({ navigation, route }) {
 
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Dropoff', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Drop off', route: "PetGrooming" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                                     <IonIcons name="location-outline" color={Colors.gray} size={25} />
-                                    <Text style={{ color: returnDropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Dropoff"}</Text>
+                                    <Text style={{ color: returnDropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Drop off"}</Text>
                                 </View>
                                 <View style={{ width: "10%" }} >
                                     <IonIcons name="search" color={Colors.gray} size={25} />
@@ -1453,7 +1490,7 @@ function PetGrooming({ navigation, route }) {
                             {deductedFromWallet && <AntDesign name={"check"} size={20} color={Colors.black} />}
 
                         </TouchableOpacity>
-                        <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deducted from wallet</Text>
+                        <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deduct from wallet</Text>
 
                     </View> : ""}
 

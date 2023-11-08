@@ -97,9 +97,9 @@ function Profile({ navigation }) {
             let data = doc.data()
 
             if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
-                ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+                ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
                 return
-              }
+            }
 
             else {
 
@@ -254,7 +254,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Support") } style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => navigation.navigate("Support")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 

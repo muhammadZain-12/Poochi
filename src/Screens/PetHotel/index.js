@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useContext } from "react"
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, ActivityIndicator, BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
@@ -18,12 +19,11 @@ import BookingContext from "../../Context/bookingContext/context";
 import ChooseLocationContext from "../../Context/pickupanddropoffContext/context";
 import auth from "@react-native-firebase/auth";
 import IonIcons from "react-native-vector-icons/Ionicons"
-import axios from "axios";
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
+import axios from "axios";
 
 
-
-function FriendsAndFamily({ navigation, route }) {
+function PetHotel({ navigation, route }) {
 
     const loginCont = useContext(LoginContext)
     const locationCont = useContext(LocationContext)
@@ -33,24 +33,19 @@ function FriendsAndFamily({ navigation, route }) {
 
 
     const bookingCont = useContext(BookingContext)
-
     const { bookingData, setBookingData } = bookingCont
+
+    const scheduleRideCont = useContext(ScheduleRideContext)
+    const { scheduleData, setScheduleData } = scheduleRideCont
 
     const selectedPetsCont = useContext(SelectedPetContext)
     const { selectedPets, setSelectedPets } = selectedPetsCont
 
 
-    const scheduleRideCont = useContext(ScheduleRideContext)
-    const { scheduleData, setScheduleData } = scheduleRideCont
-
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
 
-
     const chooseLocationCont = useContext(ChooseLocationContext)
-
-    const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
-        , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
 
 
 
@@ -70,8 +65,11 @@ function FriendsAndFamily({ navigation, route }) {
 
     const [date, setDate] = useState("")
     const [time, setTime] = useState("")
+    const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
+        , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+
+    const [minutes, setMinutes] = useState("")
     const [distance, setDistance] = useState("")
-    const [minutes, setMinutes] = useState(null)
     const [fare, setFare] = useState(null)
     const [comment, setComment] = useState("")
     const [loading, setLoading] = useState(false)
@@ -86,6 +84,24 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
+
+
+    useEffect(() => {
+
+        if (!pickupAddress) {
+
+
+            let pickCords = {
+                lat: locationData?.currentLocation?.latitude,
+                lng: locationData?.currentLocation?.longitude
+            }
+
+            setPickup(pickCords)
+            setPickupAddress(locationData?.currentAddress)
+
+        }
+
+    }, [])
 
     const getWalletAmount = () => {
 
@@ -117,47 +133,6 @@ function FriendsAndFamily({ navigation, route }) {
     }
 
 
-    useEffect(() => {
-
-        if (!pickupAddress) {
-
-
-            let pickCords = {
-                lat: locationData?.currentLocation?.latitude,
-                lng: locationData?.currentLocation?.longitude
-            }
-
-            setPickup(pickCords)
-            setPickupAddress(locationData?.currentAddress)
-
-        }
-
-    }, [])
-
-    useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            // Replace 'TabScreenName' with the name of your tab screen
-            // This will navigate to the specified tab screen when the back button is pressed
-
-            navigation.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: 'Tab',
-
-                    },
-                ],
-            })
-
-            return true; // Return true to prevent the default back action
-
-        });
-
-        return () => backHandler.remove(); // Cleanup the event listener
-
-    }, []);
-
-
     const getPets = async () => {
 
         let id = auth().currentUser?.uid
@@ -184,7 +159,6 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
-
     useEffect(() => {
         getWalletAmount()
         getPets()
@@ -193,8 +167,17 @@ function FriendsAndFamily({ navigation, route }) {
 
     useEffect(() => {
 
+
         if (data?.date) {
             setDate(data?.date)
+
+            // const hours = data?.time.getHours();
+            // const minutes = data?.time.getMinutes();
+            // const seconds = data?.time.getSeconds();
+
+            // const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+
             setTime(data?.time)
         }
 
@@ -240,15 +223,13 @@ function FriendsAndFamily({ navigation, route }) {
         }
 
 
-
-
-
     }, [data])
 
 
 
 
     const handleCalculateDistanceAndFare = () => {
+
 
 
         const dis = getPreciseDistance(
@@ -280,18 +261,17 @@ function FriendsAndFamily({ navigation, route }) {
             let mileCharge = Number(data.mileCharge)
             let serviceCharge = Number(data.serviceCharge)
             let creditCardCharge = Number(data.creditCardCharge)
+            let baseCharge = data?.BaseCharge
             let additionalPetCharge;
-
             if (selectedPets && selectedPets.length > 1) {
                 additionalPetCharge = data?.additionalPetCharge
 
                 additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
             }
-            let baseCharge = data?.BaseCharge
 
 
-            let fare = mileCharge * Number(mileDistance) + (additionalPetCharge ? Number(additionalPetCharge) : 0)
-            fare = Number(fare) + Number(baseCharge)
+            let fare = mileCharge * Number(mileDistance)
+            fare = Number(fare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
 
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
@@ -312,8 +292,8 @@ function FriendsAndFamily({ navigation, route }) {
 
         const pickupToDropoffDis = getPreciseDistance(
             {
-                latitude: pickup.lat,
-                longitude: pickup.lng,
+                latitude: pickup?.lat ? pickup?.lat : pickup?.latitude,
+                longitude: pickup?.lng ? pickup?.lng : pickup?.longitude,
             },
             {
                 latitude: dropoff.lat,
@@ -392,13 +372,7 @@ function FriendsAndFamily({ navigation, route }) {
             let creditCardCharge = Number(data.creditCardCharge)
             let waitingCharges = Number(data?.waitingCharges)
             let baseCharge = Number(data?.BaseCharge)
-            let additionalPetCharge;
 
-            if (selectedPets && selectedPets.length > 1) {
-                additionalPetCharge = data?.additionalPetCharge
-
-                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
-            }
 
             let totalWaitingCharges = 0
 
@@ -410,17 +384,30 @@ function FriendsAndFamily({ navigation, route }) {
                 totalWaitingCharges = waitingCharges * Number(customWaitingTime)
             }
 
-
-
             let fare = mileCharge * Number(mileDistance)
-            fare = fare + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0)
-            fare = fare + totalWaitingCharges
+            fare = fare + Number(baseCharge)
+            let additionalPetCharge;
+            if (selectedPets && selectedPets.length > 1) {
+                additionalPetCharge = data?.additionalPetCharge
+
+                additionalPetCharge = Number(additionalPetCharge) * (selectedPets.length - 1)
+            }
+
+
+
+            fare = fare + totalWaitingCharges + (additionalPetCharge ? additionalPetCharge : 0)
+
+
+
             setFare(fare.toFixed(2))
             setServiceCharge(serviceCharge)
 
         }).catch((error) => {
 
             ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+
+
 
 
         })
@@ -433,7 +420,7 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
-        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && oneWay) {
+        if (pickup && Object.keys(pickup).length > 0 && dropoff && Object.keys(dropoff).length > 0 && oneWay) {
 
 
             handleCalculateDistanceAndFare()
@@ -441,7 +428,7 @@ function FriendsAndFamily({ navigation, route }) {
             return
         }
 
-        if (Object.keys(pickup).length > 0 && Object.keys(dropoff).length > 0 && Object.keys(returnPickup).length > 0 && Object.keys(returnDropoff).length > 0 && !oneWay && (value || customWaitingTime)) {
+        if (pickup && Object.keys(pickup).length > 0 && dropoff && Object.keys(dropoff).length > 0 && returnPickup && Object.keys(returnPickup).length > 0 && returnDropoff && Object.keys(returnDropoff).length > 0 && !oneWay && (value || customWaitingTime)) {
 
             handleCalculateTwoWayDistanceAndFare()
 
@@ -451,21 +438,15 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
-    }, [pickup, dropoff, returnPickup, returnDropoff, value, customWaitingTime, oneWay, selectedPets.length])
+    }, [pickupAddress, dropoffAddress, returnPickupAddress, returnDropoffAddress, value, customWaitingTime, oneWay, selectedPets.length])
 
 
     const removeSelectedPet = (ind) => {
 
         setSelectedPets(selectedPets && selectedPets.length > 0 && selectedPets.filter((e, i) => {
-
             return i !== ind
-
         }))
-
-
     }
-
-
 
 
 
@@ -485,7 +466,6 @@ function FriendsAndFamily({ navigation, route }) {
 
     }
 
-
     function generateRandomID(length) {
         const characters =
             'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -498,6 +478,7 @@ function FriendsAndFamily({ navigation, route }) {
 
         return randomID;
     }
+
 
     const handleFindDriver = async () => {
 
@@ -549,10 +530,7 @@ function FriendsAndFamily({ navigation, route }) {
             if (date && time) {
 
 
-
                 let bookingId = await generateRandomID(15)
-
-
 
                 let dataToSend = {
                     pickupAddress: pickupAddress,
@@ -582,7 +560,7 @@ function FriendsAndFamily({ navigation, route }) {
                     waitingTime: customWaitingTime ? customWaitingTime : value,
                     bookingType: "twoWay",
                     requestDate: new Date(),
-                    type: "FriendsAndFamily",
+                    type: "PetHotel",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -639,10 +617,6 @@ function FriendsAndFamily({ navigation, route }) {
 
                 setLoading(true)
 
-
-
-
-
                 const drivers = [];
                 const tokens = [];
 
@@ -652,7 +626,7 @@ function FriendsAndFamily({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "pending") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -729,15 +703,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                 await Promise.all(scheduleRidesPromises);
 
-
-
-
-
                 dataToSend.drivers = drivers
-
-
-
-
 
                 firestore().collection("ScheduleRides").doc(loginData.id).set(
                     { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
@@ -764,27 +730,28 @@ function FriendsAndFamily({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(async(res) => {
+                        .then(async (res) => {
 
-                            
-                            let promises =  drivers && drivers.length>0 && drivers.map((e,i)=>{
+
+
+
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
 
                                 let id = e?.id
 
                                 let dataToSend = {
-                                    title : "Scheduled Ride Request",
-                                    body : 'You have got Scheduled Ride request kindly respond back',
-                                    date : new Date()
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
                                 }
 
                                 firestore().collection("DriverNotification").doc(id).set({
-                                    notification : firestore.FieldValue.arrayUnion(dataToSend)
-                                },{merge:true})
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
 
-                        })
+                            })
 
                             await Promise.all(promises)
-
 
                             setScheduleData([
                                 ...scheduleData,
@@ -838,7 +805,7 @@ function FriendsAndFamily({ navigation, route }) {
                 waitingTime: customWaitingTime ? customWaitingTime : value,
                 bookingType: "twoWay",
                 requestDate: new Date(),
-                type: "FriendsAndFamily",
+                type: "PetHotel",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -913,7 +880,7 @@ function FriendsAndFamily({ navigation, route }) {
                     minutes: minutes,
                     bookingType: "oneWay",
                     requestDate: new Date(),
-                    type: "FriendsAndFamily",
+                    type: "PetHotel",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -968,8 +935,6 @@ function FriendsAndFamily({ navigation, route }) {
 
 
                 setLoading(true)
-
-
 
 
 
@@ -1087,7 +1052,7 @@ function FriendsAndFamily({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(async(res) => {
+                        .then(async (res) => {
 
                             // let notification = JSON.parse(data)
 
@@ -1102,23 +1067,21 @@ function FriendsAndFamily({ navigation, route }) {
                             // }, { merge: true }).then((res) => {
 
 
-
-                            
-                            let promises =  drivers && drivers.length>0 && drivers.map((e,i)=>{
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
 
                                 let id = e?.id
 
                                 let dataToSend = {
-                                    title : "Scheduled Ride Request",
-                                    body : 'You have got Scheduled Ride request kindly respond back',
-                                    date : new Date()
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
                                 }
 
                                 firestore().collection("DriverNotification").doc(id).set({
-                                    notification : firestore.FieldValue.arrayUnion(dataToSend)
-                                },{merge:true})
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
 
-                        })
+                            })
 
                             await Promise.all(promises)
 
@@ -1169,7 +1132,7 @@ function FriendsAndFamily({ navigation, route }) {
                 minutes: minutes,
                 bookingType: "oneWay",
                 requestDate: new Date(),
-                type: "FriendsAndFamily",
+                type: "PetHotel",
                 deductedFromWallet: deductedFromWallet,
 
             }
@@ -1207,7 +1170,7 @@ function FriendsAndFamily({ navigation, route }) {
         let dataToSend = {
 
             amount: fare,
-            type: "FriendsAndFamily"
+            type: "PetHotel"
 
         }
 
@@ -1220,6 +1183,30 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Tab',
+
+                    },
+                ],
+            })
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -1227,7 +1214,7 @@ function FriendsAndFamily({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Friends And Family"}
+                    text={"Pet Hotel"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1254,7 +1241,7 @@ function FriendsAndFamily({ navigation, route }) {
                     <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10 }} >
                         <View style={{ marginTop: 5 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick Up Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pick up Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pick up Location', route: "PetHotel" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -1273,7 +1260,7 @@ function FriendsAndFamily({ navigation, route }) {
                         </View>
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "PetHotel" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
@@ -1282,7 +1269,6 @@ function FriendsAndFamily({ navigation, route }) {
                                     <Text style={{ color: dropoffAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{dropoffAddress ? dropoffAddress : "Enter Destination"}</Text>
 
                                 </View>
-
                                 <View style={{ width: "10%" }} >
                                     <IonIcons name="search" color={Colors.gray} size={25} />
                                 </View>
@@ -1299,8 +1285,7 @@ function FriendsAndFamily({ navigation, route }) {
                     <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
 
 
-
-                    {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
+                    {selectedPets && selectedPets.length > 0 ? <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%" }} >
 
                         {selectedPets.map((e, i) => {
 
@@ -1313,6 +1298,14 @@ function FriendsAndFamily({ navigation, route }) {
                         })}
 
 
+                        <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetHotel")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
+
+                            <IonIcons name="add" color={Colors.gray} size={40} />
+
+
+                        </TouchableOpacity>
+
+
                         {/* <FlatList
                             data={selectedPets}
                             renderItem={renderSelectedPets}
@@ -1320,25 +1313,17 @@ function FriendsAndFamily({ navigation, route }) {
                             horizontal={true}
                         /> */}
 
-
-                        <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
-
-                            <IonIcons name="add" color={Colors.gray} size={40} />
-
-                        </TouchableOpacity>
-
-
-
                     </ScrollView> :
                         <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
-                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
-
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetHotel")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} >
                                 <IonIcons name="add" color={Colors.gray} size={40} />
+
 
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "FriendsAndFamily")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetHotel")} style={{ width: 120, height: 120, backgroundColor: "#e6e6e6", borderRadius: 10, marginLeft: 20, justifyContent: "center", alignItems: "center" }} >
                                 <IonIcons name="add" color={Colors.gray} size={40} />
+
 
                             </TouchableOpacity>
 
@@ -1371,7 +1356,6 @@ function FriendsAndFamily({ navigation, route }) {
                                     <Text style={{ color: returnPickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnPickupAddress ? returnPickupAddress : "Enter Return Pick up"}</Text>
 
                                 </View>
-
                                 <View style={{ width: "10%" }} >
                                     <IonIcons name="search" color={Colors.gray} size={25} />
                                 </View>
@@ -1383,15 +1367,15 @@ function FriendsAndFamily({ navigation, route }) {
 
                         <View style={{ marginTop: 10, marginBottom: 10 }} >
                             <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Drop off', route: "FriendsAndFamily" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+                            <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Return Drop off', route: "PetHotel" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
                                     <IonIcons name="location-outline" size={25} color={Colors.gray} />
                                     <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{returnDropoffAddress ? returnDropoffAddress : "Enter Return Drop off"}</Text>
                                 </View>
                                 <View style={{ width: "10%" }} >
                                     <IonIcons name="search" color={Colors.gray} size={25} />
-                                </View>
 
+                                </View>
                             </TouchableOpacity>
 
                         </View>
@@ -1399,7 +1383,7 @@ function FriendsAndFamily({ navigation, route }) {
                     </View>}
 
 
-                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "friends")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1, alignItems: "center" }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "hotel")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1, alignItems: "center" }} >
 
                         {!date && <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Reserve in advance</Text>}
 
@@ -1412,7 +1396,6 @@ function FriendsAndFamily({ navigation, route }) {
                         <Image source={require("../../Images/calender.png")} />
 
                     </TouchableOpacity>
-
                     {!oneWay && <DropDownPicker
                         open={open}
                         value={value}
@@ -1497,7 +1480,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                 </View>
 
-                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : date ? "Schedule Ride " : "Find a Driver"} />
+                <CustomButton onPress={() => handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : date ? "Schedule Ride" : "Find a Driver"} />
 
 
 
@@ -1508,4 +1491,4 @@ function FriendsAndFamily({ navigation, route }) {
 }
 
 
-export default FriendsAndFamily
+export default PetHotel

@@ -473,7 +473,7 @@ const Wallet = ({ navigation, route }) => {
                                             color: COLORS.black,
                                         }}
                                     >
-                                        Deposit:
+                                        Deposits:
                                     </Text>
                                     <Text
                                         style={{
@@ -544,7 +544,7 @@ const Wallet = ({ navigation, route }) => {
                                             color: COLORS.black,
                                         }}
                                     >
-                                        Spent:
+                                        Spendings:
                                     </Text>
                                     <Text
                                         style={{

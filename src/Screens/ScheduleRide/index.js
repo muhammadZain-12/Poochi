@@ -108,7 +108,7 @@ function ScheduleRide({ navigation, route }) {
 
 
                         <IonIcons name="location" color={Colors.buttonColor} size={30} />
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10, width: "85%" }} >Return Pickup Location: {item?.returnPickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10, width: "85%" }} >Return Pick up Location: {item?.returnPickupAddress}</Text>
 
                     </View>}
 
@@ -116,7 +116,7 @@ function ScheduleRide({ navigation, route }) {
 
 
                         <IonIcons name="location" color={Colors.buttonColor} size={30} />
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10, width: "85%" }} >Return Dropoff Location: {item?.returnDropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10, width: "85%" }} >Return Drop off Location: {item?.returnDropoffAddress}</Text>
 
                     </View>}
 
@@ -139,7 +139,7 @@ function ScheduleRide({ navigation, route }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Schedule A Ride"
+                    text="Scheduled Rides"
                     color={Colors.black}
                 />
             </View>

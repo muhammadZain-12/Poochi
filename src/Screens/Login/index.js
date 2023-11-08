@@ -156,14 +156,20 @@ export default function Login() {
       loginAuth = JSON.stringify(loginAuth);
       AsyncStorage.setItem("user", loginAuth);
 
+
+      if(data?.agree && !data?.fullName ){
+
+        navigation.replace("UserDetails")
+        return
+
+      }
+
       if (data) {
         setLoginData(data)
 
         locationPermission().then(res => {
           if (res == 'granted') {
             Geolocation.getCurrentPosition(async (position) => {
-
-
               let id = auth()?.currentUser?.uid
               let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
 
@@ -327,18 +333,18 @@ export default function Login() {
 
 
 
-            
+
             if (!data?.agree) {
               navigation.replace("TermsAndCondition")
               return
             }
 
-            if (data && data?.status == "blocked") {
-              // await GoogleSignin.signOut()
-              await auth().signOut()
-              ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
-              return
-            }
+            // if (data && data?.status == "blocked") {
+            //   // await GoogleSignin.signOut()
+            //   await auth().signOut()
+            //   ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
+            //   return
+            // }
             ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
             if (data) {
 
@@ -560,7 +566,7 @@ export default function Login() {
                 marginHorizontal: 20,
                 marginVertical: 15,
                 fontSize: 16,
-                textAlign:"center",
+                textAlign: "center",
                 color: Colors.black,
                 fontFamily: 'Poppins-Regular',
               }}>

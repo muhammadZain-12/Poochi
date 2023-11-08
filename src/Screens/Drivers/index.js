@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react"
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Dimensions, ToastAndroid, BackHandler } from "react-native"
+import React, { useState, useContext, useEffect, useRef } from "react"
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Dimensions, ToastAndroid, BackHandler, AppState } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
@@ -28,9 +28,15 @@ function Drivers({ navigation }) {
 
 
 
+
+
     const focus = useIsFocused()
 
-    console.log(radius,"radius")
+
+
+
+
+
 
 
     const getDriver = () => {
@@ -93,7 +99,7 @@ function Drivers({ navigation }) {
 
     React.useEffect(() => {
         getDriver()
-    }, [rejectDrivers.length,radius])
+    }, [rejectDrivers.length, radius])
 
 
     function generateRandomId(length) {
@@ -345,7 +351,7 @@ function Drivers({ navigation }) {
             {requestInProcess ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height: Dimensions.get("window").height - 100 }} >
 
                 <ActivityIndicator color={Colors.buttonColor} size="large" />
-                <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 22 }} >Process Request</Text>
+                <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 22 }} >Processing Request</Text>
 
             </View> : driverData && driverData.length == 0 ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height: Dimensions.get("window").height - 100 }} >
 

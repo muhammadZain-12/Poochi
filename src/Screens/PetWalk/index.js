@@ -438,6 +438,7 @@ function PetWalk({ navigation, route }) {
     }
 
 
+    console.log(selectedTimeDuration, "duration")
 
     const handleSelectDuration = (e, ind) => {
 
@@ -504,6 +505,7 @@ function PetWalk({ navigation, route }) {
                     totalFare = Number(totalFare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0) + totalMileCharges
 
                     setFare(totalFare)
+                    setDeductedFromWallet(false)
                     setServiceCharge(data?.serviceCharge)
                 }
                 else {
@@ -540,6 +542,7 @@ function PetWalk({ navigation, route }) {
 
 
                     setFare(totalFare)
+                    setDeductedFromWallet(false)
                     setServiceCharge(data?.serviceCharge)
 
                 }
@@ -553,6 +556,9 @@ function PetWalk({ navigation, route }) {
     }
 
 
+    console.log(date, "datees")
+    console.log(time, "timesss")
+
 
     useEffect(() => {
 
@@ -560,8 +566,6 @@ function PetWalk({ navigation, route }) {
 
     }, [selectedTimeDuration, selectedPets.length, distance])
 
-
-    console.log(selectedTimeDuration,"selected")
 
     const handleNavigateToPayment = () => {
 
@@ -604,7 +608,7 @@ function PetWalk({ navigation, route }) {
 
 
         if (!pickupAddress) {
-            ToastAndroid.show("Kindly Enter Pickup Point", ToastAndroid.SHORT)
+            ToastAndroid.show("Kindly Enter Pick up Point", ToastAndroid.SHORT)
             return
         }
 
@@ -615,7 +619,7 @@ function PetWalk({ navigation, route }) {
             return
         }
 
-        if (!selectedTimeDuration) {
+        if (!Number(selectedTimeDuration)) {
             ToastAndroid.show("Kindly choose time duration", ToastAndroid.SHORT)
             return
         }
@@ -633,6 +637,8 @@ function PetWalk({ navigation, route }) {
             return
         }
 
+        console.log(selectedOption, "opeions")
+
 
         let serviceCharges = (Number(fare) * Number(serviceCharge)) / 100
         let driverFare = Number(fare) - Number(serviceCharges)
@@ -640,7 +646,10 @@ function PetWalk({ navigation, route }) {
 
 
         let dataToSend;
-        if (selectedOption?.name !== "Dog Park") {
+
+        console.log(selectedOption?.name !== ("Dog Park"))
+
+        if (selectedOption?.name !== ("Dog Park")) {
 
             if (date && time) {
 
@@ -700,9 +709,20 @@ function PetWalk({ navigation, route }) {
                     deductedFromWallet: deductedFromWallet
                 }
             }
-        } else {
+        }
+        else {
+
+            console.log("hellooo")
+
 
             if (date && time) {
+
+                if (!dropoffAddress) {
+                    ToastAndroid.show("Kindly Enter Drop off Address", ToastAndroid.SHORT)
+                    return
+                }
+
+                console.log("inside funcs")
 
                 let bookingId = await generateRandomID(15)
 
@@ -744,6 +764,12 @@ function PetWalk({ navigation, route }) {
             }
 
             else {
+
+                if (!dropoffAddress) {
+                    ToastAndroid.show("Kindly Enter Drop off Address", ToastAndroid.SHORT)
+                    return
+                }
+
                 dataToSend = {
                     pickupAddress: pickupAddress,
                     pickupCords: pickup,
@@ -776,6 +802,7 @@ function PetWalk({ navigation, route }) {
             }
 
         }
+
 
 
 
@@ -843,7 +870,7 @@ function PetWalk({ navigation, route }) {
             driversSnapshot.forEach((doc) => {
                 const data = doc?.data();
 
-                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
+                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
                     const dis = getPreciseDistance(
                         {
                             latitude: pickup.lat,
@@ -908,7 +935,7 @@ function PetWalk({ navigation, route }) {
                                     }
                                 });
 
-                                if (!hasConflictingRide && data.id !== auth().currentUser.uid) {
+                                if (!hasConflictingRide) {
                                     tokens.push(driverToken);
                                     drivers.push(data);
                                 }
@@ -923,17 +950,14 @@ function PetWalk({ navigation, route }) {
             dataToSend.drivers = drivers
 
 
-
-
-
             firestore().collection("ScheduleRides").doc(loginData.id).set(
                 { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
             ).then(async (res) => {
 
                 var data = JSON.stringify({
                     notification: {
-                        body: "You have got schedule ride request kindly respond it",
-                        title: `Schedule Ride Request`,
+                        body: "You have got Scheduled Ride request kindly respond back",
+                        title: `Scheduled Ride Request`,
                     },
                     android: {
                         priority: "high",
@@ -951,7 +975,26 @@ function PetWalk({ navigation, route }) {
                     data: data,
                 };
                 axios(config)
-                    .then(res => {
+                    .then(async (res) => {
+
+
+                        let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+
+                            let id = e?.id
+
+                            let dataToSend = {
+                                title: "Scheduled Ride Request",
+                                body: 'You have got Scheduled Ride request kindly respond back',
+                                date: new Date()
+                            }
+
+                            firestore().collection("DriverNotification").doc(id).set({
+                                notification: firestore.FieldValue.arrayUnion(dataToSend)
+                            }, { merge: true })
+
+                        })
+
+                        await Promise.all(promises)
 
                         setScheduleData([
                             ...scheduleData,
@@ -1019,7 +1062,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Pet Hotel"}
+                    text={"Pet Walk"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1047,14 +1090,14 @@ function PetWalk({ navigation, route }) {
 
 
                         <View style={{ marginTop: 5 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pickup Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Pick up Point</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Pick up Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
 
                                     <IonIcons name="location-outline" size={25} color={Colors.gray} />
 
-                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pickup"}</Text>
+                                    <Text style={{ color: pickupAddress ? Colors.black : Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12, marginLeft: 10, width: "80%" }} >{pickupAddress ? pickupAddress : "Enter Pick up"}</Text>
 
                                 </View>
 
@@ -1066,7 +1109,7 @@ function PetWalk({ navigation, route }) {
 
                         </View>
                         {selectedOption.name == "Dog Park" && <View style={{ marginTop: 10, marginBottom: 10 }} >
-                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Drop off Point</Text>
+                            <Text style={{ fontSize: 16, color: Colors.white, fontFamily: "Poppins-Medium" }} >Choose Park Location</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("GooglePlace", { name: 'Drop off Location', route: "PetWalk" })} style={{ padding: 12, backgroundColor: "white", borderRadius: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
@@ -1198,7 +1241,7 @@ function PetWalk({ navigation, route }) {
                         <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ Fare</Text>
 
 
-                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ { (selectedTimeDuration && fare) ? fare?.toFixed(2) : "0.00"}</Text>
+                        <Text style={{ fontSize: 18, color: Colors.white, fontFamily: "Poppins-Regular" }} >$ {(selectedTimeDuration && fare) ? fare?.toFixed(2) : "0.00"}</Text>
 
                     </TouchableOpacity>
 
@@ -1220,7 +1263,7 @@ function PetWalk({ navigation, route }) {
                             {deductedFromWallet && <AntDesign name={"check"} size={20} color={Colors.black} />}
 
                         </TouchableOpacity>
-                        <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deducted from wallet</Text>
+                        <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deduct from wallet</Text>
 
                     </View> : ""}
 

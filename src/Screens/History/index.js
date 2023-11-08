@@ -66,8 +66,6 @@ function History({ navigation }) {
     };
 
 
-
-
     const getCancelRidesData = () => {
         setLoading(true);
         const id = auth().currentUser.uid;
@@ -140,11 +138,9 @@ function History({ navigation }) {
         return (
 
             <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 }} >
-
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
                     {date}
                 </Text>
-
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >
 
                     <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center" }}  >
@@ -206,14 +202,14 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType == "oneWay" ? "One Way" : "Round Trip"}</Text>
 
                     </View>
 
                     <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Address: {item.pickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Address: {item.pickupAddress}</Text>
 
                     </View>
 
@@ -222,7 +218,7 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Address: {item?.type == "PetWalk" ? item?.pickupAddress : item?.dropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off Address: {item?.type == "PetWalk" ? item?.pickupAddress : item?.dropoffAddress}</Text>
 
                     </View>
 
@@ -230,7 +226,7 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Return Address: {item.returnPickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Return Address: {item.returnPickupAddress}</Text>
 
                     </View>}
 
@@ -239,7 +235,7 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Return Address: {item.returnDropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off eturn Address: {item.returnDropoffAddress}</Text>
 
                     </View>}
 
@@ -282,9 +278,7 @@ function History({ navigation }) {
                                 </View>
                                 <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
-
                             </View>
-
                         </View>
 
                         <View style={{ alignItems: "flex-end" }} >
@@ -295,12 +289,10 @@ function History({ navigation }) {
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center", borderRadius: 100 }} >
 
-
                                     <TouchableOpacity onPress={() => Linking.openURL(`tel:${item.driverData?.mobileNumber}`)} >
                                         <MaterialIcons name="phone" size={25} color={Colors.white} />
                                     </TouchableOpacity>
                                 </View>
-
 
                                 <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
                                     <TouchableOpacity
@@ -311,10 +303,7 @@ function History({ navigation }) {
                                 </View>
 
                             </View>
-
-
                         </View>
-
 
                     </TouchableOpacity>
 
@@ -331,14 +320,14 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType == "oneWay" ? "One Way" : "Round Trip"}</Text>
 
                     </View>
 
                     <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Address: {item.pickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Address: {item.pickupAddress}</Text>
 
                     </View>
 
@@ -347,7 +336,7 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Address: {item.dropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off Address: {item.dropoffAddress}</Text>
 
                     </View>
 
@@ -355,16 +344,15 @@ function History({ navigation }) {
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pickup Return Address: {item.returnPickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Return Address: {item.returnPickupAddress}</Text>
 
                     </View>}
 
-
                     {item?.bookingType == "twoWay" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
 
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Dropoff Return Address: {item.returnDropoffAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off Return Address: {item.returnDropoffAddress}</Text>
 
                     </View>}
 
