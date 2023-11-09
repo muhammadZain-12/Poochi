@@ -5,6 +5,7 @@ import {
     Image,
     StatusBar,
     StyleSheet,
+
     Text,
     BackHandler,
     View,
@@ -37,6 +38,11 @@ const Wallet = ({ navigation, route }) => {
         total: null,
         daily: null
     });
+    const [claims, setClaims] = useState({
+        monthly: null,
+        total: null,
+        daily: null
+    })
 
     let routeData = route.params;
 
@@ -153,6 +159,28 @@ const Wallet = ({ navigation, route }) => {
         mySpents && setSpent({ ...spent, total: mySpents });
     };
 
+    const getClaimAmountFromWallet = () => {
+        let myClaimData = [];
+
+        allData &&
+            allData.length > 0 &&
+            allData.map((e, i) => {
+                if (e && e.damagesClaim) {
+                    myClaimData.push(
+                        Number(e?.damagesClaim)
+                    );
+                }
+            });
+        let ClaimData =
+            myClaimData &&
+            myClaimData.length > 0 &&
+            myClaimData.reduce((previous, current) => {
+                return previous + current;
+            }, 0);
+
+        ClaimData && setClaims({ ...claims, total: ClaimData });
+    };
+
     const getMonthlyAmountDepositInWallet = () => {
         let myDepositData = [];
 
@@ -196,6 +224,28 @@ const Wallet = ({ navigation, route }) => {
             }, 0);
 
         mySpents && setSpent({ ...spent, monthly: mySpents });
+    };
+
+    const getMonthlyClaimAmountFromWallet = () => {
+        let myClaimData = [];
+
+        monthlyWalletData &&
+            monthlyWalletData.length > 0 &&
+            monthlyWalletData.map((e, i) => {
+                if (e && e.damagesClaim) {
+                    myClaimData.push(
+                        Number(e?.damagesClaim)
+                    );
+                }
+            });
+        let myClaims =
+            myClaimData &&
+            myClaimData.length > 0 &&
+            myClaimData.reduce((previous, current) => {
+                return previous + current;
+            }, 0);
+
+        myClaims && setClaims({ ...claims, monthly: myClaims });
     };
 
     const getDailyAmountSpentFromWallet = () => {
@@ -243,6 +293,28 @@ const Wallet = ({ navigation, route }) => {
         myDeposits && setDeposit({ ...deposit, daily: myDeposits });
     };
 
+    const getDailyClaimAmountFromWallet = () => {
+        let myClaimData = [];
+
+        todayData &&
+            todayData.length > 0 &&
+            todayData.map((e, i) => {
+                if (e && e.damagesClaim) {
+                    myClaimData.push(
+                        Number(e?.damagesClaim)
+                    );
+                }
+            });
+        let myClaims =
+            myClaimData &&
+            myClaimData.length > 0 &&
+            myClaimData.reduce((previous, current) => {
+                return previous + current;
+            }, 0);
+
+        myClaims && setClaims({ ...claims, daily: myClaims });
+    };
+
 
 
     useEffect(() => {
@@ -256,19 +328,21 @@ const Wallet = ({ navigation, route }) => {
         if (allData && allData.length > 0) {
             getAmountDepositInWallet();
             getAmountSpentFromWallet();
+            getClaimAmountFromWallet()
         }
         if (monthlyWalletData && monthlyWalletData.length > 0) {
             getMonthlyAmountDepositInWallet();
             getMonthlyAmountSpentFromWallet();
+            getMonthlyClaimAmountFromWallet()
         }
 
         if (todayData && todayData.length > 0) {
             getDailyAmountDepositInWallet();
             getDailyAmountSpentFromWallet();
+            getDailyClaimAmountFromWallet()
         }
 
     }, [allData, monthlyWalletData, routeData, allWalletData, todayData]);
-
 
 
     const getSortedDetails = () => {
@@ -288,8 +362,6 @@ const Wallet = ({ navigation, route }) => {
         if (!allMonthlyData) {
             setAllWalletData(true)
         }
-
-
 
     }
 
@@ -423,67 +495,135 @@ const Wallet = ({ navigation, route }) => {
                         </View>
 
                         <View
+                            horizontal
                             style={{
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
                                 paddingHorizontal: 20,
                             }}
                         >
-                            <TouchableOpacity
-                                style={{
-                                    backgroundColor: COLORS.white,
-                                    elevation: 5,
-                                    borderRadius: 10,
-                                    paddingHorizontal: 20,
-                                    paddingVertical: 20,
-                                    alignItems: 'center',
-                                    width: '49%',
-                                }}
-                                onPress={() =>
-                                    navigation.navigate('Deposits', {
-                                        data: {
-                                            allData: allData,
-                                            monthlyData: monthlyWalletData,
-                                            todayData: todayData
-                                        },
-                                    })
-                                }
-                            >
-                                <View>
-                                    <Image
-                                        source={require('../../Images/walletDeposit.jpg')}
-                                        resizeMode="contain"
-                                        style={{
-                                            height: 50,
-                                            marginRight: 10,
-                                        }}
-                                    />
-                                </View>
-                                <View
+
+                            <ScrollView horizontal >
+
+                                <TouchableOpacity
                                     style={{
-                                        flexDirection: 'row',
-                                        paddingTop: 10,
+                                        backgroundColor: COLORS.white,
+                                        elevation: 5,
+                                        borderRadius: 10,
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 20,
+                                        alignItems: 'center',
+                                        marginRight: 10,
+                                        width: 150,
+                                    }}
+                                    onPress={() =>
+                                        navigation.navigate('Deposits', {
+                                            data: {
+                                                allData: allData,
+                                                monthlyData: monthlyWalletData,
+                                                todayData: todayData
+                                            },
+                                        })
+                                    }
+                                >
+                                    <View>
+                                        <Image
+                                            source={require('../../Images/walletDeposit.jpg')}
+                                            resizeMode="contain"
+                                            style={{
+                                                height: 50,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            paddingTop: 10,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 13,
+                                                textAlign: 'center',
+                                                paddingRight: 5,
+                                                color: COLORS.black,
+                                            }}
+                                        >
+                                            Deposits:
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                fontWeight: 'bold',
+                                                color: COLORS.black,
+                                                fontSize: 13,
+                                                textAlign: 'center',
+                                            }}
+                                        >
+
+                                            <Text
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    color: COLORS.black,
+                                                    fontSize: 13,
+                                                    textAlign: 'center',
+                                                }}>
+                                                $
+                                                {allWalletData
+                                                    ? (deposit.total ? deposit.total.toFixed(2) : 0) : allMonthlyData ? (deposit.monthly ? deposit.monthly.toFixed(2) : 0)
+                                                        : deposit.daily ? (deposit.daily.toFixed(2)) : 0}
+                                            </Text>
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate('Spents', {
+                                            data: {
+                                                allData: allData,
+                                                monthlyData: monthlyWalletData,
+                                                todayData: todayData
+                                            },
+                                        })
+                                    }
+                                    style={{
+                                        backgroundColor: COLORS.white,
+                                        elevation: 5,
+                                        borderRadius: 10,
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 20,
+                                        alignItems: 'center',
+                                        width: 150,
+                                        marginRight: 10
                                     }}
                                 >
-                                    <Text
+                                    <View>
+                                        <Image
+                                            source={require('../../Images/walletSpent.png')}
+                                            resizeMode="contain"
+                                            style={{
+                                                height: 50,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
                                         style={{
-                                            fontSize: 13,
-                                            textAlign: 'center',
-                                            paddingRight: 5,
-                                            color: COLORS.black,
+                                            flexDirection: 'row',
+                                            paddingTop: 10,
                                         }}
                                     >
-                                        Deposits:
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontWeight: 'bold',
-                                            color: COLORS.black,
-                                            fontSize: 13,
-                                            textAlign: 'center',
-                                        }}
-                                    >
-
+                                        <Text
+                                            style={{
+                                                fontSize: 13,
+                                                textAlign: 'center',
+                                                paddingRight: 5,
+                                                color: COLORS.black,
+                                            }}
+                                        >
+                                            Spendings:
+                                        </Text>
                                         <Text
                                             style={{
                                                 fontWeight: 'bold',
@@ -493,77 +633,88 @@ const Wallet = ({ navigation, route }) => {
                                             }}>
                                             $
                                             {allWalletData
-                                                ? (deposit.total ? deposit.total.toFixed(2) : 0) : allMonthlyData ? (deposit.monthly ? deposit.monthly.toFixed(2) : 0)
-                                                    : deposit.daily ? (deposit.daily.toFixed(2)) : 0}
+                                                ? spent.total
+                                                    ? (spent.total).toFixed(2)
+                                                    : 0
+                                                : allMonthlyData ?
+                                                    ((spent.monthly && spent.monthly.toFixed(2)) ?? 0) :
+                                                    ((spent.daily && (spent.daily).toFixed(2)) ?? 0)}
                                         </Text>
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                                    </View>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate('Spents', {
-                                        data: {
-                                            allData: allData,
-                                            monthlyData: monthlyWalletData,
-                                            todayData: todayData
-                                        },
-                                    })
-                                }
-                                style={{
-                                    backgroundColor: COLORS.white,
-                                    elevation: 5,
-                                    borderRadius: 10,
-                                    paddingHorizontal: 20,
-                                    paddingVertical: 20,
-                                    alignItems: 'center',
-                                    width: '49%',
-                                }}
-                            >
-                                <View>
-                                    <Image
-                                        source={require('../../Images/walletSpent.png')}
-                                        resizeMode="contain"
-                                        style={{
-                                            height: 50,
-                                            marginRight: 10,
-                                        }}
-                                    />
-                                </View>
-                                <View
+                                <TouchableOpacity
                                     style={{
-                                        flexDirection: 'row',
-                                        paddingTop: 10,
+                                        backgroundColor: COLORS.white,
+                                        elevation: 5,
+                                        borderRadius: 10,
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 20,
+                                        alignItems: 'center',
+                                        width: 150,
+                                        marginRight: 10
                                     }}
+                                    onPress={() =>
+                                        navigation.navigate('ClaimsDetails', {
+                                            data: {
+                                                allData: allData,
+                                                monthlyData: monthlyWalletData,
+                                                todayData: todayData
+                                            },
+                                        })
+                                    }
                                 >
-                                    <Text
+                                    <View>
+                                        <Image
+                                            source={require('../../Images/walletDeposit.jpg')}
+                                            resizeMode="contain"
+                                            style={{
+                                                height: 50,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
                                         style={{
-                                            fontSize: 13,
-                                            textAlign: 'center',
-                                            paddingRight: 5,
-                                            color: COLORS.black,
+                                            flexDirection: 'row',
+                                            paddingTop: 10,
                                         }}
                                     >
-                                        Spendings:
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontWeight: 'bold',
-                                            color: COLORS.black,
-                                            fontSize: 13,
-                                            textAlign: 'center',
-                                        }}>
-                                        $
-                                        {allWalletData
-                                            ? spent.total
-                                                ? (spent.total).toFixed(2)
-                                                : 0
-                                            : allMonthlyData ?
-                                                ((spent.monthly && spent.monthly.toFixed(2)) ?? 0) :
-                                                ((spent.daily && (spent.daily).toFixed(2)) ?? 0)}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                                        <Text
+                                            style={{
+                                                fontSize: 13,
+                                                textAlign: 'center',
+                                                paddingRight: 5,
+                                                color: COLORS.black,
+                                            }}
+                                        >
+                                            Claims:
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                fontWeight: 'bold',
+                                                color: COLORS.black,
+                                                fontSize: 13,
+                                                textAlign: 'center',
+                                            }}
+                                        >
+
+                                            <Text
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    color: COLORS.black,
+                                                    fontSize: 13,
+                                                    textAlign: 'center',
+                                                }}>
+                                                $
+                                                {allWalletData
+                                                    ? (claims.total ? claims.total.toFixed(2) : 0) : allMonthlyData ? (claims.monthly ? claims.monthly.toFixed(2) : 0)
+                                                        : claims.daily ? (claims.daily.toFixed(2)) : 0}
+                                            </Text>
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </ScrollView>
                         </View>
 
                         <View

@@ -49,6 +49,8 @@ import AntDesign from "react-native-vector-icons/AntDesign"
 import ScheduleCancelRide from '../ScheduleCancelRide';
 import Support from '../Support';
 import PetHotel from '../PetHotel';
+import Claims from '../Claims';
+import ClaimDetails from '../ClaimsDetails';
 
 
 const Stack = createNativeStackNavigator();
@@ -208,6 +210,8 @@ export default function Navigation() {
         <Stack.Screen name="TermsAndCondition" component={TermsAndConditions} />
         <Stack.Screen name="ScheduleCancelRide" component={ScheduleCancelRide} />
         <Stack.Screen name="Support" component={Support} />
+        <Stack.Screen name="Claims" component={Claims} />
+        <Stack.Screen name="ClaimsDetails" component={ClaimDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

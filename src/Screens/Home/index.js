@@ -22,6 +22,7 @@ import axios from 'axios';
 import CustomButton from '../../Components/CustomButton';
 import RadiusContext from '../../Context/RadiusContext/context';
 import Font from "react-native-vector-icons/FontAwesome"
+import ClaimContext from '../../Context/ClaimContext/context';
 
 
 function Home({ navigation }) {
@@ -47,6 +48,7 @@ function Home({ navigation }) {
   const notificationCont = useContext(NotificationContext)
   const chooseLocationCont = useContext(ChooseLocationContext)
   const scheduleRideCont = useContext(ScheduleRideContext)
+  const claimCont = useContext(ClaimContext)
   let radiusCont = useContext(RadiusContext)
 
 
@@ -60,7 +62,9 @@ function Home({ navigation }) {
   const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
     , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
   const { scheduleData, setScheduleData } = scheduleRideCont
+  const {claim,setClaim} = claimCont
   let { radius, setRadius } = radiusCont
+
 
 
 
@@ -541,7 +545,6 @@ function Home({ navigation }) {
 
         let allNotification = data?.notification
 
-        console.log(allNotification, "noti")
 
 
 
@@ -710,13 +713,57 @@ function Home({ navigation }) {
 
 
 
+const getClaimData = async () => {
+
+    let allClaims = []
+
+   let unsubscribe = firestore().collection("DamagesClaim").onSnapshot((querySnapshot)=>{
+
+          querySnapshot.forEach((doc)=>{
+
+            let data = doc?.data()
+
+            let claims = data?.claims
+
+            if(claims && claims.length>0){
+
+                claims.map((e,i)=>{
+
+                    if(e?.status == "completed" && e?.userId == auth().currentUser?.uid){
+
+
+                            allClaims.push(e)
+
+                    }
+
+            })
+
+            }
+
+            
+          })
+
+          setClaim(allClaims)
+
+    })
+
+    return () =>{ 
+
+      unsubscribe()
+
+    }
+
+}
+
 
   useEffect(() => {
 
 
     sendDeviceTokenToDatabase()
+    getClaimData()
 
   }, [])
+
 
 
   const handleNavigateToBooking = (routeName) => {

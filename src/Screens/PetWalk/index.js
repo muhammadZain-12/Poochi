@@ -1267,7 +1267,6 @@ function PetWalk({ navigation, route }) {
 
                     </View> : ""}
 
-
                     {!cardDetails ?
                         <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "center", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 

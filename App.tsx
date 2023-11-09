@@ -36,6 +36,8 @@ import NotificationState from './src/Context/NotificationContext/state';
 import ChooseLocationState from './src/Context/pickupanddropoffContext/state';
 import ScheduleRideState from './src/Context/ScheduleRideContext/state';
 import RadiusState from './src/Context/RadiusContext/state';
+import ClaimContext from './src/Context/ClaimContext/context';
+import ClaimState from './src/Context/ClaimContext/state';
 
 function App() {
   useEffect(() => {
@@ -59,6 +61,7 @@ function App() {
           <RadiusState>
             <NotificationState>
               <ScheduleRideState>
+                <ClaimState>
                 <BookingState>
                   <ChooseLocationState>
                     <CardDetailsState>
@@ -70,6 +73,7 @@ function App() {
                     </CardDetailsState>
                   </ChooseLocationState>
                 </BookingState>
+                </ClaimState>
               </ScheduleRideState>
             </NotificationState>
           </RadiusState>
