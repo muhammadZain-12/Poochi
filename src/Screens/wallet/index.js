@@ -178,8 +178,13 @@ const Wallet = ({ navigation, route }) => {
                 return previous + current;
             }, 0);
 
+
+        console.log(ClaimData, "claim")
+
         ClaimData && setClaims({ ...claims, total: ClaimData });
     };
+
+    console.log(claims, "claims")
 
     const getMonthlyAmountDepositInWallet = () => {
         let myDepositData = [];
@@ -319,7 +324,7 @@ const Wallet = ({ navigation, route }) => {
 
     useEffect(() => {
         if ((deposit && deposit.total) || spent.total) {
-            let currentWalletAmount = Number(deposit.total) - Number(spent.total);
+            let currentWalletAmount = Number(deposit.total) - Number(spent.total) - Number(claims.total);
             setCurrentWallet(currentWalletAmount.toFixed(2));
         }
     }, [deposit, spent, routeData, allWalletData]);

@@ -177,6 +177,23 @@ function Profile({ navigation }) {
                     </TouchableOpacity>
                 </View>
 
+                <TouchableOpacity onPress={() => handleRouteToTrackScreen()} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+                            <FontAwesome name="route" color={Colors.buttonColor} size={25} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Track Your Pets</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
+
+
                 <TouchableOpacity onPress={() => navigation.navigate("History")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
@@ -187,6 +204,59 @@ function Profile({ navigation }) {
 
                         </View>
                         <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >History</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
+
+
+                <TouchableOpacity onPress={() => navigation.navigate("wallet")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+                            <MaterialIcons name="wallet" size={25} color={Colors.buttonColor} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Wallet</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
+
+
+
+                <TouchableOpacity onPress={() => navigation.navigate("Support")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+                            <MaterialIcons name="support-agent" size={30} color={Colors.buttonColor} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Help & Support</Text>
+
+                    </View>
+
+
+                </TouchableOpacity>
+
+
+                <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+
+                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
+
+                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
+
+
+                            <MaterialIcons name="settings" size={25} color={Colors.buttonColor} />
+
+                        </View>
+                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Account Settings</Text>
 
                     </View>
 
@@ -210,52 +280,7 @@ function Profile({ navigation }) {
 
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate("wallet")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
-                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
-
-                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
-
-                            <MaterialIcons name="wallet" size={25} color={Colors.buttonColor} />
-
-                        </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Wallet</Text>
-
-                    </View>
-
-
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("AccountSetting")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
-
-                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
-
-                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
-
-
-                            <MaterialIcons name="settings" size={25} color={Colors.buttonColor} />
-
-                        </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Account Settings</Text>
-
-                    </View>
-
-
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleRouteToTrackScreen()} style={{ paddingHorizontal: 20, marginTop: 20 }} >
-
-                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
-
-                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
-
-                            <FontAwesome name="route" color={Colors.buttonColor} size={25} />
-
-                        </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Track Your Pets</Text>
-
-                    </View>
-
-
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("PrivacyPolicy")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
@@ -271,21 +296,7 @@ function Profile({ navigation }) {
 
 
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Support")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
-                    <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
-
-                        <View style={{ width: 50, height: 50, justifyContent: "center", alignItems: "center", backgroundColor: Colors.white, borderRadius: 100 }} >
-
-                            <MaterialIcons name="support-agent" size={30} color={Colors.buttonColor} />
-
-                        </View>
-                        <Text style={{ marginLeft: 15, color: "#21263D", fontFamily: "Poppins-Medium", fontSize: 18 }} >Help & Support</Text>
-
-                    </View>
-
-
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleLogoutUser()} style={{ paddingHorizontal: 20, marginTop: 20, marginBottom: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >

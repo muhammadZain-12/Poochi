@@ -20,6 +20,7 @@ import auth from "@react-native-firebase/auth";
 import IonIcons from "react-native-vector-icons/Ionicons"
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
 import axios from "axios";
+import RadiusContext from "../../Context/RadiusContext/context";
 
 
 function PetGrooming({ navigation, route }) {
@@ -50,6 +51,10 @@ function PetGrooming({ navigation, route }) {
 
     const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
         , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
+
+    let radiusCont = useContext(RadiusContext)
+    const { scheduleRideRadius, setScheduleRideRadius } = radiusCont
+
 
     const scheduleRideCont = useContext(ScheduleRideContext)
     const { scheduleData, setScheduleData } = scheduleRideCont
@@ -565,10 +570,10 @@ function PetGrooming({ navigation, route }) {
                     scheduleTime: time,
                     selectedPets: selectedPets,
                     comment: comment,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     distance: distance,
                     pickupToDropDis: pickupToDropoffDistance,
@@ -663,7 +668,7 @@ function PetGrooming({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 5) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -818,10 +823,10 @@ function PetGrooming({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
@@ -898,11 +903,11 @@ function PetGrooming({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     scheduleDate: date,
                     scheduleTime: time,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     distance: distance,
                     minutes: minutes,
                     bookingType: "oneWay",
@@ -988,7 +993,7 @@ function PetGrooming({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 5) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -1153,9 +1158,9 @@ function PetGrooming({ navigation, route }) {
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",

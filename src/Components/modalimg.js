@@ -34,9 +34,9 @@ export default function ModalImg({
         <Modal transparent={true} visible={modalVisible} animationType="slide">
             <View style={styles.backContainer}>
                 <View style={styles.frontContainer}>
-                    <TouchableOpacity style={styles.innerContainer} onPress={openCamera}>
+                    {/* <TouchableOpacity style={styles.innerContainer} onPress={openCamera}>
                         <Text style={styles.textStyle}>{"Take Photo"}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity style={styles.midContainer} onPress={openGallery} >
                         <Text style={styles.textStyle}>{"Upload Photo"}</Text>
                     </TouchableOpacity>

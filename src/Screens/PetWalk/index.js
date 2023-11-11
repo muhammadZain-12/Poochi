@@ -18,6 +18,7 @@ import ChooseLocationContext from "../../Context/pickupanddropoffContext/context
 import IonIcons from "react-native-vector-icons/Ionicons"
 import axios from "axios";
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
+import RadiusContext from "../../Context/RadiusContext/context";
 
 function PetWalk({ navigation, route }) {
 
@@ -40,6 +41,11 @@ function PetWalk({ navigation, route }) {
 
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
+
+
+    let radiusCont = useContext(RadiusContext)
+    const { scheduleRideRadius, setScheduleRideRadius } = radiusCont
+
 
     const scheduleRideCont = useContext(ScheduleRideContext)
     const { scheduleData, setScheduleData } = scheduleRideCont
@@ -674,9 +680,9 @@ function PetWalk({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     duration: selectedTimeDuration,
                     bookingType: "oneWay",
                     requestDate: new Date(),
@@ -699,9 +705,9 @@ function PetWalk({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     duration: selectedTimeDuration,
                     bookingType: "oneWay",
                     requestDate: new Date(),
@@ -749,9 +755,9 @@ function PetWalk({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     duration: selectedTimeDuration,
                     bookingType: "twoWay",
                     requestDate: new Date(),
@@ -790,9 +796,9 @@ function PetWalk({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     duration: selectedTimeDuration,
                     bookingType: "twoWay",
                     requestDate: new Date(),
@@ -857,10 +863,6 @@ function PetWalk({ navigation, route }) {
 
             setLoading(true)
 
-
-
-
-
             const drivers = [];
             const tokens = [];
 
@@ -884,7 +886,7 @@ function PetWalk({ navigation, route }) {
 
                     const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                    if (mileDistance <= 5) {
+                    if (mileDistance <= scheduleRideRadius) {
                         const driverId = data.id;
                         const driverToken = data.token;
 

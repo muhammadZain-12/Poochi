@@ -32,7 +32,7 @@ async function DisplayNotification(remoteMessage) {
         id: 'default',
         name: 'Default Channel',
         importance: AndroidImportance.HIGH,
-        sound: 'my_sound', // Set the default notification sound
+        sound: 'default', // Set the default notification sound
         icon: 'ic_launcher', // Set the icon launcher
     });
 
@@ -44,7 +44,7 @@ async function DisplayNotification(remoteMessage) {
             channelId,
             smallIcon: 'ic_launcher', // Set the small icon for the notification
             largeIcon: 'ic_launcher', // Set the large icon for the notification
-            sound: 'my_sound', // Set the default notification sound
+            sound: 'default', // Set the default notification sound
         },
     });
 }

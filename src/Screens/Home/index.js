@@ -62,8 +62,8 @@ function Home({ navigation }) {
   const { pickup, setPickup, pickupAddress, setPickupAddress, dropoff, setDropoff, dropoffAddress, setDropoffAddress, returnPickup, setReturnPickup
     , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
   const { scheduleData, setScheduleData } = scheduleRideCont
-  const {claim,setClaim} = claimCont
-  let { radius, setRadius } = radiusCont
+  const { claim, setClaim } = claimCont
+  let { radius, setRadius,scheduleRideRadius,setScheduleRideRadius } = radiusCont
 
 
 
@@ -371,13 +371,18 @@ function Home({ navigation }) {
       let data = querySnapshot?.data()
 
       let radius = data?.mileRadius
+      let scheduleRadius = data?.scheduleMileRadius
 
       setRadius(radius)
+      setScheduleRideRadius(Number(data?.scheduleMileRadius))
 
     })
 
   }
 
+
+
+  
   useEffect(() => {
     getRadius()
   }, [])
@@ -713,47 +718,47 @@ function Home({ navigation }) {
 
 
 
-const getClaimData = async () => {
+  const getClaimData = async () => {
 
     let allClaims = []
 
-   let unsubscribe = firestore().collection("DamagesClaim").onSnapshot((querySnapshot)=>{
+    let unsubscribe = firestore().collection("DamagesClaim").onSnapshot((querySnapshot) => {
 
-          querySnapshot.forEach((doc)=>{
+      querySnapshot.forEach((doc) => {
 
-            let data = doc?.data()
+        let data = doc?.data()
 
-            let claims = data?.claims
+        let claims = data?.claims
 
-            if(claims && claims.length>0){
+        if (claims && claims.length > 0) {
 
-                claims.map((e,i)=>{
+          claims.map((e, i) => {
 
-                    if(e?.status == "completed" && e?.userId == auth().currentUser?.uid){
+            if (e?.status == "completed" && e?.userId == auth().currentUser?.uid) {
 
 
-                            allClaims.push(e)
-
-                    }
-
-            })
+              allClaims.push(e)
 
             }
 
-            
           })
 
-          setClaim(allClaims)
+        }
+
+
+      })
+
+      setClaim(allClaims)
 
     })
 
-    return () =>{ 
+    return () => {
 
       unsubscribe()
 
     }
 
-}
+  }
 
 
   useEffect(() => {

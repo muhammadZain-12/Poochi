@@ -17,16 +17,15 @@ function ScheduleRide({ navigation, route }) {
     const { scheduleData, setScheduleData } = scheduleRideCont
 
 
-
     const renderScheduleData = ({ item }) => {
 
         var options = {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          };
+        };
 
-          var formattedDate = new Intl.DateTimeFormat('en-US', options).format(item?.scheduleDate?.toDate());
+        var formattedDate = new Intl.DateTimeFormat('en-US', options).format(item?.scheduleDate?.toDate());
 
         return (
 
@@ -44,7 +43,7 @@ function ScheduleRide({ navigation, route }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{item?.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{item.driverData?.fullName.length > 8 ? `${item.driverData?.fullName.slice(0, 8)}...` : item.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
 

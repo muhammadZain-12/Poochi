@@ -79,7 +79,7 @@ function Notification({ navigation }) {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      };
+    };
 
 
     const renderNotificationData = ({ item }) => {
@@ -92,7 +92,7 @@ function Notification({ navigation }) {
 
 
         let fullDate = new Intl.DateTimeFormat('en-US', options).format(item.date.toDate())
-    
+
 
         return (
 
@@ -111,7 +111,7 @@ function Notification({ navigation }) {
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
                                     <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item?.title}</Text>
                                 </View>
-                                
+
 
 
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 10, backgroundColor: "#aaa", marginTop: 10, padding: 0, width: "100%", padding: 10 }} >{item?.body}</Text>

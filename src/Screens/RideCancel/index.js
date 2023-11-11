@@ -134,9 +134,7 @@ function RideCancel({ navigation }) {
                                     if (bookingData?.driverData?.token) {
                                         var data = JSON.stringify({
                                             notification: {
-                                                body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
-                                                    contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
-                                                        deniedPickup ? `You denies to come to pick up that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Passenger has cancelled ride due to other reasons`,
+                                                body: "I've changed my mind",
                                                 title: `Hi ${bookingData?.driverData?.fullName} `,
                                             },
                                             to: bookingData?.driverData?.token,
@@ -237,8 +235,6 @@ function RideCancel({ navigation }) {
         }
 
 
-
-
         firestore().collection("Request").doc(id).update({
             requestStatus: "cancelled",
             rideCancelByPassenger: true,
@@ -287,9 +283,7 @@ function RideCancel({ navigation }) {
                         if (bookingData?.driverData?.token) {
                             var data = JSON.stringify({
                                 notification: {
-                                    body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Passenger was waiting for long time that's why passenger cancelled ride` :
-                                        contactDriver ? `Passenger was unable to contact you that's why passenger cancelled ride` : deniedDestination ? `You denied to go to destination that's why passenger cancelled ride` :
-                                            deniedPickup ? `You denies to come to pick up that's why passenger cancelled ride` : wrongAddress ? `Passenger changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Passneger has cancelled ride due to other reasons`,
+                                    body: "I've changed my mind",
                                     title: `Hi ${bookingData?.driverData?.fullName} `,
                                 },
                                 to: bookingData?.driverData?.token,
@@ -419,26 +413,7 @@ function RideCancel({ navigation }) {
                         </TouchableOpacity>
                         <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Unable to contact driver</Text>
                     </View>
-                    <View style={{ padding: 10, borderWidth: 1, borderColor: deniedDestination ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
-
-                        <TouchableOpacity onPress={() => setDeniedDestination(!deniedDestination)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: deniedDestination ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >
-                            {deniedDestination && <Icons name="check" size={20} color={Colors.white} />}
-
-                        </TouchableOpacity >
-
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to go to destination</Text>
-
-                    </View>
-                    <View style={{ padding: 10, borderWidth: 1, borderColor: deniedPickup ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
-
-                        <TouchableOpacity onPress={() => setDeniedPickup(!deniedPickup)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: deniedPickup ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >
-                            {deniedPickup && <Icons name="check" size={20} color={Colors.white} />}
-
-                        </TouchableOpacity >
-
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pick up</Text>
-
-                    </View>
+                    
                     <View style={{ padding: 10, borderWidth: 1, borderColor: wrongAddress ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
 
                         <TouchableOpacity onPress={() => setWrongAddress(!wrongAddress)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: wrongAddress ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >
@@ -456,7 +431,7 @@ function RideCancel({ navigation }) {
 
                         </TouchableOpacity >
 
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >The price is not reasonable</Text>
+                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Price is not reasonable</Text>
 
                     </View>
 

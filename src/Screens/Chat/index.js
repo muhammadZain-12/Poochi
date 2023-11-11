@@ -202,9 +202,6 @@ function Chat({ navigation }) {
 
             lastChatMessage = chat[0].text;
 
-
-
-            console.log('Last chat message:', lastChatMessage);
           } else {
             console.log('No chat messages in the array.');
           }
@@ -315,7 +312,7 @@ function Chat({ navigation }) {
                 color: Colors.black,
                 height: 20,
               }}>
-              {item.driverData?.fullName}
+              {item.driverData?.fullName.length > 8 ? `${item.driverData?.fullName.slice(0, 8)}...` : item.driverData?.fullName}
             </Text>
             <Text
               style={{

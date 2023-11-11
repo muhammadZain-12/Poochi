@@ -370,27 +370,22 @@ function Drivers({ navigation }) {
 
                                 <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                     <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 25 }} >{e.fullName.length > 10 ? `${e.fullName.slice(0, 8)}...` : e.fullName}</Text>
+                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black, height: 25 }} >{e.fullName.length > 10 ? `${e.fullName.slice(0, 8)}...` : e.fullName}</Text>
                                         <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                         <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({e.rating})</Text>
-
                                     </View>
                                     <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{e.VehicleDetails?.vehicleName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 12, color: Colors.gray, height: 20, width: 140 }} numberOfLines={2} >{e.petExperience ? `${e.petExperience} ${Number(e?.petExperience) == 1 ? "year" : "years"} pet experience` : "No Pet Experience"} </Text>
                                     <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{e.VehicleDetails?.vehicleModelNum}</Text>
-
                                 </View>
 
                             </View>
 
                             <View style={{ alignItems: "flex-end" }} >
-
-                                <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${bookingData.fare}</Text>
-
+                                <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${Number(bookingData.fare).toFixed(2)}</Text>
                                 <TouchableOpacity onPress={() => handleSelectDriver(e)} style={{ padding: 5, backgroundColor: Colors.buttonColor, borderRadius: 30, width: 100 }} >
                                     <Text style={{ fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 14, textAlign: "center" }} >Select</Text>
-
                                 </TouchableOpacity>
-
                             </View>
 
                         </TouchableOpacity>

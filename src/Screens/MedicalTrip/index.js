@@ -20,6 +20,7 @@ import auth from "@react-native-firebase/auth";
 import IonIcons from "react-native-vector-icons/Ionicons"
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
 import axios from "axios";
+import RadiusContext from "../../Context/RadiusContext/context";
 
 
 function MedicalTrip({ navigation, route }) {
@@ -43,6 +44,11 @@ function MedicalTrip({ navigation, route }) {
 
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
+
+    let radiusCont = useContext(RadiusContext)
+    const { scheduleRideRadius, setScheduleRideRadius } = radiusCont
+
+
 
     const chooseLocationCont = useContext(ChooseLocationContext)
 
@@ -545,10 +551,10 @@ function MedicalTrip({ navigation, route }) {
                     scheduleTime: time,
                     selectedPets: selectedPets,
                     comment: comment,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     distance: distance,
                     pickupToDropDis: pickupToDropoffDistance,
@@ -639,7 +645,7 @@ function MedicalTrip({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 5) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -788,10 +794,10 @@ function MedicalTrip({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
@@ -868,11 +874,11 @@ function MedicalTrip({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     scheduleDate: date,
                     scheduleTime: time,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     distance: distance,
                     minutes: minutes,
                     bookingType: "oneWay",
@@ -957,7 +963,7 @@ function MedicalTrip({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 25) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -1120,9 +1126,9 @@ function MedicalTrip({ navigation, route }) {
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",

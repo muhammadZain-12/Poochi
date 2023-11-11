@@ -15,7 +15,7 @@ function Claims({ navigation }) {
     const [indexShow, setIndexShow] = useState(null)
     const [pause, setPause] = useState(false)
 
-    
+
 
     let width = Dimensions.get("window").width
 
@@ -78,14 +78,13 @@ function Claims({ navigation }) {
 
     const renderClaimData = ({ item, index }) => {
 
-        console.log(index, "itemss")
 
         let date = new Intl.DateTimeFormat('en-US', options).format(item?.created_at?.toDate());
 
 
         return (
 
-            <View style={{ width: "95%", alignSelf: "center", borderWidth: 1, padding: 10, borderRadius: 10, justifyContent: "center", backgroundColor: "#e6e6e6" }} >
+            <View style={{ width: "95%", alignSelf: "center", borderWidth: 1, padding: 10, borderRadius: 10, justifyContent: "center", backgroundColor: "#e6e6e6", marginBottom: 10 }} >
 
                 <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
                     {date}
@@ -101,7 +100,7 @@ function Claims({ navigation }) {
 
                         <View style={{ marginLeft: 5, justifyContent: "center" }} >
                             <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName}</Text>
+                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName.length>8 ? `${item.driverData?.fullName.slice(0,8)}...`: item.driverData?.fullName }</Text>
                                 <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                 <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                             </View>
@@ -181,7 +180,8 @@ function Claims({ navigation }) {
 
                 claim && claim.length > 0 ? <FlatList
                     contentContainerStyle={{
-                        marginTop: 20
+                        marginTop: 20,
+                        marginBottom: 20
                     }}
                     data={claim}
                     renderItem={renderClaimData}
@@ -195,7 +195,6 @@ function Claims({ navigation }) {
                 </View>
 
             }
-
 
         </View>
     )

@@ -650,12 +650,12 @@ function PassengerRideDetail({ navigation, route }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, }} >{bookingData?.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black,width:100 }} >{bookingData?.driverData?.fullName.length>9 ? `${bookingData?.driverData?.fullName.slice(0,8)}...` : bookingData?.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
+                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray}} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleModelNum}</Text>
 
                             </View>

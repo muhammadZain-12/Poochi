@@ -20,6 +20,7 @@ import auth from "@react-native-firebase/auth";
 import IonIcons from "react-native-vector-icons/Ionicons"
 import axios from "axios";
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
+import RadiusContext from "../../Context/RadiusContext/context";
 
 
 
@@ -42,6 +43,10 @@ function FriendsAndFamily({ navigation, route }) {
 
     const scheduleRideCont = useContext(ScheduleRideContext)
     const { scheduleData, setScheduleData } = scheduleRideCont
+
+    let radiusCont = useContext(RadiusContext)
+    const {scheduleRideRadius,setScheduleRideRadius} = radiusCont
+
 
     const cardCont = useContext(cardDetailsContext)
     const { cardDetails, setCardDetails } = cardCont
@@ -568,10 +573,10 @@ function FriendsAndFamily({ navigation, route }) {
                     scheduleTime: time,
                     selectedPets: selectedPets,
                     comment: comment,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     distance: distance,
                     pickupToDropDis: pickupToDropoffDistance,
@@ -666,7 +671,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 5) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -824,10 +829,10 @@ function FriendsAndFamily({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
                 distance: distance,
                 pickupToDropDis: pickupToDropoffDistance,
@@ -904,11 +909,11 @@ function FriendsAndFamily({ navigation, route }) {
                     comment: comment,
                     cardDetails: cardDetails,
                     userData: loginData,
-                    fare: fare,
+                    fare: Number(fare).toFixed(2),
                     serviceCharge: serviceCharges,
                     scheduleDate: date,
                     scheduleTime: time,
-                    driverFare: driverFare,
+                    driverFare: Number(driverFare).toFixed(2),
                     distance: distance,
                     minutes: minutes,
                     bookingType: "oneWay",
@@ -996,7 +1001,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                         const mileDistance = (dis / 1609.34)?.toFixed(2);
 
-                        if (mileDistance <= 5) {
+                        if (mileDistance <= scheduleRideRadius) {
                             const driverId = data.id;
                             const driverToken = data.token;
 
@@ -1162,9 +1167,9 @@ function FriendsAndFamily({ navigation, route }) {
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                fare: fare,
+                fare: Number(fare).toFixed(2),
                 serviceCharge: serviceCharges,
-                driverFare: driverFare,
+                driverFare: Number(driverFare).toFixed(2),
                 distance: distance,
                 minutes: minutes,
                 bookingType: "oneWay",

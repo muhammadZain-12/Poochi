@@ -10,6 +10,7 @@ import BookingContext from "../../Context/bookingContext/context"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
 import axios from "axios"
+import Drivers from "../Drivers"
 
 
 function ScheduleCancelRide({ navigation, route }) {
@@ -109,7 +110,7 @@ function ScheduleCancelRide({ navigation, route }) {
 
         }
 
-        else if (items?.driverData) {
+        if (items?.driverData) {
 
 
             firestore().collection("ScheduleRides").doc(items?.userData?.id).get().then((doc) => {
@@ -128,16 +129,15 @@ function ScheduleCancelRide({ navigation, route }) {
 
                 let allData = [...otherData, items]
 
+
                 firestore().collection("ScheduleRides").doc(items?.userData?.id).set({
                     scheduleRides: allData
                 }).then((res) => {
 
                     var data = JSON.stringify({
                         notification: {
-                            body: Object.keys(cancelReason).length > 0 ? `${waiting ? `Driver was waiting for long time that's why Driver cancelled ride` :
-                                contactDriver ? `Driver was unable to contact you that's why Driver cancelled ride` : deniedDestination ? `You denied to go to destination that's why Driver cancelled ride` :
-                                    deniedPickup ? `You denies to come to pick up that's why Driver cancelled ride` : wrongAddress ? `Driver changed his mind that's why cancelled ride` : priceNotReasonable ? `Price was not reasonable for passenger that's why cancelled ride` : other}` : `Driver has cancel ride due to other reasons`,
-                            title: `Hi ${items?.driverData?.fullName}`,
+                            body: 'Scheduled Ride has been cancelled by customer',
+                            title: `Hi ${driverData?.fullName}`,
                         },
                         to: driverData?.token,
                     });
@@ -154,11 +154,24 @@ function ScheduleCancelRide({ navigation, route }) {
 
                     axios(config)
                         .then(res => {
-                            console.log('message send');
 
-                            navigation.navigate("ScheduleRide")
-                            ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
-                            setLoading(false)
+                            let notificationToSend = {
+                                body: "Scheduled Ride has been cancelled by customer",
+                                title: `Hi ${driverData?.fullName}`,
+                                date: new Date()
+                            }
+
+                            firestore().collection("DriverNotification").doc(driverData.id).set({
+                                notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                            }, { merge: true }).then((res) => {
+                                navigation.navigate("ScheduleRide")
+                                ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
+                                setLoading(false)
+                            }).catch((error) => {
+                                setLoading(false)
+                            })
+
+
                         })
                         .catch(error => {
                             // setRequestInProcess(false)
@@ -169,24 +182,12 @@ function ScheduleCancelRide({ navigation, route }) {
                 }).catch((error) => {
                     setLoading(false)
                     ToastAndroid.show(error?.message, ToastAndroid.LONG)
-
-
                 })
 
 
             })
 
-
-
-
         }
-
-
-
-
-
-
-
 
     }
 
@@ -229,26 +230,7 @@ function ScheduleCancelRide({ navigation, route }) {
                         </TouchableOpacity>
                         <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Unable to contact driver</Text>
                     </View>
-                    <View style={{ padding: 10, borderWidth: 1, borderColor: deniedDestination ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
 
-                        <TouchableOpacity onPress={() => setDeniedDestination(!deniedDestination)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: deniedDestination ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >
-                            {deniedDestination && <Icons name="check" size={20} color={Colors.white} />}
-
-                        </TouchableOpacity >
-
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to go to destination</Text>
-
-                    </View>
-                    <View style={{ padding: 10, borderWidth: 1, borderColor: deniedPickup ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
-
-                        <TouchableOpacity onPress={() => setDeniedPickup(!deniedPickup)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: deniedPickup ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >
-                            {deniedPickup && <Icons name="check" size={20} color={Colors.white} />}
-
-                        </TouchableOpacity >
-
-                        <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Driver denied to come to pick up</Text>
-
-                    </View>
                     <View style={{ padding: 10, borderWidth: 1, borderColor: wrongAddress ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
 
                         <TouchableOpacity onPress={() => setWrongAddress(!wrongAddress)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: wrongAddress ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >

@@ -42,7 +42,7 @@ function History({ navigation }) {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      };
+    };
 
     const getBookingData = () => {
         setLoading(true);
@@ -135,6 +135,8 @@ function History({ navigation }) {
         let stringDate = date.toString();
         stringDate = stringDate.slice(0, 15);
 
+
+
         return (
 
             <TouchableOpacity style={{ marginBottom: 20, width: Dimensions.get("window").width - 30, marginTop: 10 }} >
@@ -149,11 +151,11 @@ function History({ navigation }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName.length > 8 ? `${item.driverData?.fullName.slice(0, 8)}...` : item.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray}} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
+                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
                                 <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
 
                             </View>
@@ -251,7 +253,7 @@ function History({ navigation }) {
 
 
     const renderCancelBookingData = ({ item, index }) => {
-        
+
         let date = new Intl.DateTimeFormat('en-US', options).format(item?.requestDate?.toDate());
         let stringDate = date.toString();
         stringDate = stringDate.slice(0, 15);
@@ -272,7 +274,7 @@ function History({ navigation }) {
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black, height: 20 }} >{item.driverData?.fullName}</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 18, color: Colors.black }} >{item.driverData?.fullName.length > 8 ? `${item.driverData?.fullName.slice(0, 8)}...` : item.driverData?.fullName}</Text>
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                                 </View>
