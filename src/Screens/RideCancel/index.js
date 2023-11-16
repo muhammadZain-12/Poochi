@@ -10,6 +10,7 @@ import BookingContext from "../../Context/bookingContext/context"
 import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
 import axios from "axios"
+import CancelChargesContext from "../../Context/cancelRideChargesContext/context"
 
 
 function RideCancel({ navigation }) {
@@ -26,11 +27,16 @@ function RideCancel({ navigation }) {
 
     const bookingCont = useContext(BookingContext)
     const selectedPetCont = useContext(SelectedPetContext)
+    let cancelChargesCont = useContext(CancelChargesContext)
+
     const cardCont = useContext(cardDetailsContext)
 
     const { bookingData, setBookingData } = bookingCont
     const { selectedPets, setSelectedPets } = selectedPetCont
     const { cardDetails, setCardDetails } = cardCont
+    let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
+
+
 
 
     const handleCancelRide = () => {
@@ -109,9 +115,9 @@ function RideCancel({ navigation }) {
 
                                 date: new Date(),
                                 deposit: 0,
-                                cancellationCharges: (Number(bookingData?.fare) * 10) / 100,
+                                cancellationCharges: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
                                 spent: 0,
-                                remainingWallet: -(Number(bookingData?.fare) * 10) / 100
+                                remainingWallet: -(Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
 
                             }
 
@@ -121,9 +127,9 @@ function RideCancel({ navigation }) {
 
                                 let walletToAdd = {
                                     date: new Date(),
-                                    earning: (Number(bookingData?.fare) * 10) / 100,
+                                    earning: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
                                     withdraw: 0,
-                                    remainingWallet: (Number(bookingData?.fare) * 10) / 100
+                                    remainingWallet: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
                                 }
 
                                 firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
@@ -134,7 +140,7 @@ function RideCancel({ navigation }) {
                                     if (bookingData?.driverData?.token) {
                                         var data = JSON.stringify({
                                             notification: {
-                                                body: "I've changed my mind",
+                                                body: "Customer has changed his mind",
                                                 title: `Hi ${bookingData?.driverData?.fullName} `,
                                             },
                                             to: bookingData?.driverData?.token,
@@ -159,7 +165,6 @@ function RideCancel({ navigation }) {
                                                     body: notification.notification.body,
                                                     date: new Date()
                                                 }
-
                                                 firestore().collection("DriverNotification").doc(bookingData?.driverData?.id).set({
                                                     notification: firestore.FieldValue.arrayUnion(notificationToSend)
                                                 }, { merge: true }).then((res) => {
@@ -214,7 +219,6 @@ function RideCancel({ navigation }) {
 
                         })
 
-
                     }).catch((error) => {
 
                         setLoading(false)
@@ -258,9 +262,9 @@ function RideCancel({ navigation }) {
 
                     date: new Date(),
                     deposit: 0,
-                    cancellationCharges: (Number(bookingData?.fare) * 10) / 100,
+                    cancellationCharges: (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
                     spent: 0,
-                    remainingWallet: -(Number(bookingData?.fare) * 10) / 100
+                    remainingWallet: -(Number(bookingData?.fare) * Number(cancelCharges)) / 100
 
                 }
 
@@ -270,9 +274,9 @@ function RideCancel({ navigation }) {
 
                     let walletToAdd = {
                         date: new Date(),
-                        earning: (Number(bookingData?.fare) * 10) / 100,
+                        earning: (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
                         withdraw: 0,
-                        remainingWallet: (Number(bookingData?.fare) * 10) / 100
+                        remainingWallet: (Number(bookingData?.fare) * Number(cancelCharges)) / 100
                     }
 
                     firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
@@ -283,7 +287,7 @@ function RideCancel({ navigation }) {
                         if (bookingData?.driverData?.token) {
                             var data = JSON.stringify({
                                 notification: {
-                                    body: "I've changed my mind",
+                                    body: "Customer has changed his mind",
                                     title: `Hi ${bookingData?.driverData?.fullName} `,
                                 },
                                 to: bookingData?.driverData?.token,
@@ -413,7 +417,7 @@ function RideCancel({ navigation }) {
                         </TouchableOpacity>
                         <Text style={{ marginLeft: 10, fontFamily: "Poppins-Medium", fontSize: 16, color: "#808080" }} >Unable to contact driver</Text>
                     </View>
-                    
+
                     <View style={{ padding: 10, borderWidth: 1, borderColor: wrongAddress ? Colors.buttonColor : Colors.gray, borderRadius: 10, marginTop: 10, paddingVertical: 20, flexDirection: "row" }} >
 
                         <TouchableOpacity onPress={() => setWrongAddress(!wrongAddress)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, backgroundColor: wrongAddress ? Colors.buttonColor : Colors.white, alignItems: "center", justifyContent: "center" }} >

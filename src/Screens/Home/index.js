@@ -23,6 +23,7 @@ import CustomButton from '../../Components/CustomButton';
 import RadiusContext from '../../Context/RadiusContext/context';
 import Font from "react-native-vector-icons/FontAwesome"
 import ClaimContext from '../../Context/ClaimContext/context';
+import CancelChargesContext from '../../Context/cancelRideChargesContext/context';
 
 
 function Home({ navigation }) {
@@ -50,6 +51,7 @@ function Home({ navigation }) {
   const scheduleRideCont = useContext(ScheduleRideContext)
   const claimCont = useContext(ClaimContext)
   let radiusCont = useContext(RadiusContext)
+  let cancelChargesCont = useContext(CancelChargesContext)
 
 
 
@@ -63,7 +65,8 @@ function Home({ navigation }) {
     , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
   const { scheduleData, setScheduleData } = scheduleRideCont
   const { claim, setClaim } = claimCont
-  let { radius, setRadius,scheduleRideRadius,setScheduleRideRadius } = radiusCont
+  let { radius, setRadius, scheduleRideRadius, setScheduleRideRadius } = radiusCont
+  let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
 
 
 
@@ -242,7 +245,7 @@ function Home({ navigation }) {
 
         var notificationData = JSON.stringify({
           notification: {
-            body: `Your next Scheduled Ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
+            body: `Your upcoming Scheduled Ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
             title: `Hi ${e?.userData?.fullName}`,
           },
           to: e?.userData?.token,
@@ -373,8 +376,16 @@ function Home({ navigation }) {
       let radius = data?.mileRadius
       let scheduleRadius = data?.scheduleMileRadius
 
+      let cancellationCharges = data?.cancelRideCharges
+      let scheduleCancellationCharges = data?.scheduleCancelRideCharges
+
+
+
       setRadius(radius)
       setScheduleRideRadius(Number(data?.scheduleMileRadius))
+
+      setCancelCharges(cancellationCharges)
+      setScheduleCancelCharges(scheduleCancellationCharges)
 
     })
 
@@ -382,7 +393,7 @@ function Home({ navigation }) {
 
 
 
-  
+
   useEffect(() => {
     getRadius()
   }, [])
@@ -859,9 +870,8 @@ function Home({ navigation }) {
         </TouchableOpacity>
 
         <View>
-          <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 18 }} >Hi {loginData.fullName}</Text>
+          <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 18 }} >Hi {loginData?.fullName?.length > 10 ? `${loginData?.fullName?.slice(0, 8)}...` : loginData.fullName}</Text>
         </View>
-
 
         <View style={{ flexDirection: "row" }} >
 
@@ -879,8 +889,9 @@ function Home({ navigation }) {
           </TouchableOpacity>
 
 
-          <TouchableOpacity style={{ padding: 5 }} onPress={() => handleRouteToTrackScreen()} >
+          <TouchableOpacity style={{ padding: 5, flexDirection: "column", alignItems: "center" }} onPress={() => handleRouteToTrackScreen()} >
             <FontAwesome name="route" size={25} color={Colors.buttonColor} />
+            <Text style={{ color: Colors.black, fontSize: 14, fontFamily: "Poppins-Bold" }} >Trace</Text>
           </TouchableOpacity>
         </View>
 

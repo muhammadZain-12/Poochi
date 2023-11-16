@@ -203,6 +203,9 @@ function ScheduleRideDate({ navigation, route }) {
 
             <View style={{ paddingHorizontal: 20, marginTop: 40 }} >
 
+
+            <Text style={{fontSize:16,fontFamily:"Poppins-SemiBold",color:Colors.red,marginBottom:20}} >Note: Users are not able to schedule any ride prior 3 hours</Text>
+
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ backgroundColor: "#e6e6e6", padding: 10, borderRadius: 10, paddingVertical: 15 }} >
                     <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{date ? new Intl.DateTimeFormat('en-US', options).format(date) : "Select Date"}</Text>
                 </TouchableOpacity>

@@ -34,18 +34,15 @@ function Profile({ navigation }) {
     const { locationData, setLocationData } = locationCont
     const { bookingData, setBookingData } = bookingCont
 
-
     const handleLogoutUser = async () => {
 
         AsyncStorage.removeItem("user")
 
-
         if (GoogleSignin.isSignedIn()) {
-
 
             await GoogleSignin.signOut()
             await auth().signOut()
-            ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+            ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
             setLoginData("")
             setLocationData("")
             navigation.reset({
@@ -71,11 +68,11 @@ function Profile({ navigation }) {
                 });
                 setLoginData("")
                 setLocationData("")
-                ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+                ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
 
             }).catch((error) => {
 
-                ToastAndroid.show("Logout Unsuccessfull", ToastAndroid.SHORT)
+                ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
 
 
             })

@@ -194,13 +194,14 @@ function PrivacyPolicy({ navigation }) {
 
 
                 <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                    We work with third parties to facilitate phone calls and text messages between customers and drivers without revealing one party's actual phone number to the other party. However, when we use third parties to provide communications services, we collect information about those communications, including participants' phone numbers, dates and times, and the content of text messages. Poochie Analog does not use third parties to facilitate communications. Poochie Customer Service facilitates simulated Poochie communication between customers and drivers.
-                </Text>
+                    Please understand that your contact number is accessible to our drivers when you book a ride or dog walk to facilitate communication. We use your given contact number for conversations between our drivers and customers when you book services. Note that we utilize third-party services for driver-customer chat communications.Poochie Analog does not use third parties to facilitate communications. Poochie Customer Service facilitates simulated Poochie communication between customers and drivers. </Text>
 
 
                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
 
                     How We Use Your Information:
+
+
                 </Text>
 
 
@@ -407,7 +408,7 @@ function PrivacyPolicy({ navigation }) {
                     B. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Driver information shared with Customer:
 
                         <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                            Approximately 30 minutes before booking a ride, we share the driver's name, profile photo, rating, real-time location, as well as the vehicle's make, model, color, and license plate, along with other information from the driver directory and profile, with the customer. For example: B. Information and driver statistics that the driver wants to add (e.g., approximate number of trips and number of years as a driver). Sharing of customer and driver information in Poochie Analog may be restricted. Although we help customers and drivers communicate with each other to arrange pet pickups, we do not share your actual phone number or other contact information with other users. If you report a lost or found item to us, we will attempt to connect you with the relevant customer or driver, including sharing actual contact information with your consent.
+                            When booking a ride, we share the driver's name, profile photo, rating, real-time location, telephone number as well as the vehicle's make, model, color, and license plate, along with other information from the driver directory and profile, with the customer. For example: B. Information and driver statistics that the driver wants to add (e.g., approximate number of trips and number of years as a driver). Sharing of customer and driver information in Poochie Analog may be restricted. Although we help customers and drivers communicate with each other to arrange pet pickups, we do not share your actual phone number or other contact information with other users unless, If you report a lost or found item to us, we will attempt to connect you with the relevant customer or driver, including sharing actual contact information with your consent.
 
                         </Text>
 
@@ -429,6 +430,22 @@ function PrivacyPolicy({ navigation }) {
                     </Text>
 
                 </Text>
+
+
+                <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginTop: 10, marginHorizontal: 40 }} >
+
+                    <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >About Our Charges and Fees For Our Customers:
+
+                        <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                            Once driver and or dog walkers arrive at customers' pick up locations, customers have 5 minutes to bring pets to drivers without any extra fees being charged. Once the wait time exceeds 5 minutes then additional wait time charges will start.
+                            We calculate extra waiting fees if for example: Customer inputs 15 minutes for wait time at groomers and the wait time exceeds the original wait time imputed by customer, customer will be charged for extra wait time for minutes that driver or dog walker has provided. If a customer orders an on demand pet ride or dog walk and cancels before driver arrival, customer will be charged 10% fee of original fare. If customers have scheduled a ride or scheduled dog walk and cancels prior 3 hours, there will be no cancellation fee. If a scheduled ride or scheduled dog walk is canceled within 3 hours of booking time, customers will be charged 25% of original booking fare. For the reasons mentioned, you might see two charges for a single booking, one for original amount and second one if for any reasons additional wait times are added.
+                        </Text>
+
+
+                    </Text>
+
+                </Text>
+
 
 
                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
@@ -903,6 +920,11 @@ function PrivacyPolicy({ navigation }) {
                     <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                         You can modify your cookie settings on your browser, but if you delete or choose not to accept our cookies, you may be missing out on certain features of the Poochie Platform.
                     </Text>
+                </Text>
+                <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Delete your account:
+
+                    <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                        If you would like to delete your Poochie account, please call 818-213-3884. In some cases, we may not be able to delete your account, for example, if there are trust, security, or fraud-related issues with your account. If we delete your account, we may retain certain information for legitimate business purposes or to comply with legal or regulatory obligations. For example, we may retain your information to resolve a pending insurance claim, or we may need to retain your information as part of a pending legal claim. If we retain such information, we will do so in a manner designed to prevent its use for other purposes. </Text>
                 </Text>
 
 

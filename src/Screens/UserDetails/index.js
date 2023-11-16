@@ -479,7 +479,6 @@ export default function UserDetails({ route }) {
 
                             <CustomDropDown
                                 setSelectedSubject={setSelectedCountry}
-
                                 selectedSubject={selectedCountry}
                                 dropdownPlace={"Select Country"}
                                 dropdownContainerStyle={{

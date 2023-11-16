@@ -128,11 +128,12 @@ function TermsAndConditions({ navigation, route }) {
                                     Welcome to Poochie!
                                     These terms and conditions outline the rules and regulations for the use of Poochie.
                                 </Text>
+
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
                                     Acceptance of Terms
                                 </Text>
-                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20, }} >
-                                    By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages or make derivative versions. The app itself, and all the trademarks, copyright, database rights, and other intellectual property rights related to it belong to XOX Rides Inc.  </Text>
+                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20, wordWrap: "wrap" }} >
+                                    By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages or make derivative versions. The app itself, and all the trademarks, copyright, database rights, and other intellectual property rights related to it belong to XOX Rides Inc. and or XOX Rides inc.DBA Poochie app and or Poochie. </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                     XOX Rides Inc is committed to ensuring that the app is as useful and efficient as possible. For that reason, we reserve the right to make changes to the app or to charge for its services, at any time and for any reason. We will never charge you for the app or its services without making it very clear to you exactly what you’re paying for. </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
@@ -144,6 +145,13 @@ function TermsAndConditions({ navigation, route }) {
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
                                     Description of Services
+                                </Text>
+                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginTop: 10, marginHorizontal: 20 }} >
+                                    The Poochie App provides a platform that connects pet owners ("Users") with pet transportation service providers ("Drivers") and Pet Walkers, specifically dog walkers. Users can request transportation services or pet walks for their pets using the App, and Drivers can accept and fulfill those requests at their sole discretion. Poochie does not provide pet care services.. Poochie app is a neutral platform for Pet Owners and Service Providers.. Poochie is not a Service Provider and, except for emergency phone or help support through our platform app and or website.
+                                </Text>
+
+                                <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
+                                    User Registration:
                                 </Text>
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginTop: 10, marginHorizontal: 40 }} >
@@ -236,10 +244,10 @@ function TermsAndConditions({ navigation, route }) {
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginTop: 10, marginHorizontal: 40 }} >
 
-                                    E. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Brokerage Service:
+                                    E. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Service Providers:
 
                                         <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                            Poochie uses web-based technology to provide an online marketplace that connects customers, contract drivers ("Contractors") and pet service businesses (the "Poochie Platform"). Poochie software allows registered users to request pet transportation from contractors. Poochie software notifies contractors of available rides, and Poochie software facilitates the logistics and payment for rides. XOX Rides Inc. and/or dba Poochie or Poochie App or poochieapp.com are technology-based service intermediaries. The contractor is a pet services company.
+                                            Poochie uses web-based technology to provide an online marketplace that connects customers, dog walkers, drivers or service providers  ("Service Providers") and pet service businesses (the "Poochie Platform"). Poochie software allows registered users to request pet transportation, pet walkers from service providers. Poochie software notifies service providers of available rides, walks, and Poochie software facilitates the logistics and payment for rides or walks. XOX Rides Inc. and/or dba Poochie or Poochie App or poochieapp.com are technology-based service intermediaries. The Service Providers are individuals or companies that provide services through our platform. We make no representations or warranties about the quality of dog walking, pet transportation, or other services provided by Service Providers or for any interactions or dealings with users.
                                         </Text>
 
                                     </Text>
@@ -421,10 +429,9 @@ function TermsAndConditions({ navigation, route }) {
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginTop: 10, marginHorizontal: 40 }} >
 
-                                    C. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Text Messaging and Telephone Calls:
-
-                                        <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                            You agree that Poochie may contact you, including for marketing purposes, by telephone or text message (including through an automatic telephone dialing system) at any telephone number provided by you or on your behalf in connection with your Poochie account. You understand that you are not required to provide this consent as a condition of purchasing any property, goods or services. You also understand that you may unsubscribe from text messages from Poochie at any time by contacting hello@poochieapp.com. If you do not choose to unsubscribe, Poochie may contact you as described in its Privacy Policy.  </Text>
+                                    C.
+                                    <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                                        Poochie app chats, Text Messaging, Telephone Calls: You agree that Poochie may contact you or monitor chats to ensure safety and reliability when using our platform, including for marketing purposes, by telephone or text message (including through an automatic telephone dialing system) at any telephone number provided by you or on your behalf in connection with your Poochie account. You understand that you are not required to provide this consent as a condition of purchasing any property, goods or services. You also understand that you may unsubscribe from text messages from Poochie at any time by contacting hello@poochieapp.com. If you do not choose to unsubscribe, Poochie may contact you as described in its Privacy Policy.
                                     </Text>
 
                                 </Text>
@@ -496,11 +503,10 @@ function TermsAndConditions({ navigation, route }) {
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginTop: 10, marginHorizontal: 40 }} >
 
-                                    b. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >How Made:
+                                    b. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >All charges:
 
                                         <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                             All Charges and payments will be enabled by Poochie, after which you will receive a receipt by email. If your Account payment method is determined to be expired, invalid or otherwise not able to be charged, you agree that Poochie may use a secondary payment method in your Account, if available. Charges you pay are final and non-refundable.
-
                                         </Text>
 
                                     </Text>
@@ -538,7 +544,9 @@ function TermsAndConditions({ navigation, route }) {
                                     e. <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >Service Cancellation:
 
                                         <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                            You may elect to cancel your scheduled Services up to 24 hours prior to the commencement of such Services, after which case you will be charged a cancellation fee of $15.00.    </Text>
+                                            You may elect to cancel your Scheduled Rides or Reserved Services up to 3 hours prior to the commencement with no cancellation fees, if canceled within 3 hours or less you will be charged for full fare amount. For on demand calls you will be charged once the service provider accepts your request for taxi or pet walking service.
+
+                                        </Text>
                                     </Text>
 
                                 </Text>
@@ -626,6 +634,10 @@ function TermsAndConditions({ navigation, route }) {
                                     7) You must provide accurate information about yourself and your pet.
                                 </Text>
 
+                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                                    For Service Providers, this means, among other things, that you certify that you are legally eligible to provide pet care services in the jurisdiction where you provide Pet Care Services; that you have complied and will comply with all laws and regulations that are applicable to you and where you reside and provide service; that you have obtained all business licenses, business tax registrations, and permits necessary to provide Pet Care Services legally; and that, when providing Pet Care Services, you will comply with applicable leash, pet waste disposal, and similar laws.
+                                </Text>
+
 
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
@@ -637,16 +649,23 @@ function TermsAndConditions({ navigation, route }) {
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                     You are solely responsible for your pet's behavior. You will be responsible for all claims, costs, actions, demands, losses, damages and expenses of every kind or nature arising out of or relating to your conduct with your pet (including, without limitation, reasonable attorneys' fees and legal costs) ., including without limitation claims by third parties (including contractors) for any damage, loss or injury resulting from your pet biting or attacking such a third party.
                                 </Text>
+                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
+                                    Abandoned Pets and Emergencies
+
+                                    Pet owners who schedule pet taxi or walking services but do not collect their pets after the agreed service period acknowledge that Poochie or service provider may, at their sole discretion, place the pet in foster care, or will transfer care to animal control or law enforcement, or arrange alternative care such as a pet hotel. Pet owners also commit to reimburse poochie and or service providers for all related costs and expenses.
+
+                                    Furthermore, Poochie explicitly reserves the right, at their sole discretion, to remove a pet from a service provider's care if they deem necessary for the safety of the pet. Prior to such removal, poochie will make reasonable attempts during thor normal business hours to contact pet owner and or the pets emergency contacts if provided to arrange other alternative care. If for any reason Poochie can't reach pet wonders or emergency contacts they will exercise their best judgment to find alternative care for the pet until the pet owner can retrieve their pet. As a pet owner you grant permission for your pet's veterinarian to release medical records for your pet to Poochie in connection with rehoming or relocating your pet. You are also responsible for covering all costs and expenses associated with all transfers. We always recommend pet owners to provide their pet service providers with emergency contact information for any care situations. Service providers also agree to promptly inform pet owners in case such care is required
+                                </Text>
 
 
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
 
-                                    Contractor Discretion:
+                                    Service Providers Discretion:
 
                                 </Text>
 
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                    Contractors have the sole and absolute discretion to reject or refuse any pet transportation services that you may request, even at the point of pickup, when:
+                                    service providers have the sole and absolute discretion to reject or refuse any pet transportation services that you may request, even at the point of pickup, when:
                                 </Text>
 
 
@@ -724,7 +743,7 @@ function TermsAndConditions({ navigation, route }) {
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20, marginLeft: 40 }} >
 
 
-                                    4)your violation of the rights of any third party, including contractors.
+                                    4)your violation of the rights of any third party, including service providers.
 
                                 </Text>
 
@@ -796,8 +815,8 @@ function TermsAndConditions({ navigation, route }) {
                                 </Text>
 
 
-                                <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
-                                    The Services may be used by you to request and schedule pet transportation services with contractors and other third-party providers, but you agree that Poochie has no responsibility or liability to you related to any transportation, goods or logistics services provided to you by contractor or other third-party providers other than as expressly set forth in these terms.
+                                <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginTop: 10, marginHorizontal: 20 }} >
+                                    The Services may be used by you to request and schedule pet transportation services with service providers and other third-party providers, but you agree that Poochie has no responsibility or liability to you related to any transportation, goods or logistics services provided to you by contractor or other third-party providers other than as expressly set forth in these terms.
                                 </Text>
 
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
@@ -1001,8 +1020,8 @@ function TermsAndConditions({ navigation, route }) {
                                     Notice:
                                 </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                    Poochie may give notice by means of a general notice on the Services, electronic mail to your email address in your Account, telephone or text message to any phone number provided in connection with your account, or by written communication sent by first class mail or pre-paid post to any address connected with your Account. Such notice shall be deemed to have been given upon the expiration of 48 hours after mailing or posting (if sent by first class mail or pre-paid post) or 12 hours after sending (if sent by email or telephone). You may give notice to Poochie, with such notice deemed given when received by Poochie, at any time by first class mail or pre-paid post to our registered agent for service of process, c/o XOX Rides Inc. 350 Salem st unit 201 Glendale Ca. 91203  </Text>
-
+                                    Poochie may give notice by means of a general notice on the Services, electronic mail to your email address in your Account, telephone or text message to any phone number provided in connection with your account, or by written communication sent by first class mail or pre-paid post to any address connected with your Account. Such notice shall be deemed to have been given upon the expiration of 48 hours after mailing or posting (if sent by first class mail or pre-paid post) or 12 hours after sending (if sent by email or telephone). You may give notice to Poochie, with such notice deemed given when received by Poochie, at any time by first class mail or pre-paid post to our registered agent for service of process, c/o XOX Rides Inc. 3400 Cottage way,ste G2 #19585 Sacramento, Ca,95825
+                                </Text>
 
 
 
@@ -1287,32 +1306,23 @@ function TermsAndConditions({ navigation, route }) {
 
                                 </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
-                                    If you find any link on our App that is offensive for any reason, you are free to contact and inform us any moment. We will consider requests to remove links but we are not obligated to or so or to respond to you directly.
+                                    If you find any link on our App that is offensive for any reason, you are free to contact and inform us any moment. We will consider requests to remove links but we are not obligated to or so or to respond to you directly
                                 </Text>
-
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                     We do not ensure that the information on this website is correct, we do not warrant its completeness or accuracy; nor do we promise to ensure that the website remains available or that the material on the website is kept up to date.
                                 </Text>
-
-
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-SemiBold", marginHorizontal: 20 }} >Changes to This Terms and Conditions
-
                                 </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                     We may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Terms and Conditions on this page.
                                 </Text>
-
                                 <Text style={{ color: Colors.black, fontSize: 18, fontFamily: "Poppins-Bold", marginTop: 10, marginHorizontal: 20 }} >
                                     Contact Us
                                 </Text>
                                 <Text style={{ color: Colors.black, fontSize: 12, fontFamily: "Poppins-Medium", marginHorizontal: 20, }} >
-
                                     If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at
-
                                     <Text style={{ color: "blue", fontFamily: "Poppins-Medium", fontSize: 12 }} > 818-213-3884 </Text>
-
                                 </Text>
-
                             </ScrollView>
                             <View style={{ flexDirection: "row", justifyContent: "space-around", width: "100%", marginHorizontal: 20 }} >
                                 <CustomButton
@@ -1321,7 +1331,6 @@ function TermsAndConditions({ navigation, route }) {
                                     styleContainer={{ width: '45%', marginTop: 10 }}
                                     linearStyle={{ padding: 1, borderRadius: 5 }}
                                 />
-
                                 <CustomButton
                                     onPress={handleAgreePress}
                                     text={loading ? <ActivityIndicator color="white" size="small" /> : 'Agree'}

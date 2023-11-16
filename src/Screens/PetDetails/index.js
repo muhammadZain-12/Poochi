@@ -856,7 +856,7 @@ function PetDetails({ navigation, route }) {
             multiline={true}
             numberOfLines={6}
             style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", }}
-            placeholder='tell us more about your pet (Optional)'
+            placeholder='Tell us more about your pet (Optional)'
             placeholderTextColor={"gray"}
             value={otherData.additionalDetails}
             onChangeText={(e) => setOtherData({ ...otherData, additionalDetails: e })}

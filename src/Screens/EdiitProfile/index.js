@@ -175,7 +175,7 @@ export default function EditProfile({ route }) {
                 setImageLoading(false)
 
             }
-        }else{
+        } else {
             Linking.openSettings()
         }
     };

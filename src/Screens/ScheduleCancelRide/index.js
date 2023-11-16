@@ -11,6 +11,7 @@ import SelectedPetContext from "../../Context/SelectedPetContext/context"
 import cardDetailsContext from "../../Context/CardDetailsContext/context"
 import axios from "axios"
 import Drivers from "../Drivers"
+import CancelChargesContext from "../../Context/cancelRideChargesContext/context"
 
 
 function ScheduleCancelRide({ navigation, route }) {
@@ -30,10 +31,13 @@ function ScheduleCancelRide({ navigation, route }) {
     const bookingCont = useContext(BookingContext)
     const selectedPetCont = useContext(SelectedPetContext)
     const cardCont = useContext(cardDetailsContext)
+    let cancelChargesCont = useContext(CancelChargesContext)
+
 
     const { bookingData, setBookingData } = bookingCont
     const { selectedPets, setSelectedPets } = selectedPetCont
     const { cardDetails, setCardDetails } = cardCont
+    let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
 
 
 
@@ -71,6 +75,32 @@ function ScheduleCancelRide({ navigation, route }) {
 
 
         let id = auth().currentUser?.uid
+
+
+        const scheduledDateTime = new Date(
+            items?.scheduleDate?.toDate()?.getFullYear(),
+            items?.scheduleDate?.toDate()?.getMonth(),
+            items?.scheduleDate?.toDate()?.getDate(),
+            items?.scheduleTime?.toDate()?.getHours(),
+            items?.scheduleTime?.toDate()?.getMinutes(),
+            items?.scheduleTime?.toDate()?.getSeconds()
+        );
+
+        const nowDateTime = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+            new Date().getHours(),
+            new Date().getMinutes(),
+            new Date().getSeconds()
+        );
+
+        let scheduleGetTime = scheduledDateTime.getTime()
+        let nowGetTime = nowDateTime.getTime()
+
+        let diff = scheduleGetTime - nowGetTime
+
+        let hours = diff / 1000 / 60 / 60
 
 
         if (!items?.driverData) {
@@ -134,6 +164,83 @@ function ScheduleCancelRide({ navigation, route }) {
                     scheduleRides: allData
                 }).then((res) => {
 
+
+                    if (Number(hours) < 3) {
+
+                        let dataToSend = {
+
+                            date: new Date(),
+                            deposit: 0,
+                            cancellationCharges: (Number(items?.fare) * Number(scheduleCancelCharges)) / 100,
+                            spent: 0,
+                            remainingWallet: -(Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
+
+                        }
+
+                        firestore().collection("UserWallet").doc(items?.userData?.id).set({
+                            wallet: firestore.FieldValue.arrayUnion(dataToSend)
+                        }, { merge: true }).then((res) => {
+
+                            var data = JSON.stringify({
+                                notification: {
+                                    body: 'Scheduled Ride has been cancelled by customer',
+                                    title: `Hi ${driverData?.fullName}`,
+                                },
+                                to: driverData?.token,
+                            });
+                            let config = {
+                                method: 'post',
+                                url: 'https://fcm.googleapis.com/fcm/send',
+                                headers: {
+                                    Authorization:
+                                        'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                                    'Content-Type': 'application/json',
+                                },
+                                data: data,
+                            };
+
+                            axios(config)
+                                .then(res => {
+
+                                    let notificationToSend = {
+                                        body: "Scheduled Ride has been cancelled by customer",
+                                        title: `Hi ${driverData?.fullName}`,
+                                        date: new Date()
+                                    }
+
+                                    firestore().collection("DriverNotification").doc(driverData.id).set({
+                                        notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                    }, { merge: true }).then((res) => {
+                                        navigation.navigate("ScheduleRide")
+                                        ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
+                                        setLoading(false)
+                                    }).catch((error) => {
+                                        setLoading(false)
+                                    })
+
+
+                                })
+                                .catch(error => {
+                                    // setRequestInProcess(false)
+                                    console.log(error, "error")
+                                });
+
+
+
+
+
+                        })
+
+
+                        return
+                    }
+
+
+
+
+
+
+
                     var data = JSON.stringify({
                         notification: {
                             body: 'Scheduled Ride has been cancelled by customer',
@@ -190,7 +297,6 @@ function ScheduleCancelRide({ navigation, route }) {
         }
 
     }
-
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >

@@ -1270,12 +1270,11 @@ function PetWalk({ navigation, route }) {
                     </View> : ""}
 
                     {!cardDetails ?
-                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "center", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "flex-start", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
 
+                            <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center" }} >Add a Payment Method</Text>
-
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", marginLeft: 50 }} >Add a Payment Method</Text>
 
                         </TouchableOpacity> :
 

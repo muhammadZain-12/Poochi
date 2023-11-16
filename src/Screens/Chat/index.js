@@ -232,15 +232,23 @@ function Chat({ navigation }) {
             ...latestObject,
             pendingMsg: pendingMessage.length,
             lastMessage: lastChatMessage,
-            lastMsgTime: latestObject.createdAt.toDate().toLocaleTimeString(),
+            lastMsgDate: latestObject?.createdAt?.toDate(),
+            lastMsgTime: latestObject.createdAt.toDate().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit"
+            }),
             userData: {
               id: auth().currentUser?.uid
             }
           };
         });
 
-        const result = removeDuplicatesById(updatedChats);
+        let result = removeDuplicatesById(updatedChats);
+
+        result = result && result.length > 0 && result.sort((a, b) => new Date(b?.lastMsgDate) - new Date(a?.lastMsgDate))
         setDrivers(result)
+
+        // setDrivers(result)
 
       })
       .catch((error) => {
