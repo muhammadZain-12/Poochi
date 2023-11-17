@@ -429,7 +429,7 @@ function Chat({ navigation }) {
 
         <View style={{ flexDirection: "row" }} >
 
-          <TouchableOpacity onPress={() => navigation.navigate("PassengerNotification")} style={{ padding: 5 }} >
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ padding: 5 }} >
 
             {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
 
@@ -440,12 +440,12 @@ function Chat({ navigation }) {
 
             <IonIcons name="notifications" size={30} color={Colors.buttonColor} />
 
-
           </TouchableOpacity>
 
 
-          <TouchableOpacity style={{ padding: 5 }} onPress={() => handleRouteToTrackScreen()} >
+          <TouchableOpacity style={{ padding: 5,alignItems:"center" }} onPress={() => handleRouteToTrackScreen()} >
             <FontAwesome name="route" size={25} color={Colors.buttonColor} />
+            <Text style={{ color: Colors.black, fontSize: 14, fontFamily: "Poppins-Bold" }} >Track</Text>
           </TouchableOpacity>
         </View>
       </View>

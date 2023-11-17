@@ -16,7 +16,7 @@ function ScheduleRideDate({ navigation, route }) {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      };
+    };
 
     const [date, setDate] = useState(new Date());
 
@@ -161,7 +161,7 @@ function ScheduleRideDate({ navigation, route }) {
             else if (screen == "petWalk") {
                 navigation.navigate("PetWalk", { date: date, time: time })
             }
-            else if (screen == 'hotel'){
+            else if (screen == 'hotel') {
                 navigation.navigate("PetHotel", { date: date, time: time })
             }
 
@@ -179,7 +179,7 @@ function ScheduleRideDate({ navigation, route }) {
             else if (screen == "petWalk") {
                 navigation.navigate("PetWalk", { date: date, time: time })
             }
-            else if (screen == 'hotel'){
+            else if (screen == 'hotel') {
                 navigation.navigate("PetHotel", { date: date, time: time })
             }
 
@@ -204,7 +204,7 @@ function ScheduleRideDate({ navigation, route }) {
             <View style={{ paddingHorizontal: 20, marginTop: 40 }} >
 
 
-            <Text style={{fontSize:16,fontFamily:"Poppins-SemiBold",color:Colors.red,marginBottom:20}} >Note: Users are not able to schedule any ride prior 3 hours</Text>
+                <Text style={{ fontSize: 16, fontFamily: "Poppins-SemiBold", color: Colors.black, marginBottom: 20 }} >Reservations must be made 3 hours prior to booking time</Text>
 
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={{ backgroundColor: "#e6e6e6", padding: 10, borderRadius: 10, paddingVertical: 15 }} >
                     <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{date ? new Intl.DateTimeFormat('en-US', options).format(date) : "Select Date"}</Text>

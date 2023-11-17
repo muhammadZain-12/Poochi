@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from "react"
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking, TextInput, ActivityIndicator, BackHandler, TouchableWithoutFeedback, ToastAndroid, Modal } from "react-native"
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking, TextInput, ActivityIndicator, BackHandler, TouchableWithoutFeedback, KeyboardAvoidingView, ToastAndroid, Modal } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import MapView, { Marker } from "react-native-maps"
@@ -561,224 +561,223 @@ function PassengerRideDetail({ navigation, route }) {
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" >
+                <View style={{ marginTop: 5 }} >
+                    <CustomHeader
+                        onPress={() => navigation.replace("Tab")}
+                        iconname={"arrow-back-outline"}
+                        text={endRide ? "Arrived" : startRide ? "Track" : "Driver"}
+                        color={Colors.black}
+                    />
+                </View>
 
-            <View style={{ marginTop: 5 }} >
-                <CustomHeader
-                    onPress={() => navigation.replace("Tab")}
-                    iconname={"arrow-back-outline"}
-                    text={endRide ? "Arrived" : startRide ? "Track" : "Driver"}
-                    color={Colors.black}
-                />
-            </View>
-
-            <ScrollView>
-                <View style={{ paddingHorizontal: 20, marginTop: 20, flex: 1 }} >
-
-
-                    {bookingData.bookingType == "Scheduled" && <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
-                        {bookingData?.scheduleDate} {bookingData?.scheduleTime}
-                    </Text>}
-
-                    <View style={styles.mapContainer}>
-                        {bookingData && bookingData?.pickupCords && Object.keys(bookingData?.pickupCords).length > 0 && <MapView
-                            style={StyleSheet.absoluteFill}
-                            ref={mapRef}
-                            region={{
-                                latitude: bookingData?.pickupCords?.lat,
-                                longitude: bookingData?.pickupCords?.lng,
-                                latitudeDelta: 0.4,
-                                longitudeDelta: 0.6,
-                            }}>
-                            <Marker
-
-                                coordinate={{
-
-                                    latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
-                                    longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
-
-                                }}
-                                title={bookingData?.pickupAddress}
-                            >
-                            </Marker>
-
-                            <Marker
-
-                                coordinate={{
-                                    latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData?.driverData?.currentLocation?.latitude,
-                                    longitude: driverLocation?.longitude ? driverLocation?.longitude : bookingData?.driverData?.currentLocation?.longitude,
-                                }}
-                                title={"Drivers Location"}
-                            >
-                                <Image source={require("../../Images/car.png")} style={{
-
-                                    transform: [
-                                        {
-                                            rotate: driverLocation.heading
-                                                ? `${driverLocation?.heading}deg`
-                                                : '180deg',
-                                        },
-                                    ],
-
-                                }} />
-                            </Marker>
+                <ScrollView>
+                    <View style={{ paddingHorizontal: 20, marginTop: 20, flex: 1 }} >
 
 
+                        {bookingData.bookingType == "Scheduled" && <Text style={{ color: Colors.buttonColor, fontSize: 18, fontFamily: "Poppins-SemiBold" }} >
+                            {bookingData?.scheduleDate} {bookingData?.scheduleTime}
+                        </Text>}
 
-                            {bookingData?.pickupCords?.lat && bookingData?.driverData?.currentLocation?.latitude && showDirection()}
+                        <View style={styles.mapContainer}>
+                            {bookingData && bookingData?.pickupCords && Object.keys(bookingData?.pickupCords).length > 0 && <MapView
+                                style={StyleSheet.absoluteFill}
+                                ref={mapRef}
+                                region={{
+                                    latitude: bookingData?.pickupCords?.lat,
+                                    longitude: bookingData?.pickupCords?.lng,
+                                    latitudeDelta: 0.4,
+                                    longitudeDelta: 0.6,
+                                }}>
+                                <Marker
+
+                                    coordinate={{
+
+                                        latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
+                                        longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
+
+                                    }}
+                                    title={bookingData?.pickupAddress}
+                                >
+                                </Marker>
+
+                                <Marker
+
+                                    coordinate={{
+                                        latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData?.driverData?.currentLocation?.latitude,
+                                        longitude: driverLocation?.longitude ? driverLocation?.longitude : bookingData?.driverData?.currentLocation?.longitude,
+                                    }}
+                                    title={"Drivers Location"}
+                                >
+                                    <Image source={require("../../Images/car.png")} style={{
+
+                                        transform: [
+                                            {
+                                                rotate: driverLocation.heading
+                                                    ? `${driverLocation?.heading}deg`
+                                                    : '180deg',
+                                            },
+                                        ],
+
+                                    }} />
+                                </Marker>
 
 
-                        </MapView>}
-                    </View>
+
+                                {bookingData?.pickupCords?.lat && bookingData?.driverData?.currentLocation?.latitude && showDirection()}
 
 
-                    {
-                        endRide && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
-
-
-                            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Confirmation photo of your pet</Text>
-                            {petImage ? <TouchableOpacity onPress={() => setImageModal(true)} >
-                                <Image source={{ uri: petImage }} style={{ width: 50, height: 50, borderRadius: 10 }} />
-                            </TouchableOpacity> : <ActivityIndicator color={Colors.black} size={"small"} />}
-
+                            </MapView>}
                         </View>
-                    }
 
 
-                    <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center", marginTop: 20 }}  >
-                        <View style={{ flexDirection: "row", alignItems: "center" }} >
-                            <Image source={{ uri: bookingData?.driverData?.profile }} style={{ width: 60, height: 60, borderRadius: 10 }} />
+                        {
+                            endRide && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
 
-                            <View style={{ marginLeft: 5, justifyContent: "center" }} >
-                                <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black,width:100 }} >{bookingData?.driverData?.fullName.length>9 ? `${bookingData?.driverData?.fullName.slice(0,8)}...` : bookingData?.driverData?.fullName}</Text>
-                                    <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
-                                    <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
-                                </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray}} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
-                                <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+                                <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Confirmation photo of your pet</Text>
+                                {petImage ? <TouchableOpacity onPress={() => setImageModal(true)} >
+                                    <Image source={{ uri: petImage }} style={{ width: 50, height: 50, borderRadius: 10 }} />
+                                </TouchableOpacity> : <ActivityIndicator color={Colors.black} size={"small"} />}
 
                             </View>
-
-                        </View>
-
-                        <View style={{ alignItems: "flex-end" }} >
-
-                            <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22, marginRight: 5 }} >${Number(bookingData.fare).toFixed(2)}</Text>
-
-                            <View style={{ flexDirection: "row" }} >
-
-                                <View style={{ width: 40, height: 40, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center", borderRadius: 100 }} >
+                        }
 
 
-                                    <TouchableOpacity onPress={() => Linking.openURL(`tel:${bookingData?.driverData?.mobileNumber}`)} >
-                                        <MaterialIcons name="phone" size={25} color={Colors.white} />
-                                    </TouchableOpacity>
-                                </View>
+                        <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center", marginTop: 20 }}  >
+                            <View style={{ flexDirection: "row", alignItems: "center" }} >
+                                <Image source={{ uri: bookingData?.driverData?.profile }} style={{ width: 60, height: 60, borderRadius: 10 }} />
 
+                                <View style={{ marginLeft: 5, justifyContent: "center" }} >
+                                    <View style={{ flexDirection: "row", alignItems: "center" }} >
+                                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black, width: 100 }} >{bookingData?.driverData?.fullName.length > 9 ? `${bookingData?.driverData?.fullName.slice(0, 8)}...` : bookingData?.driverData?.fullName}</Text>
+                                        <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
+                                        <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
-                                <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
-                                    <TouchableOpacity onPress={() => navigation.replace("ChatSingle", { data: bookingData, screenName: "PassengerRideDetail", nested: false })} >
-                                        <MaterialIcons name="chat" size={25} color={Colors.white} />
-                                    </TouchableOpacity>
+                                    </View>
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
+                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+
                                 </View>
 
                             </View>
-                        </View>
 
-                    </TouchableOpacity>
+                            <View style={{ alignItems: "flex-end" }} >
 
+                                <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22, marginRight: 5 }} >${Number(bookingData.fare).toFixed(2)}</Text>
 
-                    <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10 }} >
+                                <View style={{ flexDirection: "row" }} >
 
-                        <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
-
-                            <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
-
-                            <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
-
-                        </View>
+                                    <View style={{ width: 40, height: 40, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center", borderRadius: 100 }} >
 
 
+                                        <TouchableOpacity onPress={() => Linking.openURL(`tel:${bookingData?.driverData?.mobileNumber}`)} >
+                                            <MaterialIcons name="phone" size={25} color={Colors.white} />
+                                        </TouchableOpacity>
+                                    </View>
 
 
-                        <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
+                                    <View style={{ width: 40, height: 40, backgroundColor: Colors.gray, justifyContent: "center", alignItems: "center", borderRadius: 100, marginLeft: 5 }} >
+                                        <TouchableOpacity onPress={() => navigation.replace("ChatSingle", { data: bookingData, screenName: "PassengerRideDetail", nested: false })} >
+                                            <MaterialIcons name="chat" size={25} color={Colors.white} />
+                                        </TouchableOpacity>
+                                    </View>
 
-                            <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
-
-                            <Text style={{ color: (!reachDropoff && arrived) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
-
-                        </View>
-
-
-                        {bookingData?.bookingType == "twoWay" ? <View>
-                            <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center", borderBottomWidth: bookingData?.type == "twoWay" ? 2 : 0, borderBottomColor: Colors.buttonColor }} >
-
-                                <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
-
-                                <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pick up: {bookingData?.returnPickupAddress}</Text>
-
+                                </View>
                             </View>
+
+                        </TouchableOpacity>
+
+
+                        <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10 }} >
 
                             <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
 
                                 <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
-                                <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Drop off: {bookingData?.returnDropoffAddress}</Text>
+                                <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
 
                             </View>
+
+
+
+
+                            <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
+
+                                <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
+
+                                <Text style={{ color: (!reachDropoff && arrived) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
+
+                            </View>
+
+
+                            {bookingData?.bookingType == "twoWay" ? <View>
+                                <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center", borderBottomWidth: bookingData?.type == "twoWay" ? 2 : 0, borderBottomColor: Colors.buttonColor }} >
+
+                                    <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
+
+                                    <Text style={{ color: (reachDropoff && !startRide) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Pick up: {bookingData?.returnPickupAddress}</Text>
+
+                                </View>
+
+                                <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
+
+                                    <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
+
+                                    <Text style={{ color: !startRide ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Return Drop off: {bookingData?.returnDropoffAddress}</Text>
+
+                                </View>
+                            </View>
+                                : ""}
+
+
+
                         </View>
-                            : ""}
+
+                        {!bookingData.deductedFromWallet && <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", paddingVertical: 15 }} >
+                            <Image source={require("../../Images/master1.png")} />
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black, marginLeft: 15 }} >**** **** **** {bookingData?.cardDetails?.last4}</Text>
+                        </View>}
+
+                        <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at drop off waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to drop off location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
+                        </View>
+
+                        {endRide && <View style={{ marginTop: 10 }} >
+
+                            <Text style={{ textAlign: "center", fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >Review</Text>
+
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }} >
+                                {stars && stars.length > 0 && stars.map((e, i) => {
+
+                                    return (
+                                        <View key={i} >
+                                            <Icons onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
+                                        </View>
+                                    )
+                                })}
+                            </View>
+                        </View>}
+                        {endRide && <TextInput onChangeText={(e) => setComment(e)} value={comment} placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
+
+                        {endRide && <CustomButton onPress={() => handleSubmitReview()} text={finalLoader ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
+
+                        {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
+
+                        {!arrived && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
+
+
+                        {imageModal && ShowLocationModal()}
                     </View>
 
-                    {!bookingData.deductedFromWallet && <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10, flexDirection: "row", alignItems: "center", paddingVertical: 15 }} >
-                        <Image source={require("../../Images/master1.png")} />
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black, marginLeft: 15 }} >**** **** **** {bookingData?.cardDetails?.last4}</Text>
-                    </View>}
-
-                    <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
-
-
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at drop off waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to drop off location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
-
-                    </View>
-
-                    {endRide && <View style={{ marginTop: 10 }} >
-
-                        <Text style={{ textAlign: "center", fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >Review</Text>
-
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }} >
-                            {stars && stars.length > 0 && stars.map((e, i) => {
-
-                                return (
-                                    <View key={i} >
-                                        <Icons onPress={() => selectRating(e.star)} name="star" color={(e.star <= rating) ? "#FC9D02" : "#d9d9d9"} size={50} />
-                                    </View>
-                                )
-                            })}
-                        </View>
-                    </View>}
-                    {endRide && <TextInput onChangeText={(e) => setComment(e)} value={comment} placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
-
-                    {endRide && <CustomButton onPress={() => handleSubmitReview()} text={finalLoader ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
-
-                    {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
-
-                    {!arrived && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
-
-
-                    {imageModal && ShowLocationModal()}
-                </View>
 
 
 
-
-            </ScrollView>
-
-
+                </ScrollView>
+            </KeyboardAvoidingView>
         </View>
 
     )

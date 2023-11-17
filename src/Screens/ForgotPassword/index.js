@@ -80,7 +80,7 @@ function ForgotPassword({ navigation }) {
             fontFamily: 'Poppins-Bold',
             fontWeight: 'bold',
           }}>
-          Forget Password
+          Forgot Password
         </Text>
 
         <TextInput
@@ -97,7 +97,7 @@ function ForgotPassword({ navigation }) {
             paddingHorizontal: 20,
           }}
           onChangeText={(e) => setEmail(e)}
-          placeholder="Email ID"
+          placeholder="Enter Your Email"
           placeholderTextColor={Colors.gray}
         />
 

@@ -388,7 +388,7 @@ function History({ navigation }) {
                                 fontFamily: "Poppins-SemiBold"
                             }}
                         >
-                            You have not done any booking yet
+                            No Bookings Yet
                         </Text>
 
                     </View>
@@ -426,7 +426,7 @@ function History({ navigation }) {
                                 fontFamily: "Poppins-SemiBold"
                             }}
                         >
-                            You don't have any cancelled booking
+                            No Cancelled Bookings
                         </Text>
                     </View>
                 ) : (

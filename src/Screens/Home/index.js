@@ -879,7 +879,7 @@ function Home({ navigation }) {
 
             {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
 
-              <Text style={{ color: Colors.white, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
+              <Text style={{ color: Colors.whichte, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
 
 
             </View>}
@@ -891,11 +891,9 @@ function Home({ navigation }) {
 
           <TouchableOpacity style={{ padding: 5, flexDirection: "column", alignItems: "center" }} onPress={() => handleRouteToTrackScreen()} >
             <FontAwesome name="route" size={25} color={Colors.buttonColor} />
-            <Text style={{ color: Colors.black, fontSize: 14, fontFamily: "Poppins-Bold" }} >Trace</Text>
+            <Text style={{ color: Colors.black, fontSize: 14, fontFamily: "Poppins-Bold" }} >Track</Text>
           </TouchableOpacity>
         </View>
-
-
 
 
       </View>
