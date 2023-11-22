@@ -142,6 +142,7 @@ function RideCancel({ navigation }) {
                                             notification: {
                                                 body: "Customer has changed his mind",
                                                 title: `Hi ${bookingData?.driverData?.fullName} `,
+                                                sound : "default"
                                             },
                                             to: bookingData?.driverData?.token,
                                         });
@@ -289,6 +290,7 @@ function RideCancel({ navigation }) {
                                 notification: {
                                     body: "Customer has changed his mind",
                                     title: `Hi ${bookingData?.driverData?.fullName} `,
+                                    sound : "default"
                                 },
                                 to: bookingData?.driverData?.token,
                             });

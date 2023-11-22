@@ -718,6 +718,7 @@ function PetHotel({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
+                            sound : "default"
                         },
                         android: {
                             priority: "high",
@@ -1040,6 +1041,7 @@ function PetHotel({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
+                            sound : "default"
                         },
                         android: {
                             priority: "high",

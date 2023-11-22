@@ -347,7 +347,7 @@ export default function Login() {
             //   ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
             //   return
             // }
-            ToastAndroid.show("Login Succesfully", ToastAndroid.SHORT);
+            ToastAndroid.show("Login Succesful", ToastAndroid.SHORT);
             if (data) {
 
               setLoginData(data)

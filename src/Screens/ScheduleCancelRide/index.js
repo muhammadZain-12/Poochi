@@ -105,7 +105,6 @@ function ScheduleCancelRide({ navigation, route }) {
 
         if (!items?.driverData) {
 
-
             firestore().collection("ScheduleRides").doc(items?.userData?.id).get().then((doc) => {
 
                 let scheduleData = doc?.data()
@@ -164,7 +163,6 @@ function ScheduleCancelRide({ navigation, route }) {
                     scheduleRides: allData
                 }).then((res) => {
 
-
                     if (Number(hours) < 3) {
 
                         let dataToSend = {
@@ -173,7 +171,7 @@ function ScheduleCancelRide({ navigation, route }) {
                             deposit: 0,
                             cancellationCharges: (Number(items?.fare) * Number(scheduleCancelCharges)) / 100,
                             spent: 0,
-                            remainingWallet: -(Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
+                            remainingWallet: -(Number(items?.fare) * Number(scheduleCancelCharges)) / 100
 
                         }
 
@@ -185,6 +183,7 @@ function ScheduleCancelRide({ navigation, route }) {
                                 notification: {
                                     body: 'Scheduled Ride has been cancelled by customer',
                                     title: `Hi ${driverData?.fullName}`,
+                                    sound: "default"
                                 },
                                 to: driverData?.token,
                             });
@@ -237,14 +236,11 @@ function ScheduleCancelRide({ navigation, route }) {
 
 
 
-
-
-
-
                     var data = JSON.stringify({
                         notification: {
                             body: 'Scheduled Ride has been cancelled by customer',
                             title: `Hi ${driverData?.fullName}`,
+                            sound: "default"
                         },
                         to: driverData?.token,
                     });

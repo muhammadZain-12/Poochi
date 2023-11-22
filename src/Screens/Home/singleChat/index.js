@@ -222,6 +222,7 @@ export default function ChatSingle({ navigation, route }) {
                         notification: {
                             body: `${mymsg?.text}`,
                             title: `${loginData?.fullName} `,
+                            sound : "default"
                         },
                         to: data?.driverData?.token,
                     });

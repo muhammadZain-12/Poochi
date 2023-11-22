@@ -247,6 +247,7 @@ function Home({ navigation }) {
           notification: {
             body: `Your upcoming Scheduled Ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
             title: `Hi ${e?.userData?.fullName}`,
+            sound : "default"
           },
           to: e?.userData?.token,
         });
@@ -839,7 +840,7 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-      if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
+    if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
         ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
         return
       }

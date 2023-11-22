@@ -123,8 +123,11 @@ function MedicalTrip({ navigation, route }) {
 
                 let amount = wallet.length > 0 && wallet.reduce((a, b) => {
 
+
                     return Number(a.remainingWallet ?? a) + Number(b.remainingWallet ?? b)
                 })
+
+
 
 
                 setWalletAmount(Number(amount)?.toFixed(2))
@@ -718,6 +721,7 @@ function MedicalTrip({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -1038,6 +1042,7 @@ function MedicalTrip({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -1159,6 +1164,7 @@ function MedicalTrip({ navigation, route }) {
 
     }
 
+    console.log(walletAmount, "walletAmount")
 
     const handleNavigateToPayment = () => {
 
@@ -1461,7 +1467,7 @@ function MedicalTrip({ navigation, route }) {
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", width: "100%",marginLeft:50 }} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", width: "100%", marginLeft: 50 }} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

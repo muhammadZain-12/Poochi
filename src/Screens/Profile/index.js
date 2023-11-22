@@ -42,7 +42,7 @@ function Profile({ navigation }) {
 
             await GoogleSignin.signOut()
             await auth().signOut()
-            ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
+            ToastAndroid.show("You have successfully logged out", ToastAndroid.SHORT)
             setLoginData("")
             setLocationData("")
             navigation.reset({
@@ -68,11 +68,11 @@ function Profile({ navigation }) {
                 });
                 setLoginData("")
                 setLocationData("")
-                ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
+                ToastAndroid.show("You have successfully logged out", ToastAndroid.SHORT)
 
             }).catch((error) => {
 
-                ToastAndroid.show("You have logged out successfully", ToastAndroid.SHORT)
+                ToastAndroid.show("You have successfully logged out", ToastAndroid.SHORT)
 
 
             })
@@ -93,7 +93,7 @@ function Profile({ navigation }) {
 
             let data = doc.data()
 
-            if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled") {
+            if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data?.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
                 ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
                 return
             }
