@@ -36,7 +36,7 @@ export default function Login() {
 
 
   const navigation = useNavigation();
-  
+
   Geocoder.init(GOOGLE_MAP_KEY);
 
 
@@ -159,7 +159,7 @@ export default function Login() {
       AsyncStorage.setItem("user", loginAuth);
 
 
-      if(data?.agree && !data?.fullName ){
+      if (data?.agree && !data?.fullName) {
 
         navigation.replace("UserDetails")
         return
@@ -347,7 +347,7 @@ export default function Login() {
             //   ToastAndroid.show("Your id has been blocked", ToastAndroid.SHORT)
             //   return
             // }
-            ToastAndroid.show("Login Succesful", ToastAndroid.SHORT);
+            ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
             if (data) {
 
               setLoginData(data)

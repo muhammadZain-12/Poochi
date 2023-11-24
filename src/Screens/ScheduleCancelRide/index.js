@@ -99,9 +99,7 @@ function ScheduleCancelRide({ navigation, route }) {
         let nowGetTime = nowDateTime.getTime()
 
         let diff = scheduleGetTime - nowGetTime
-
         let hours = diff / 1000 / 60 / 60
-
 
         if (!items?.driverData) {
 
@@ -201,21 +199,32 @@ function ScheduleCancelRide({ navigation, route }) {
                             axios(config)
                                 .then(res => {
 
-                                    let notificationToSend = {
-                                        body: "Scheduled Ride has been cancelled by customer",
-                                        title: `Hi ${driverData?.fullName}`,
-                                        date: new Date()
-                                    }
 
-                                    firestore().collection("DriverNotification").doc(driverData.id).set({
-                                        notification: firestore.FieldValue.arrayUnion(notificationToSend)
-                                    }, { merge: true }).then((res) => {
-                                        navigation.navigate("ScheduleRide")
-                                        ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
-                                        setLoading(false)
+                                    items.cancelCharges = dataToSend.cancellationCharges
+
+                                    firestore().collection("ScheduledCancelRides").doc(auth().currentUser.uid).set({
+                                        cancelRides: firestore.FieldValue.arrayUnion(items)
+                                    }, { merge: true }).then(() => {
+
+                                        let notificationToSend = {
+                                            body: "Scheduled Ride has been cancelled by customer",
+                                            title: `Hi ${driverData?.fullName}`,
+                                            date: new Date()
+                                        }
+
+                                        firestore().collection("DriverNotification").doc(driverData.id).set({
+                                            notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                                        }, { merge: true }).then((res) => {
+                                            navigation.navigate("ScheduleRide")
+                                            ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
+                                            setLoading(false)
+                                        }).catch((error) => {
+                                            setLoading(false)
+                                        })
                                     }).catch((error) => {
                                         setLoading(false)
                                     })
+
 
 
                                 })
