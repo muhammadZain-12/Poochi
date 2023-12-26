@@ -27,7 +27,6 @@ export default function SplashScreen({ navigation }) {
   Geocoder.init(GOOGLE_MAP_KEY);
 
 
-
   let context = useContext(LoginContext)
   let bookingCont = useContext(BookingContext)
   let locationCont = useContext(LocationContext)
@@ -98,7 +97,7 @@ export default function SplashScreen({ navigation }) {
           return
         }
 
-        if(data?.agree && !data?.fullName ){
+        if (data?.agree && !data?.fullName) {
 
           navigation.replace("UserDetails")
           return

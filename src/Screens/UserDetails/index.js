@@ -85,8 +85,6 @@ export default function UserDetails({ route }) {
     const [visible1, setVisible1] = useState(false)
 
 
-
-
     const uploadImageToFirebase = async (imageUri, imageName) => {
         const reference = storage().ref(`images/${imageName}`);
         await reference.putFile(imageUri);
@@ -181,7 +179,7 @@ export default function UserDetails({ route }) {
 
 
             }
-        }else{
+        } else {
             Linking.openSettings()
         }
     };
@@ -240,10 +238,10 @@ export default function UserDetails({ route }) {
             return
         }
 
-        if (!gender) {
-            ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (!gender) {
+        //     ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
 
         let dataToSend = {
@@ -257,7 +255,7 @@ export default function UserDetails({ route }) {
             profile: image1,
             state: signinData?.state,
             zipCode: signinData?.zipCode,
-            gender: gender,
+            // gender: gender,
             email: auth().currentUser.email,
             created_at: new Date(),
             id: uid
@@ -332,6 +330,29 @@ export default function UserDetails({ route }) {
 
     };
 
+    console.log(gender,"gender")
+
+    const handleSelectGender = (event, ind) => {
+
+        setGender(event?.value)
+
+        setGenderOptions(genderOptions && genderOptions.length > 0 && genderOptions.map((e, i) => {
+            if (ind == i) {
+                return {
+                    ...e,
+                    selected: true
+                }
+            } else {
+                return {
+                    ...e,
+                    selected: false
+                }
+            }
+        }))
+
+
+
+    }
 
 
 
@@ -423,7 +444,7 @@ export default function UserDetails({ route }) {
                                 />
                             </View>
 
-                            <DropDownPicker
+                            {/* <DropDownPicker
                                 open={openGender}
                                 value={gender}
                                 items={genderOptions}
@@ -436,7 +457,36 @@ export default function UserDetails({ route }) {
                                 dropDownContainerStyle={{ zIndex: 800 }}
                                 placeholder={'Gender'}
                                 placeholderStyle={{ color: "gray" }}
-                            />
+                            /> */}
+                            {/* <View style={{ marginTop: 15 }} >
+
+                                <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold", color: Colors.black }} >Gender:</Text>
+
+
+                                <View style={{ flexDirection: "row" }} >
+
+                                    {genderOptions && genderOptions.length > 0 && genderOptions.map((e, i) => {
+                                        return (
+
+                                            <TouchableOpacity onPress={() => handleSelectGender(e, i)} style={{ flexDirection: "row", marginRight: 10 }} >
+
+
+                                                <View style={{ width: 20, height: 20, borderRadius: 100, borderWidth: 1, marginRight: 5, backgroundColor: e?.selected ? Colors.buttonColor : Colors.white }} >
+                                                </View>
+
+                                                <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} >{e?.label}</Text>
+                                            </TouchableOpacity>
+
+                                        )
+                                    })}
+
+
+
+
+                                </View>
+
+                            </View> */}
+
 
                             <TextInput
                                 style={{

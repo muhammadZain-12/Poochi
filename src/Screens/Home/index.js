@@ -959,27 +959,27 @@ function Home({ navigation }) {
           <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where Would You Like To Go?</Text>
 
 
-          <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row" }} >
+          <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row",marginBottom:10 }} >
 
             <TouchableOpacity style={{ width: "49%" }} onPress={() => handleNavigateToBooking("MedicalTrip")} >
 
               <Image source={require("../../Images/medical.png")} style={{ width: "100%", borderRadius: 10 }} />
 
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Medical Trip</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-Bold", fontSize: 16, color: Colors.black, marginTop: 5, }} >Medical Trip</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetHotel")} style={{ width: "49%" }} >
               <Image source={require("../../Images/dog.jpg")} style={{ width: "100%", height: 180, borderRadius: 10 }} />
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-Bold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Hotel</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("FriendsAndFamily")} style={{ width: "49%" }} >
               <Image source={require("../../Images/friends.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Friends & Family</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-Bold", fontSize: 15, color: Colors.black, marginTop: 5, }} numberOfLines={2} >Friends & Family</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigateToBooking("PetGrooming")} style={{ width: "49%" }} >
               <Image source={require("../../Images/grooming.png")} style={{ width: "100%", marginTop: 10, borderRadius: 10 }} />
 
-              <Text style={{ textAlign: "center", fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Grooming</Text>
+              <Text style={{ textAlign: "center", fontFamily: "Poppins-Bold", fontSize: 16, color: Colors.black, marginTop: 5 }} >Pet Grooming</Text>
             </TouchableOpacity>
 
           </View>

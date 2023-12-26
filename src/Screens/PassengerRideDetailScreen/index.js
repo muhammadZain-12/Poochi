@@ -656,7 +656,7 @@ function PassengerRideDetail({ navigation, route }) {
 
                                     </View>
                                     <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
-                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleNumPlate}</Text>
 
                                 </View>
 

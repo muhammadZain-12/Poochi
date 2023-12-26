@@ -1,6 +1,5 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
-apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services' // <- Add this line
 
 /**
@@ -80,8 +79,8 @@ android {
         applicationId "com.poochi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
     }
     signingConfigs {
          release {

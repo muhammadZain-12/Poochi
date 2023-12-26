@@ -234,10 +234,10 @@ export default function EditProfile({ route }) {
             return
         }
 
-        if (!gender) {
-            ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (!gender) {
+        //     ToastAndroid.show("Gender is missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
 
 
@@ -252,7 +252,7 @@ export default function EditProfile({ route }) {
             profile: image1,
             state: signinData?.state,
             zipCode: signinData?.zipCode,
-            gender: gender,
+            // gender: gender,
             email: loginData.email ? loginData?.email : auth().currentUser?.email,
             update_at: new Date(),
             id: auth().currentUser.uid
@@ -379,7 +379,7 @@ export default function EditProfile({ route }) {
                                 />
                             </View>
 
-                            <DropDownPicker
+                            {/* <DropDownPicker
                                 open={openGender}
                                 value={gender}
                                 items={genderOptions}
@@ -392,7 +392,7 @@ export default function EditProfile({ route }) {
                                 dropDownContainerStyle={{ zIndex: 800 }}
                                 placeholder={'Gender'}
                                 placeholderStyle={{ color: "gray" }}
-                            />
+                            /> */}
 
                             <TextInput
                                 style={{

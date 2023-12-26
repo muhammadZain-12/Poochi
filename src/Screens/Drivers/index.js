@@ -265,7 +265,7 @@ function Drivers({ navigation }) {
                     notification: {
                         body: `You have request from ${bookingData?.userData?.fullName} kindly respond back`,
                         title: `Hi ${driver.fullName} `,
-                        sound : "default"
+                        sound: "default"
                     },
                     to: token,
                 });
@@ -335,7 +335,7 @@ function Drivers({ navigation }) {
     }, []);
 
 
-    
+
 
 
     return <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -379,7 +379,7 @@ function Drivers({ navigation }) {
                                     </View>
                                     <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{e.VehicleDetails?.vehicleName}</Text>
                                     <Text style={{ fontFamily: "Poppins-Medium", fontSize: 12, color: Colors.gray, height: 20, width: 140 }} numberOfLines={2} >{e.petExperience ? `${Number(e.petExperience)} year pet experience` : "No Pet Experience"} </Text>
-                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{e.VehicleDetails?.vehicleModelNum}</Text>
+                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{e.VehicleDetails?.vehicleNumPlate}</Text>
                                 </View>
 
                             </View>
