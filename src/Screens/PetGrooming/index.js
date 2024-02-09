@@ -585,6 +585,7 @@ function PetGrooming({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "PetGrooming",
+                    category : "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -654,7 +655,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -839,6 +840,7 @@ function PetGrooming({ navigation, route }) {
                 bookingType: "twoWay",
                 requestDate: new Date(),
                 type: "PetGrooming",
+                category : "driver",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -914,6 +916,7 @@ function PetGrooming({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "PetGrooming",
+                    category : "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -980,7 +983,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1168,6 +1171,7 @@ function PetGrooming({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "PetGrooming",
+                category : "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }

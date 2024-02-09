@@ -111,6 +111,7 @@ function PassengerRideDetail({ navigation, route }) {
 
 
 
+    console.log(bookingData.bookingId, "bookingData")
 
     const getDriverRideStatus = () => {
 
@@ -120,6 +121,15 @@ function PassengerRideDetail({ navigation, route }) {
         const unsubscribe = firestore().collection("Request").doc(bookingData?.userData?.id).onSnapshot(querySnapshot => {
 
             let data = querySnapshot.data()
+
+
+            if (!bookingData?.bookingId) {
+                setBookingData({
+                    ...bookingData,
+                    bookingId: data?.bookingId
+                })
+            }
+
 
             if (focus) {
 
@@ -555,8 +565,6 @@ function PassengerRideDetail({ navigation, route }) {
     }, []);
 
 
-    console.log(bookingData, "typee")
-
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -609,13 +617,14 @@ function PassengerRideDetail({ navigation, route }) {
                                     }}
                                     title={"Drivers Location"}
                                 >
-                                    <Image source={require("../../Images/car.png")} style={{
-
+                                    <Image source={bookingData.type == "driver" ? require("../../Images/car.png") : require("../../Images/avatar.png")} style={{
+                                        width: 40,
+                                        height: 40,
                                         transform: [
                                             {
                                                 rotate: driverLocation.heading
                                                     ? `${driverLocation?.heading}deg`
-                                                    : '180deg',
+                                                    : '360deg',
                                             },
                                         ],
 
@@ -645,7 +654,7 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                         <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center", marginTop: 20 }}  >
-                            <View style={{ flexDirection: "row", alignItems: "center" }} >
+                            <View style={{ flexDirection: "row", alignItems: bookingData?.type == "driver" ? "center" : "flex-start" }} >
                                 <Image source={{ uri: bookingData?.driverData?.profile }} style={{ width: 60, height: 60, borderRadius: 10 }} />
 
                                 <View style={{ marginLeft: 5, justifyContent: "center" }} >
@@ -654,9 +663,14 @@ function PassengerRideDetail({ navigation, route }) {
                                         <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                         <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({bookingData?.driverData?.rating})</Text>
 
+
                                     </View>
-                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>
-                                    <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleNumPlate}</Text>
+
+
+                                    {bookingData?.type !== "driver" && <Text style={{ fontFamily: "Poppins-Bold", fontSize: 10, color: Colors.gray, }} >Pet Experience: {bookingData?.driverData?.petExperience} years</Text>}
+                                    {bookingData?.type == "driver" && <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{bookingData?.driverData?.VehicleDetails?.vehicleName}</Text>}
+                                    {bookingData?.type == "driver" && <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{bookingData?.driverData?.VehicleDetails?.vehicleNumPlate}</Text>}
+
 
                                 </View>
 

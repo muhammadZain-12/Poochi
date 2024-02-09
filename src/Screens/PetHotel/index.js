@@ -47,7 +47,7 @@ function PetHotel({ navigation, route }) {
     const { cardDetails, setCardDetails } = cardCont
 
     let radiusCont = useContext(RadiusContext)
-    const {scheduleRideRadius,setScheduleRideRadius} = radiusCont
+    const { scheduleRideRadius, setScheduleRideRadius } = radiusCont
 
 
     const chooseLocationCont = useContext(ChooseLocationContext)
@@ -631,7 +631,7 @@ function PetHotel({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -718,7 +718,7 @@ function PetHotel({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -953,7 +953,7 @@ function PetHotel({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1041,7 +1041,7 @@ function PetHotel({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -1468,7 +1468,7 @@ function PetHotel({ navigation, route }) {
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium",width: "100%",marginLeft:50 }} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", width: "100%", marginLeft: 50 }} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

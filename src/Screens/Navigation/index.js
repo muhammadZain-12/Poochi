@@ -51,6 +51,7 @@ import Support from '../Support';
 import PetHotel from '../PetHotel';
 import Claims from '../Claims';
 import ClaimDetails from '../ClaimsDetails';
+import Petsitter from '../PetSitter';
 
 
 const Stack = createNativeStackNavigator();
@@ -191,6 +192,7 @@ export default function Navigation() {
         <Stack.Screen name="Track" component={Track} />
         <Stack.Screen name="PetGrooming" component={PetGrooming} />
         <Stack.Screen name="PetWalk" component={PetWalk} />
+        <Stack.Screen name="PetSitter" component={Petsitter} />
         <Stack.Screen name="FriendsAndFamily" component={FriendsAndFamily} />
         <Stack.Screen name="PetHotel" component={PetHotel} />
         <Stack.Screen name="ScheduleRideDate" component={ScheduleRideDate} />

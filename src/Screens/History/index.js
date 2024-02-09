@@ -146,7 +146,7 @@ function History({ navigation }) {
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >
 
                     <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center" }}  >
-                        <View style={{ flexDirection: "row", alignItems: "center" }} >
+                        <View style={{ flexDirection: "row", alignItems: item?.driverData?.selectedCategory == "driver" ? "center" : "flex-start" }} >
                             <Image source={{ uri: item?.driverData?.profile }} style={{ width: 60, height: 60, borderRadius: 10 }} />
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
@@ -155,8 +155,10 @@ function History({ navigation }) {
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
-                                <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+                                {item?.driverData?.selectedCategory !== "driver" && <Text style={{ fontFamily: "Poppins-Bold", fontSize: 10, color: Colors.gray }} >Pet Experience: {item.driverData?.petExperience} years</Text>}
+
+                                {item?.driverData?.selectedCategory == "driver" && <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>}
+                                {item?.driverData?.selectedCategory == "driver" && <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>}
 
                             </View>
 
@@ -269,7 +271,7 @@ function History({ navigation }) {
                 <View style={{ marginTop: 10, padding: 10, backgroundColor: "#e6e6e6", borderRadius: 8 }} >
 
                     <TouchableOpacity style={{ padding: 5, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", borderRadius: 10, alignItems: "center" }}  >
-                        <View style={{ flexDirection: "row", alignItems: "center" }} >
+                        <View style={{ flexDirection: "row", alignItems: item?.driverData?.selectedCategory == "driver" ? "center" : "flex-start" }} >
                             <Image source={{ uri: item?.driverData?.profile }} style={{ width: 60, height: 60, borderRadius: 10 }} />
 
                             <View style={{ marginLeft: 5, justifyContent: "center" }} >
@@ -278,8 +280,14 @@ function History({ navigation }) {
                                     <Image source={require("../../Images/star.png")} style={{ marginLeft: 5, marginTop: 5 }} />
                                     <Text style={{ fontFamily: "Poppins-Regular", fontSize: 14, color: Colors.black, height: 20, marginTop: 5, marginLeft: 3 }} >({item?.driverData?.rating})</Text>
                                 </View>
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray, height: 20 }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>
-                                <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+
+                                {item?.driverData?.selectedCategory !== "driver" && <Text style={{ fontFamily: "Poppins-Bold", fontSize: 10, color: Colors.gray }} >Pet Experience: {item.driverData?.petExperience} years</Text>}
+                                {item?.driverData?.selectedCategory == "driver" && <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.gray }} >{item.driverData?.VehicleDetails?.vehicleName}</Text>}
+                                {item?.driverData?.selectedCategory == "driver" && <Text style={{ fontSize: 12, color: Colors.white, borderRadius: 30, backgroundColor: "#808080", textAlign: "center", marginTop: 5, padding: 0, width: 80, padding: 2 }} >{item.driverData?.VehicleDetails?.vehicleModelNum}</Text>
+                                }
+
+
+
                             </View>
                         </View>
 
@@ -318,29 +326,51 @@ function History({ navigation }) {
 
                     </View>
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
 
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType == "oneWay" ? "One Way" : "Round Trip"}</Text>
 
-                    </View>
+                    </View>}
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.type}</Text>
+
+                    </View>}
+
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Location: {item?.selectedOption?.name == "My Location" ? "Customer's Location" : "Sitter's Location"}</Text>
+                </View>}
+
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Address: {item.pickupAddress}</Text>
 
-                    </View>
+                    </View>}
+
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >{item?.selectedOption?.name == "My Location" ? "Your Address " : "Sitter Address"}: {item.pickupAddress}</Text>
+
+                    </View>}
 
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
 
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off Address: {item.dropoffAddress}</Text>
 
-                    </View>
+                    </View>}
 
                     {item?.bookingType == "twoWay" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
+  PermissionsAndroid,
   //   TextInput,
   ScrollView,
   ToastAndroid,
@@ -14,6 +15,8 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import CustomButton from '../../Components/CustomButton';
+import Geolocation from 'react-native-geolocation-service';
+import Geocoder from 'react-native-geocoding';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
 import { TextInput } from 'react-native';
@@ -27,6 +30,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import LoginContext from '../../Context/loginContext/context';
 import axios from 'axios';
 import { Base_Uri } from '../../Constant/BaseUri';
+import LocationContext from '../../Context/locationContext/context';
+import BookingContext from '../../Context/bookingContext/context';
 
 export default function Signup() {
   const navigation = useNavigation();
@@ -35,9 +40,16 @@ export default function Signup() {
   const { loginData, setLoginData } = context
 
 
+  const locationCont = useContext(LocationContext)
+  let bookingCont = useContext(BookingContext)
+
+  const { locationData, setLocationData } = locationCont
+  let { bookingData, setBookingData } = bookingCont
+
+
   const [signupData, setSignupData] = useState({
     email: "",
-    passowrd: "",
+    password: "",
     name: ""
   })
   const [secureEntry, setSecureEntry] = useState(true);
@@ -55,7 +67,48 @@ export default function Signup() {
       androidClientId:
         '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
     });
+
   }, []);
+
+
+  const locationPermission = () =>
+    new Promise(async (resolve, reject) => {
+      if (Platform.OS === 'ios') {
+        try {
+          const permissionStatus = await Geolocation.requestAuthorization(
+            'whenInUse',
+          );
+          if (permissionStatus === 'granted') {
+            return resolve('granted');
+          }
+          reject('Permission not granted');
+        } catch (error) {
+          return reject(error);
+        }
+      }
+      return PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      )
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            resolve('granted');
+          }
+        })
+        .catch(error => {
+          return reject(error);
+        });
+    });
+
+  const getAddressFromCoords = async (latitude, longitude) => {
+    try {
+      const response = await Geocoder.from(latitude, longitude);
+      const address = response.results[0].formatted_address;
+
+      return address
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   async function onGoogleButtonPress() {
     setGoogleLoading(true);
@@ -71,34 +124,323 @@ export default function Signup() {
     return auth().signInWithCredential(googleCredential);
   }
   const afterGoogleLogin = res => {
-    let { user } = res;
 
+    let { user } = res;
     let { uid } = user;
 
-    setGoogleLoading(false);
 
-    firestore().collection("Users").doc(uid).get().then((doc) => {
+    firestore().collection("Users").doc(uid).get().then(async (doc) => {
       let data = doc.data()
 
+      setLoginData(data)
 
       if (!data?.agree) {
+        setGoogleLoading(false)
         navigation.replace("TermsAndCondition")
+
         return
       }
 
-      if (data && data?.fullName) {
+
+      let email = user.email
+
+      let loginAuth = {
+        email: email,
+      };
+
+      loginAuth = JSON.stringify(loginAuth);
+      AsyncStorage.setItem("user", loginAuth);
 
 
-        setLoading(false)
-        setLoginData(data)
-        navigation.replace('Location');
-
-
-      } else {
-        navigation.replace("UserDetails", { email: user.email })
+      if (data?.agree && !data?.fullName) {
+        setGoogleLoading(false)
+        navigation.replace("UserDetails")
+        return
       }
-    })
 
+
+      if (data) {
+
+        setLoginData(data)
+
+        firestore().collection("Request").doc(user.uid).get().then((doc) => {
+
+          let data = doc.data()
+          setGoogleLoading(false)
+          if (data && data?.bookingStatus == "complete" && !data?.userResponse) {
+
+            setBookingData(data)
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
+
+
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('PassengerRideDetail');
+
+                  }).catch((error) => {
+                    setGoogleLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
+
+
+
+                },
+                  error => {
+
+                  },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                setGoogleLoading(false)
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
+                });
+              }
+            });
+            return
+
+          }
+
+          if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
+
+            setBookingData(data)
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
+
+
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('Tab', {
+                      screen: {
+                        name: "Home",
+                        params: {
+                          data: dataToSend
+                        }
+                      },
+                    });
+
+                  }).catch((error) => {
+                    setGoogleLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
+
+
+
+                },
+                  error => {
+
+                  },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
+                });
+              }
+            });
+
+          } else {
+
+
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
+
+
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('Tab', {
+                      screen: {
+                        name: "Home",
+                        params: {
+                          data: dataToSend
+                        }
+                      },
+                    });
+
+                  }).catch((error) => {
+                    setGoogleLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
+
+
+
+                },
+                  error => {
+
+                  },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
+                });
+              }
+            });
+          }
+        }).catch((error) => {
+          setGoogleLoading(false)
+          console.log(error, "error")
+        })
+
+      }
+
+      else {
+
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'UserDetails',
+              params: {
+                email: email,
+              },
+            },
+          ],
+        });
+
+      }
+
+
+    }).catch((error) => {
+
+      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+      setGoogleLoading(false);
+
+
+    })
 
   };
 
@@ -144,7 +486,6 @@ export default function Signup() {
 
     let emailTest = strongRegex.test(signupData.email)
 
-    console.log(emailTest, "email")
 
     if (!emailTest) {
       ToastAndroid.show("Invalid Email", ToastAndroid.SHORT)
@@ -165,10 +506,20 @@ export default function Signup() {
 
       let { uid } = user
 
-      setLoading(false)
-      ToastAndroid.show("Signup Successfully", ToastAndroid.SHORT)
-      navigation.navigate("Login")
 
+      auth().signInWithEmailAndPassword(signupData.email, signupData.password).then((userCredential) => {
+
+        ToastAndroid.show("Sign Up Successful", ToastAndroid.SHORT)
+        navigation.navigate("TermsAndCondition")
+        setLoading(false)
+
+
+      }).catch((error) => {
+
+
+        setLoading(false)
+        ToastAndroid.show(error.message, ToastAndroid.SHORT)
+      })
 
     } catch (error) {
 

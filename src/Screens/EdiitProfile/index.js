@@ -59,8 +59,8 @@ export default function EditProfile({ route }) {
     const [signinData, setSigninData] = useState({
         fullName: loginData.fullName,
         mobileNumber: loginData.mobileNumber,
-        streetAddress: loginData.streetAddress,
-        extendedAddress: loginData.extendedAddress,
+        // streetAddress: loginData.streetAddress,
+        // extendedAddress: loginData.extendedAddress,
         state: loginData.state,
         city: loginData.city,
         zipCode: loginData.zipCode
@@ -209,10 +209,10 @@ export default function EditProfile({ route }) {
             ToastAndroid.show("Country is missing", ToastAndroid.SHORT)
             return
         }
-        if (!signinData?.streetAddress) {
-            ToastAndroid.show("Street Address is missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (!signinData?.streetAddress) {
+        //     ToastAndroid.show("Street Address is missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
         // if (!signinData?.extendedAddress) {
         //     ToastAndroid.show("Extended Address is missing", ToastAndroid.SHORT)
@@ -247,8 +247,8 @@ export default function EditProfile({ route }) {
             mobileNumber: signinData.mobileNumber,
             country: selectedCountry,
             city: signinData.city,
-            streetAddress: signinData.streetAddress,
-            extendedAddress: signinData?.extendedAddress ? signinData?.extendedAddress : "",
+            // streetAddress: signinData.streetAddress,
+            // extendedAddress: signinData?.extendedAddress ? signinData?.extendedAddress : "",
             profile: image1,
             state: signinData?.state,
             zipCode: signinData?.zipCode,
@@ -394,7 +394,7 @@ export default function EditProfile({ route }) {
                                 placeholderStyle={{ color: "gray" }}
                             /> */}
 
-                            <TextInput
+                            {/* <TextInput
                                 style={{
                                     backgroundColor: Colors.input,
                                     borderRadius: 5,
@@ -411,9 +411,9 @@ export default function EditProfile({ route }) {
                                 onChangeText={(e) => setSigninData({ ...signinData, streetAddress: e })}
                                 placeholder="Street Address"
                                 placeholderTextColor={Colors.gray}
-                            />
+                            /> */}
 
-                            <TextInput
+                            {/* <TextInput
                                 style={{
                                     backgroundColor: Colors.input,
                                     borderRadius: 5,
@@ -430,7 +430,7 @@ export default function EditProfile({ route }) {
                                 onChangeText={(e) => setSigninData({ ...signinData, extendedAddress: e })}
                                 placeholder="Extended Address (Optional) "
                                 placeholderTextColor={Colors.gray}
-                            />
+                            /> */}
 
 
                             <CustomDropDown

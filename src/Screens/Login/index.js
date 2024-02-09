@@ -30,6 +30,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import LocationContext from '../../Context/locationContext/context';
 import { GOOGLE_MAP_KEY } from '../../Constant/GoogleMapKey';
+import BookingContext from '../../Context/bookingContext/context';
 
 
 export default function Login() {
@@ -55,10 +56,12 @@ export default function Login() {
 
   const context = useContext(LoginContext)
   const locationCont = useContext(LocationContext)
+  let bookingCont = useContext(BookingContext)
+
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
-
+  let { bookingData, setBookingData } = bookingCont
 
 
   useEffect(() => {
@@ -130,7 +133,6 @@ export default function Login() {
     let { user } = res;
     let { uid } = user;
 
-    setGoogleLoading(false);
 
     firestore().collection("Users").doc(uid).get().then(async (doc) => {
       let data = doc.data()
@@ -138,7 +140,9 @@ export default function Login() {
       setLoginData(data)
 
       if (!data?.agree) {
+        setLoading(false)
         navigation.replace("TermsAndCondition")
+
         return
       }
 
@@ -160,89 +164,344 @@ export default function Login() {
 
 
       if (data?.agree && !data?.fullName) {
-
+        setLoading(false)
         navigation.replace("UserDetails")
         return
-
       }
+
+      // if (data) {
+      //   setLoginData(data)
+
+      //   locationPermission().then(res => {
+      //     if (res == 'granted') {
+      //       Geolocation.getCurrentPosition(async (position) => {
+      //         let id = auth()?.currentUser?.uid
+      //         let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+      //         let data = {
+      //           currentAddress: address,
+      //           currentLocation: {
+      //             latitude: position.coords.latitude,
+      //             longitude: position.coords.longitude
+      //           }
+      //         }
+
+
+      //         setLocationData({
+      //           ...locationData,
+      //           currentLocation: data.currentLocation,
+      //           currentAddress: data.currentAddress
+      //         })
+
+
+      //         firestore().collection("Users").doc(id).update(data).then((res) => {
+
+
+      //           let dataToSend = {
+      //             currentAddress: address,
+      //             currentLocation: {
+      //               latitude: position.coords.latitude,
+      //               longitude: position.coords.longitude
+      //             }
+      //           }
+      //           setLoading(false)
+
+      //           navigation.replace('Tab', {
+      //             screen: {
+      //               name: "Home",
+      //               params: {
+      //                 data: dataToSend
+      //               }
+      //             },
+      //           });
+
+      //         }).catch((error) => {
+      //           setLoading(false)
+      //           ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+      //         })
+
+
+
+      //       },
+      //         error => {
+
+      //         },
+      //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+      //       );
+      //     } else {
+
+      //       navigation.reset({
+      //         index: 0,
+      //         routes: [
+      //           {
+      //             name: 'Location',
+      //           },
+      //         ],
+      //       });
+      //     }
+      //   });
+      // }
 
       if (data) {
+
         setLoginData(data)
 
-        locationPermission().then(res => {
-          if (res == 'granted') {
-            Geolocation.getCurrentPosition(async (position) => {
-              let id = auth()?.currentUser?.uid
-              let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+        firestore().collection("Request").doc(user.uid).get().then((doc) => {
+
+          let data = doc.data()
+          setLoading(false)
+
+          if (data && data?.bookingStatus == "complete" && !data?.userResponse) {
+
+            setBookingData(data)
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
 
 
-              let data = {
-                currentAddress: address,
-                currentLocation: {
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude
-                }
-              }
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
 
 
-              setLocationData({
-                ...locationData,
-                currentLocation: data.currentLocation,
-                currentAddress: data.currentAddress
-              })
-
-
-              firestore().collection("Users").doc(id).update(data).then((res) => {
-
-
-
-
-
-                let dataToSend = {
-                  currentAddress: address,
-                  currentLocation: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                  }
-                }
-                setLoading(false)
-
-                navigation.replace('Tab', {
-                  screen: {
-                    name: "Home",
-                    params: {
-                      data: dataToSend
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
                     }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('PassengerRideDetail');
+
+                  }).catch((error) => {
+                    setLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
+
+
+
+                },
+                  error => {
+
                   },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
                 });
+              }
+            });
+            return
 
-              }).catch((error) => {
-                setLoading(false)
-                ToastAndroid.show(error.message, ToastAndroid.SHORT)
+          }
 
-              })
+          if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
+
+            setBookingData(data)
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
+
+
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('Tab', {
+                      screen: {
+                        name: "Home",
+                        params: {
+                          data: dataToSend
+                        }
+                      },
+                    });
+
+                  }).catch((error) => {
+                    setLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
 
 
 
-            },
-              error => {
+                },
+                  error => {
 
-              },
-              { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-            );
+                  },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
+                });
+              }
+            });
+
           } else {
 
-            navigation.reset({
-              index: 0,
-              routes: [
-                {
-                  name: 'Location',
+
+            locationPermission().then(res => {
+              if (res == 'granted') {
+                Geolocation.getCurrentPosition(async (position) => {
+
+
+                  let id = user.uid
+
+                  let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                  let data = {
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+                  }
+
+
+                  setLocationData({
+                    ...locationData,
+                    currentLocation: data.currentLocation,
+                    currentAddress: data.currentAddress
+                  })
+
+
+                  firestore().collection("Users").doc(id).update({
+
+                    currentAddress: address,
+                    currentLocation: {
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude
+                    }
+
+                  }).then((res) => {
+
+                    let dataToSend = {
+                      currentAddress: address,
+                      currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                      }
+                    }
+                    navigation.replace('Tab', {
+                      screen: {
+                        name: "Home",
+                        params: {
+                          data: dataToSend
+                        }
+                      },
+                    });
+
+                  }).catch((error) => {
+                    setLoading(false)
+                    ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                  })
+
+
+
                 },
-              ],
+                  error => {
+
+                  },
+                  { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                );
+              } else {
+
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'Location',
+                    },
+                  ],
+                });
+              }
             });
           }
-        });
+        }).catch((error) => {
+          setLoading(false)
+          console.log(error, "error")
+        })
+
       }
+
       else {
 
         navigation.reset({
@@ -258,6 +517,12 @@ export default function Login() {
         });
 
       }
+
+
+    }).catch((error) => {
+
+      ToastAndroid.show(error.message, ToastAndroid.SHORT)
+      setGoogleLoading(false);
 
 
     })
@@ -325,7 +590,6 @@ export default function Login() {
 
           AsyncStorage.setItem("user", loginAuth)
 
-          setLoading(false);
 
           firestore().collection("Users").doc(uid).get().then(async (doc) => {
             let data = doc.data()
@@ -337,6 +601,7 @@ export default function Login() {
 
 
             if (!data?.agree) {
+              setLoading(false);
               navigation.replace("TermsAndCondition")
               return
             }
@@ -348,24 +613,272 @@ export default function Login() {
             //   return
             // }
             ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
+            if (data?.agree && !data?.fullName) {
+              setLoading(false);
+              navigation.replace("UserDetails")
+              return
+            }
+
+
             if (data) {
-
               setLoginData(data)
+              firestore().collection("Request").doc(user.uid).get().then((doc) => {
+                
+                let data = doc.data()
+                setLoading(false);
 
-              navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: 'Location',
-                  },
-                ],
-              });
+                if (data && data?.bookingStatus == "complete" && !data?.userResponse) {
 
-
-
-            } else {
+                  setBookingData(data)
+                  locationPermission().then(res => {
+                    if (res == 'granted') {
+                      Geolocation.getCurrentPosition(async (position) => {
 
 
+                        let id = user.uid
+
+                        let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                        let data = {
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+                        }
+
+
+                        setLocationData({
+                          ...locationData,
+                          currentLocation: data.currentLocation,
+                          currentAddress: data.currentAddress
+                        })
+
+
+                        firestore().collection("Users").doc(id).update({
+
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+
+                        }).then((res) => {
+
+                          let dataToSend = {
+                            currentAddress: address,
+                            currentLocation: {
+                              latitude: position.coords.latitude,
+                              longitude: position.coords.longitude
+                            }
+                          }
+                          navigation.replace('PassengerRideDetail');
+
+                        }).catch((error) => {
+                          setLoading(false)
+                          ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                        })
+
+
+
+                      },
+                        error => {
+
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                      );
+                    } else {
+
+                      navigation.reset({
+                        index: 0,
+                        routes: [
+                          {
+                            name: 'Location',
+                          },
+                        ],
+                      });
+                    }
+                  });
+                  return
+
+                }
+
+                if (data && data.bookingStatus == "running" && !data?.rideCancelByPassenger && !data?.rideCancelByDriver) {
+
+                  setBookingData(data)
+                  locationPermission().then(res => {
+                    if (res == 'granted') {
+                      Geolocation.getCurrentPosition(async (position) => {
+
+
+                        let id = user.uid
+
+                        let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                        let data = {
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+                        }
+
+
+                        setLocationData({
+                          ...locationData,
+                          currentLocation: data.currentLocation,
+                          currentAddress: data.currentAddress
+                        })
+
+
+                        firestore().collection("Users").doc(id).update({
+
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+
+                        }).then((res) => {
+
+                          let dataToSend = {
+                            currentAddress: address,
+                            currentLocation: {
+                              latitude: position.coords.latitude,
+                              longitude: position.coords.longitude
+                            }
+                          }
+                          navigation.replace('Tab', {
+                            screen: {
+                              name: "Home",
+                              params: {
+                                data: dataToSend
+                              }
+                            },
+                          });
+
+                        }).catch((error) => {
+                          setLoading(false)
+                          ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                        })
+
+
+
+                      },
+                        error => {
+
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                      );
+                    } else {
+
+                      navigation.reset({
+                        index: 0,
+                        routes: [
+                          {
+                            name: 'Location',
+                          },
+                        ],
+                      });
+                    }
+                  });
+
+                } else {
+
+
+                  locationPermission().then(res => {
+                    if (res == 'granted') {
+                      Geolocation.getCurrentPosition(async (position) => {
+
+
+                        let id = user.uid
+
+                        let address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude)
+
+
+                        let data = {
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+                        }
+
+
+                        setLocationData({
+                          ...locationData,
+                          currentLocation: data.currentLocation,
+                          currentAddress: data.currentAddress
+                        })
+
+
+                        firestore().collection("Users").doc(id).update({
+
+                          currentAddress: address,
+                          currentLocation: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                          }
+
+                        }).then((res) => {
+
+                          let dataToSend = {
+                            currentAddress: address,
+                            currentLocation: {
+                              latitude: position.coords.latitude,
+                              longitude: position.coords.longitude
+                            }
+                          }
+                          navigation.replace('Tab', {
+                            screen: {
+                              name: "Home",
+                              params: {
+                                data: dataToSend
+                              }
+                            },
+                          });
+
+                        }).catch((error) => {
+                          setLoading(false)
+                          ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+                        })
+
+
+
+                      },
+                        error => {
+
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+                      );
+                    } else {
+
+                      navigation.reset({
+                        index: 0,
+                        routes: [
+                          {
+                            name: 'Location',
+                          },
+                        ],
+                      });
+                    }
+                  });
+                }
+              }).catch((error) => {
+                setLoading(false);
+                ToastAndroid.show(error?.message, ToastAndroid.SHORT)
+                console.log(error, "error")
+              })
+
+            }
+            else {
+
+              setLoading(false);
               navigation.reset({
                 index: 0,
                 routes: [
@@ -379,6 +892,12 @@ export default function Login() {
               });
 
             }
+          }).catch((error) => {
+
+            ToastAndroid.show(error.message, ToastAndroid.SHORT)
+            setLoading(false);
+
+
           })
         });
 

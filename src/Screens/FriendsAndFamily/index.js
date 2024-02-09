@@ -45,7 +45,7 @@ function FriendsAndFamily({ navigation, route }) {
     const { scheduleData, setScheduleData } = scheduleRideCont
 
     let radiusCont = useContext(RadiusContext)
-    const {scheduleRideRadius,setScheduleRideRadius} = radiusCont
+    const { scheduleRideRadius, setScheduleRideRadius } = radiusCont
 
 
     const cardCont = useContext(cardDetailsContext)
@@ -588,6 +588,7 @@ function FriendsAndFamily({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "FriendsAndFamily",
+                    category : "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -657,7 +658,7 @@ function FriendsAndFamily({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "pending") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -752,7 +753,7 @@ function FriendsAndFamily({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -770,24 +771,24 @@ function FriendsAndFamily({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(async(res) => {
+                        .then(async (res) => {
 
-                            
-                            let promises =  drivers && drivers.length>0 && drivers.map((e,i)=>{
+
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
 
                                 let id = e?.id
 
                                 let dataToSend = {
-                                    title : "Scheduled Ride Request",
-                                    body : 'You have got Scheduled Ride request kindly respond back',
-                                    date : new Date()
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
                                 }
 
                                 firestore().collection("DriverNotification").doc(id).set({
-                                    notification : firestore.FieldValue.arrayUnion(dataToSend)
-                                },{merge:true})
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
 
-                        })
+                            })
 
                             await Promise.all(promises)
 
@@ -845,6 +846,7 @@ function FriendsAndFamily({ navigation, route }) {
                 bookingType: "twoWay",
                 requestDate: new Date(),
                 type: "FriendsAndFamily",
+                category : "driver",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -920,6 +922,7 @@ function FriendsAndFamily({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "FriendsAndFamily",
+                    category : "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -988,7 +991,7 @@ function FriendsAndFamily({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1076,7 +1079,7 @@ function FriendsAndFamily({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -1094,7 +1097,7 @@ function FriendsAndFamily({ navigation, route }) {
                         data: data,
                     };
                     axios(config)
-                        .then(async(res) => {
+                        .then(async (res) => {
 
                             // let notification = JSON.parse(data)
 
@@ -1110,22 +1113,22 @@ function FriendsAndFamily({ navigation, route }) {
 
 
 
-                            
-                            let promises =  drivers && drivers.length>0 && drivers.map((e,i)=>{
+
+                            let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
 
                                 let id = e?.id
 
                                 let dataToSend = {
-                                    title : "Scheduled Ride Request",
-                                    body : 'You have got Scheduled Ride request kindly respond back',
-                                    date : new Date()
+                                    title: "Scheduled Ride Request",
+                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    date: new Date()
                                 }
 
                                 firestore().collection("DriverNotification").doc(id).set({
-                                    notification : firestore.FieldValue.arrayUnion(dataToSend)
-                                },{merge:true})
+                                    notification: firestore.FieldValue.arrayUnion(dataToSend)
+                                }, { merge: true })
 
-                        })
+                            })
 
                             await Promise.all(promises)
 
@@ -1177,6 +1180,7 @@ function FriendsAndFamily({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "FriendsAndFamily",
+                category : "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }
@@ -1485,7 +1489,7 @@ function FriendsAndFamily({ navigation, route }) {
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", marginLeft:50, width: "100%" }} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", marginLeft: 50, width: "100%" }} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

@@ -37,6 +37,7 @@ function RideCancel({ navigation }) {
     let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
 
 
+    console.log(bookingData?.bookingId,"bookingId")
 
 
     const handleCancelRide = () => {
@@ -252,7 +253,7 @@ function RideCancel({ navigation }) {
                 ...bookingData,
                 rideCancelByPassenger: true,
                 cancelledTime: new Date(),
-                cancelReason: cancelReason
+                cancelReason: cancelReason,
             }
 
             firestore().collection("CancelRides").doc(id).set({

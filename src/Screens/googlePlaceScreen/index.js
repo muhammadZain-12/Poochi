@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef,useEffect } from "react"
-import { View, Text, StyleSheet,BackHandler } from "react-native"
+import React, { useState, useContext, useRef, useEffect } from "react"
+import { View, Text, StyleSheet, BackHandler } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import { Dimensions } from "react-native"

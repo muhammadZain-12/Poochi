@@ -35,11 +35,22 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import CustomDropDown from '../../Components/dropdown';
 import axios from 'axios';
 import { Base_Uri } from '../../Constant/BaseUri';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 
 
 export default function UserDetails({ route }) {
     const navigation = useNavigation();
+
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId:
+                '889265375440-76ihli23dk6ulbuamsujt41t0t3gvdcs.apps.googleusercontent.com',
+            androidClientId:
+                '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
+        });
+    }, []);
 
 
 
@@ -59,8 +70,8 @@ export default function UserDetails({ route }) {
     const [signinData, setSigninData] = useState({
         fullName: "",
         mobileNumber: "+1",
-        streetAddress: "",
-        extendedAddress: "",
+        // streetAddress: "",
+        // extendedAddress: "",
         state: "",
         city: "",
         zipCode: ""
@@ -213,10 +224,10 @@ export default function UserDetails({ route }) {
             ToastAndroid.show("Country is missing", ToastAndroid.SHORT)
             return
         }
-        if (!signinData?.streetAddress) {
-            ToastAndroid.show("Street Address is missing", ToastAndroid.SHORT)
-            return
-        }
+        // if (!signinData?.streetAddress) {
+        //     ToastAndroid.show("Street Address is missing", ToastAndroid.SHORT)
+        //     return
+        // }
 
         // if (!signinData?.extendedAddress) {
         //     ToastAndroid.show("Extended Address is missing", ToastAndroid.SHORT)
@@ -250,8 +261,8 @@ export default function UserDetails({ route }) {
             mobileNumber: signinData.mobileNumber,
             country: selectedCountry,
             city: signinData.city,
-            streetAddress: signinData.streetAddress,
-            extendedAddress: signinData?.extendedAddress,
+            // streetAddress: signinData.streetAddress,
+            // extendedAddress: signinData?.extendedAddress,
             profile: image1,
             state: signinData?.state,
             zipCode: signinData?.zipCode,
@@ -259,7 +270,6 @@ export default function UserDetails({ route }) {
             email: auth().currentUser.email,
             created_at: new Date(),
             id: uid
-
         }
 
 
@@ -330,7 +340,7 @@ export default function UserDetails({ route }) {
 
     };
 
-    console.log(gender,"gender")
+    console.log(gender, "gender")
 
     const handleSelectGender = (event, ind) => {
 
@@ -356,12 +366,59 @@ export default function UserDetails({ route }) {
 
 
 
+    const handleLogoutUser = async () => {
+
+        AsyncStorage.removeItem("user")
+
+
+        if (GoogleSignin.isSignedIn()) {
+
+
+            await GoogleSignin.signOut()
+            await auth().signOut()
+            // ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+            setLoginData("")
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Login',
+
+                    },
+                ],
+            });
+        } else {
+
+            auth().signOut().then((res) => {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Login',
+
+                        },
+                    ],
+                });
+                setLoginData("")
+                // ToastAndroid.show("Logout Successfully", ToastAndroid.SHORT)
+
+            }).catch((error) => {
+
+                // ToastAndroid.show("Logout Unsuccessfull", ToastAndroid.SHORT)
+
+
+            })
+        }
+
+    }
+
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
-                    // onPress={() => navigation.goBack()}
-                    // iconname={"arrow-back-outline"}
+                    onPress={() => handleLogoutUser()}
+                    iconname={"exit-outline"}
                     text="Complete Your Profile"
                     color={Colors.black}
                 />
@@ -481,14 +538,12 @@ export default function UserDetails({ route }) {
                                     })}
 
 
-
-
                                 </View>
 
                             </View> */}
 
 
-                            <TextInput
+                            {/* <TextInput
                                 style={{
                                     backgroundColor: Colors.input,
                                     borderRadius: 5,
@@ -503,11 +558,11 @@ export default function UserDetails({ route }) {
                                 }}
                                 value={signinData.streetAddress}
                                 onChangeText={(e) => setSigninData({ ...signinData, streetAddress: e })}
-                                placeholder="Street Address"
+                                placeholder="Street Address (Optional) "
                                 placeholderTextColor={Colors.gray}
-                            />
+                            /> */}
 
-                            <TextInput
+                            {/* <TextInput
                                 style={{
                                     backgroundColor: Colors.input,
                                     borderRadius: 5,
@@ -524,7 +579,7 @@ export default function UserDetails({ route }) {
                                 onChangeText={(e) => setSigninData({ ...signinData, extendedAddress: e })}
                                 placeholder="Extended Address (Optional) "
                                 placeholderTextColor={Colors.gray}
-                            />
+                            /> */}
 
 
                             <CustomDropDown

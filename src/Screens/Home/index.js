@@ -247,7 +247,7 @@ function Home({ navigation }) {
           notification: {
             body: `Your upcoming Scheduled Ride time is ${scheduledDateTime.toLocaleDateString()}  ${scheduledDateTime.toLocaleTimeString()}`,
             title: `Hi ${e?.userData?.fullName}`,
-            sound : "default"
+            sound: "default"
           },
           to: e?.userData?.token,
         });
@@ -405,7 +405,6 @@ function Home({ navigation }) {
 
 
     if (GoogleSignin.isSignedIn()) {
-
 
       await GoogleSignin.signOut()
       await auth().signOut()
@@ -840,7 +839,7 @@ function Home({ navigation }) {
 
       let data = doc.data()
 
-    if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
+      if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
         ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
         return
       }
@@ -939,7 +938,7 @@ function Home({ navigation }) {
                     margin: 0,
                   }}
 
-                  onPress={() => navigation.navigate("PetWalk")}
+                  onPress={() => item.id == 2 ? navigation.navigate("PetSitter") : navigation.navigate("PetWalk")}
 
                 >
                   <Image
@@ -959,7 +958,7 @@ function Home({ navigation }) {
           <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where Would You Like To Go?</Text>
 
 
-          <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row",marginBottom:10 }} >
+          <View style={{ width: "100%", flexWrap: "wrap", justifyContent: "space-between", flexDirection: "row", marginBottom: 10 }} >
 
             <TouchableOpacity style={{ width: "49%" }} onPress={() => handleNavigateToBooking("MedicalTrip")} >
 

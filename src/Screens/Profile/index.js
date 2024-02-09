@@ -38,6 +38,17 @@ function Profile({ navigation }) {
 
         AsyncStorage.removeItem("user")
 
+        console.log(bookingData, "dataaa")
+
+        if (bookingData && Object.keys(bookingData).length > 0 && bookingData.bookingStatus == "running") {
+
+            ToastAndroid.show("Your booking is in process you cannot logout", ToastAndroid.SHORT)
+            return
+
+        }
+
+
+
         if (GoogleSignin.isSignedIn()) {
 
             await GoogleSignin.signOut()

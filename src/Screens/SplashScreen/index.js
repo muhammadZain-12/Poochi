@@ -368,10 +368,6 @@ export default function SplashScreen({ navigation }) {
     } else {
 
       setTimeout(() => {
-
-
-
-
         navigation.replace('OnBoardingScreen');
       }, 3000);
     };
