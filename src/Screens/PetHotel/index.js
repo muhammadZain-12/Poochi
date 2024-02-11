@@ -566,6 +566,7 @@ function PetHotel({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "PetHotel",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -812,6 +813,7 @@ function PetHotel({ navigation, route }) {
                 bookingType: "twoWay",
                 requestDate: new Date(),
                 type: "PetHotel",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -887,6 +889,7 @@ function PetHotel({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "PetHotel",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -1140,6 +1143,7 @@ function PetHotel({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "PetHotel",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }

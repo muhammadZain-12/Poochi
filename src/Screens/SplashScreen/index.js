@@ -220,6 +220,9 @@ export default function SplashScreen({ navigation }) {
                     })
 
 
+                    console.log(address, "address")
+                    console.log(position.coords, "coords")
+
                     firestore().collection("Users").doc(id).update({
 
                       currentAddress: address,

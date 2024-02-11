@@ -304,79 +304,194 @@ function Drivers({ navigation }) {
 
     const handleSelectDriver = (driver) => {
 
+        let dataToSend;
 
-        firestore().collection("Request").doc(bookingData?.userData?.id).update({
-            driverData: driver,
-            fare: driver?.fare,
-            driverFare: driver?.driverFare,
-            serviceCharge: driver?.serviceCharge,
-            deductedFromWallet: deductedFromWallet,
-            requestStatus: "pending"
-        }).then(() => {
+        if (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location") {
 
-            let { token } = driver
+            dataToSend = {
 
-            if (token) {
-                var data = JSON.stringify({
-                    notification: {
-                        body: `You have request from ${bookingData?.userData?.fullName} kindly respond back`,
-                        title: `Hi ${driver.fullName} `,
-                        sound: "default"
-                    },
-                    to: token,
-                });
-                let config = {
-                    method: 'post',
-                    url: 'https://fcm.googleapis.com/fcm/send',
-                    headers: {
-                        Authorization:
-                            'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
-                        'Content-Type': 'application/json',
-                    },
-                    data: data,
-                };
-                axios(config)
-                    .then(res => {
+                driverData: driver,
+                fare: driver?.fare,
+                driverFare: driver?.driverFare,
+                serviceCharge: driver?.serviceCharge,
+                deductedFromWallet: deductedFromWallet,
+                requestStatus: "pending"
 
-                        let notification = JSON.parse(data)
-
-                        let notificationToSend = {
-                            title: notification.notification.title,
-                            body: notification.notification.body,
-                            date: new Date()
-                        }
-
-                        firestore().collection("DriverNotification").doc(driver.id).set({
-                            notification: firestore.FieldValue.arrayUnion(notificationToSend)
-                        }, { merge: true }).then((res) => {
-                            setRequestInProcess(true)
-                            setSelectedDriver(driver)
-                            setBookingData({
-                                ...bookingData,
-                                driverData: driver,
-                                fare: driver?.fare,
-                                driverFare: driver?.driverFare,
-                                serviceCharge: driver?.serviceCharge,
-                                deductedFromWallet: deductedFromWallet,
-                            })
-                        }).catch((error) => {
-
-                            setRequestInProcess(false)
-
-                        })
-
-                    })
-                    .catch(error => {
-                        setRequestInProcess(false)
-                        console.log(error, "error")
-                    });
             }
 
-        }).catch((error) => {
+        } else {
 
-            ToastAndroid.show(error.message, ToastAndroid.SHORT)
+            dataToSend = {
 
-        })
+                driverData: driver,
+                fare: driver?.fare,
+                sittingLocation: driver?.sittingLocation,
+                pickupCords: {
+                    lat: driver?.sittingLocation?.latitude,
+                    lng: driver?.sittingLocation?.longitude,
+                },
+                pickupAddress: driver?.sittingLocation?.address,
+                driverFare: driver?.driverFare,
+                serviceCharge: driver?.serviceCharge,
+                deductedFromWallet: deductedFromWallet,
+                requestStatus: "pending"
+
+            }
+
+        }
+
+        if (bookingData?.type == "PetSitter") {
+            firestore().collection("Request").doc(bookingData?.userData?.id).update(dataToSend).then(() => {
+
+                let { token } = driver
+
+                if (token) {
+                    var data = JSON.stringify({
+                        notification: {
+                            body: `You have request from ${bookingData?.userData?.fullName} kindly respond back`,
+                            title: `Hi ${driver.fullName} `,
+                            sound: "default"
+                        },
+                        to: token,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+
+                            let notification = JSON.parse(data)
+
+                            let notificationToSend = {
+                                title: notification.notification.title,
+                                body: notification.notification.body,
+                                date: new Date()
+                            }
+
+                            firestore().collection("DriverNotification").doc(driver.id).set({
+                                notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                            }, { merge: true }).then((res) => {
+                                setRequestInProcess(true)
+                                setSelectedDriver(driver)
+                                setBookingData({
+                                    ...bookingData,
+                                    driverData: driver,
+                                    fare: driver?.fare,
+                                    driverFare: driver?.driverFare,
+                                    serviceCharge: driver?.serviceCharge,
+                                    deductedFromWallet: deductedFromWallet,
+                                })
+                            }).catch((error) => {
+
+                                setRequestInProcess(false)
+
+                            })
+
+                        })
+                        .catch(error => {
+                            setRequestInProcess(false)
+                            console.log(error, "error")
+                        });
+                }
+
+            }).catch((error) => {
+
+                ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+            })
+        } else {
+
+
+            console.log(driver, "driver")
+
+
+
+            firestore().collection("Request").doc(bookingData?.userData?.id).update({
+                driverData: driver,
+                requestStatus: "pending"
+            }).then(() => {
+
+                let { token } = driver
+
+                if (token) {
+                    var data = JSON.stringify({
+                        notification: {
+                            body: `You have request from ${bookingData?.userData?.fullName} kindly respond back`,
+                            title: `Hi ${driver.fullName} `,
+                            sound: "default"
+                        },
+                        to: token,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+
+                            let notification = JSON.parse(data)
+
+                            let notificationToSend = {
+                                title: notification.notification.title,
+                                body: notification.notification.body,
+                                date: new Date()
+                            }
+
+                            firestore().collection("DriverNotification").doc(driver.id).set({
+                                notification: firestore.FieldValue.arrayUnion(notificationToSend)
+                            }, { merge: true }).then((res) => {
+                                setRequestInProcess(true)
+                                setSelectedDriver(driver)
+
+                                if (bookingData.type == "PetSitter") {
+                                    setBookingData({
+                                        ...bookingData,
+                                        driverData: driver,
+                                        fare: driver?.fare,
+                                        driverFare: driver?.driverFare,
+                                        serviceCharge: driver?.serviceCharge,
+                                        deductedFromWallet: deductedFromWallet,
+                                    })
+                                } else {
+
+                                    setBookingData({
+                                        ...bookingData,
+                                        driverData: driver,
+                                    })
+
+                                }
+                            }).catch((error) => {
+
+                                setRequestInProcess(false)
+
+                            })
+
+                        })
+                        .catch(error => {
+                            setRequestInProcess(false)
+                            console.log(error, "error")
+                        });
+                }
+
+            }).catch((error) => {
+
+                ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+            })
+        }
     }
 
     useEffect(() => {
@@ -467,11 +582,13 @@ function Drivers({ navigation }) {
 
                     if (e.selectedCategory == "sitter") {
 
-                        let duration = bookingData?.duration
 
-                        let hours = duration / 60
+                        let hours = bookingData?.duration / 60
 
                         let hourlyRate;
+
+                        console.log(e?.hourlyChargeCustomerLocation)
+                        console.log(e?.hourlyChargeSitterLocation)
 
                         if (bookingData.selectedOption?.name == "My Location") {
 
@@ -483,8 +600,6 @@ function Drivers({ navigation }) {
                             hourlyRate = e?.hourlyChargeSitterLocation
 
                         }
-
-                        console.log(bookingData?.petCharges,"eptCahefes")
 
                         let totalFare = (hours * hourlyRate) + bookingData?.petCharges
                         fare = Number(totalFare).toFixed(2)
@@ -503,10 +618,11 @@ function Drivers({ navigation }) {
 
 
                     }
-
-                    e.fare = fare
-                    e.driverFare = driverFare
-                    e.serviceCharge = charges
+                    if (e?.selectedCategory == "sitter") {
+                        e.fare = fare
+                        e.driverFare = driverFare
+                        e.serviceCharge = charges
+                    }
 
                     return (
                         <TouchableOpacity key={i} style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", backgroundColor: "#e6e6e6", marginTop: 20, borderRadius: 10, alignItems: "center", paddingHorizontal: 10 }}  >

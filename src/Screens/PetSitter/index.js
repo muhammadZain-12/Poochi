@@ -702,10 +702,6 @@ function Petsitter({ navigation, route }) {
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-
-                // fare: Number(fare).toFixed(2),
-                // serviceCharge: serviceCharges,
-                // driverFare: Number(driverFare).toFixed(2),
                 duration: selectedTimeDuration,
                 bookingType: "oneWay",
                 requestDate: new Date(),

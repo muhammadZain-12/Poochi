@@ -18,7 +18,10 @@ import ChooseLocationContext from "../../Context/pickupanddropoffContext/context
 import IonIcons from "react-native-vector-icons/Ionicons"
 import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-
+import axios from "axios"
+import Geocoder from 'react-native-geocoding';
+import Geolocation, { watchPosition } from 'react-native-geolocation-service';
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 // import {MapViewDirections} from "react-native-maps-directions"
@@ -45,20 +48,31 @@ function PassengerRideDetail({ navigation, route }) {
     const mapRef = useRef()
 
     const [arrived, setArrived] = useState(false)
+    const [confirmArrival, setConfirmArrival] = useState(false)
     const [startRide, setStartRide] = useState(false)
     const [endRide, setEndRide] = useState(false)
+    const [remainingTime, setRemainingTime] = useState(0)
     const [rideStartToDropoff, setRideStartToDropoff] = useState(false)
     const [reachDropoff, setReachDropoff] = useState(false)
+    const [goToPickup, setGoToPickup] = useState(false)
     const [petImage, setPetImage] = useState("")
+    const [collectPet, setCollectPet] = useState(false)
     const [driverLocation, setDriverLocation] = useState({
         latitude: "",
         longitude: ""
     })
     const [arrivalDis, setArrivalDis] = useState("")
+    const [arrivalMileDis, setArrivalMileDis] = useState("")
     const [arriveDropoffMin, setArriveDropoffMin] = useState("")
     const [comment, setComment] = useState("")
     const [finalLoader, setFinalLoader] = useState(false)
     const [imageModal, setImageModal] = useState(false)
+    const [arrivedSitterAddress, setArrivedSitterAddress] = useState(false)
+    const [currentLocation, setCurrentLocation] = useState({
+        latitude: null,
+        longitude: null
+    })
+
 
     const [rating, setRating] = useState(null)
 
@@ -93,6 +107,91 @@ function PassengerRideDetail({ navigation, route }) {
 
 
 
+
+
+
+    const getAddressFromCoords = async (latitude, longitude) => {
+        try {
+            const response = await Geocoder.from(latitude, longitude);
+            const address = response.results[0].formatted_address;
+
+            return address;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const sendUserLocationInFirebase = () => {
+        Geolocation.getCurrentPosition(async position => {
+            const { latitude, longitude, heading } = position.coords;
+
+            let coords = {
+                latitude: latitude,
+                longitude: longitude,
+                heading: heading,
+            };
+
+            let address = await getAddressFromCoords(latitude, longitude);
+
+            // setLocationData({
+            //   ...locationData,
+            //   currentLocation: coords,
+            //   currentAddress: address,
+            // });
+
+            setCurrentLocation({
+                ...currentLocation,
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+                heading: coords.heading,
+                address: address,
+            });
+
+            let userData = { ...bookingData.userData };
+
+            (userData.currentLocation = coords),
+                (userData.currentAddress = address);
+
+            firestore()
+                .collection('Request')
+                .doc(bookingData?.userData?.id)
+                .update({
+                    // driverData: driverData,
+                    userLocation: coords,
+                    userAddress: address,
+                })
+                .then(res => {
+                    // setBookingData({
+                    //   ...bookingData,
+                    //   driverData: driverData,
+                    // });
+
+                    console.log('location send to firebase');
+                })
+                .catch(error => {
+                    console.log(error, 'eorr');
+                });
+        });
+    };
+
+
+    useEffect(() => {
+
+        let interval;
+
+        if (bookingData && bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "Sitter Location") {
+
+            interval = setInterval(() => {
+
+                sendUserLocationInFirebase()
+            }, 10000);
+        }
+
+        return () => clearInterval(interval)
+
+    }, [currentLocation?.latitude, currentLocation?.longitude])
+
+
     const ShowLocationModal = useCallback(() => {
         return (
             <View style={styles.centeredView}>
@@ -110,8 +209,6 @@ function PassengerRideDetail({ navigation, route }) {
     }, [imageModal]);
 
 
-
-    console.log(bookingData.bookingId, "bookingData")
 
     const getDriverRideStatus = () => {
 
@@ -168,7 +265,8 @@ function PassengerRideDetail({ navigation, route }) {
 
                     setBookingData({
                         ...bookingData,
-                        bookingStatus: data?.bookingStatus
+                        bookingStatus: data?.bookingStatus,
+
                     })
 
 
@@ -188,7 +286,12 @@ function PassengerRideDetail({ navigation, route }) {
                             );
 
 
+
+
+
                             let mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                            setArrivalMileDis(mileDistance)
 
                             let arrivalMinutes = Math.ceil(mileDistance / 0.40)
 
@@ -232,6 +335,47 @@ function PassengerRideDetail({ navigation, route }) {
                         setBookingData({
                             ...bookingData,
                             arrived: true
+                        })
+                    }
+
+                    if (data.goToPickup && focus) {
+                        setGoToPickup(true)
+                        setBookingData({
+                            ...bookingData,
+                            goToPickup: true
+                        })
+                    }
+
+                    if (data?.collectPet && focus) {
+                        setCollectPet(true)
+                        setBookingData({
+                            ...bookingData,
+                            collectPet: true
+                        })
+                    }
+
+                    if (data?.arrivedSitterAddress && focus) {
+                        setArrivedSitterAddress(true)
+                        setBookingData({
+                            ...bookingData,
+                            arrivedSitterAddress: true
+                        })
+                    }
+
+                    if (data.confirmArrival && focus) {
+                        setConfirmArrival(true)
+                        setBookingData({
+                            ...bookingData,
+                            confirmArrival: true
+                        })
+                    }
+
+
+                    if (data && data?.remainingTime) {
+                        setRemainingTime(data?.remainingTime)
+                        setBookingData({
+                            ...bookingData,
+                            remainingTime: data?.remainingTime
                         })
                     }
 
@@ -295,11 +439,12 @@ function PassengerRideDetail({ navigation, route }) {
 
     }, [focus])
 
+    console.log(arrived, "arrived")
 
     const showDirection = useCallback(() => {
 
         return (
-            reachDropoff ? <MapViewDirections
+            reachDropoff && bookingData?.returnDropoffCords?.lat && bookingData?.returnDropoffCords?.lng ? <MapViewDirections
                 origin={{
                     latitude: bookingData?.dropoffCoords?.lat,
                     longitude: bookingData?.dropoffCoords?.lng,
@@ -323,7 +468,8 @@ function PassengerRideDetail({ navigation, route }) {
                         },
                     });
                 }}
-            /> : arrived ? <MapViewDirections
+            /> : (arrived && bookingData?.type !== "PetSitter") && bookingData?.driverData?.currentLocation?.latitude
+                && bookingData?.driverData?.currentLocation?.longitude ? <MapViewDirections
                 origin={{
                     latitude: bookingData?.driverData?.currentLocation?.latitude,
                     longitude: bookingData?.driverData?.currentLocation?.longitude,
@@ -376,6 +522,41 @@ function PassengerRideDetail({ navigation, route }) {
         )
 
     }, [arrived, reachDropoff])
+
+
+    const showUserDirection = useCallback(() => {
+
+        return (
+
+            <MapViewDirections
+                origin={{
+                    latitude: currentLocation?.latitude,
+                    longitude: currentLocation?.longitude,
+                }}
+                destination={{
+                    latitude: bookingData?.pickupCords.lat,
+                    longitude: bookingData?.pickupCords.lng,
+                }}
+                apikey={GOOGLE_MAP_KEY}
+                strokeColor={Colors.buttonColor}
+                strokeWidth={3}
+                resetOnChange={false}
+                optimizeWayPoints={true}
+                onReady={result => {
+                    //   getMinutesAndDistance(result)
+                    // mapRef.current.fitToCoordinates(result.coordinates, {
+                    //     edgePadding: {
+                    //         right: 30,
+                    //         bottom: 100,
+                    //         left: 30,
+                    //         top: 100,
+                    //     },
+                    // });
+                }}
+            />
+        )
+
+    }, [currentLocation?.latitude, currentLocation?.longitude])
 
 
     const handleBackToHome = () => {
@@ -565,6 +746,167 @@ function PassengerRideDetail({ navigation, route }) {
     }, []);
 
 
+    const handleArriveSitter = () => {
+
+        firestore()
+            .collection('Request')
+            .doc(bookingData?.userData?.id)
+            .update({
+                confirmArrival: true,
+            })
+            .then(() => {
+                if (bookingData?.userData?.token) {
+                    var data = JSON.stringify({
+                        notification: {
+                            body: `Customer has confirm your arrival now you can start pet sitting`,
+                            title: `Hi ${bookingData?.driverData?.fullName} `,
+                            sound: "default"
+                        },
+                        to: bookingData?.driverData?.token,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+                            let notification = JSON.parse(data);
+
+                            let notificationToSend = {
+                                title: notification?.notification?.title,
+                                body: notification.notification.body,
+                                date: new Date(),
+                            };
+
+                            firestore()
+                                .collection('DriverNotification')
+                                .doc(bookingData?.driverData?.id)
+                                .set(
+                                    {
+                                        notification:
+                                            firestore.FieldValue.arrayUnion(notificationToSend),
+                                    },
+                                    { merge: true },
+                                )
+                                .then(async (res) => {
+
+                                    let arriveTime = new Date()
+                                    arriveTime = JSON.stringify(arriveTime)
+                                    await AsyncStorage.setItem("arriveTime", arriveTime)
+
+                                    setBookingData({
+                                        ...bookingData,
+                                        confirmArrival: 'true',
+                                    });
+
+                                    setConfirmArrival(true);
+
+                                    console.log('notification send successfully');
+                                })
+                                .catch(error => {
+                                    console.log(error, 'error');
+                                });
+                        })
+                        .catch(error => {
+                            console.log(error, 'error');
+                        });
+                }
+            });
+    }
+
+    const handleArriveSitterAddress = () => {
+
+
+        firestore()
+            .collection('Request')
+            .doc(bookingData.userData.id)
+            .update({
+                arrivedSitterAddress: true,
+            })
+            .then(() => {
+                if (bookingData?.driverData?.token) {
+                    var data = JSON.stringify({
+                        notification: {
+                            body: `Your Customer has arrived at your location`,
+                            title: `Hi ${bookingData?.driverData?.fullName} `,
+                            sound: "default"
+                        },
+                        to: bookingData?.driverData?.token,
+                    });
+                    let config = {
+                        method: 'post',
+                        url: 'https://fcm.googleapis.com/fcm/send',
+                        headers: {
+                            Authorization:
+                                'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                            'Content-Type': 'application/json',
+                        },
+                        data: data,
+                    };
+                    axios(config)
+                        .then(res => {
+                            let notification = JSON.parse(data);
+
+                            let notificationToSend = {
+                                title: notification?.notification?.title,
+                                body: notification.notification.body,
+                                date: new Date(),
+                            };
+
+                            firestore()
+                                .collection('DriverNotification')
+                                .doc(bookingData?.driverData?.id)
+                                .set(
+                                    {
+                                        notification:
+                                            firestore.FieldValue.arrayUnion(notificationToSend),
+                                    },
+                                    { merge: true },
+                                )
+                                .then(async (res) => {
+
+                                    let arriveTime = new Date()
+                                    arriveTime = JSON.stringify(arriveTime)
+                                    await AsyncStorage.setItem("arriveTime", arriveTime)
+
+                                    console.log(arrivedSitterAddress, "arrived")
+
+                                    setArrivedSitterAddress(true)
+
+                                    setBookingData({
+                                        ...bookingData,
+                                        arrivedSitterAddress: 'true',
+                                    });
+
+                                    ToastAndroid.show("Successfully confirm your arrival", ToastAndroid.SHORT)
+
+                                    //   setArrive(true);
+                                    //   setShowDetails(false);
+                                    //   setMoreDetail(false)
+                                    //   console.log('notification send successfully');
+                                })
+                                .catch(error => {
+                                    console.log(error, 'error');
+                                });
+                        })
+                        .catch(error => {
+                            console.log(error, 'error');
+                        });
+                }
+            });
+
+
+    }
+
+
+    console.log(arrivedSitterAddress, "arrivedSitter")
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -594,22 +936,22 @@ function PassengerRideDetail({ navigation, route }) {
                                 region={{
                                     latitude: bookingData?.pickupCords?.lat,
                                     longitude: bookingData?.pickupCords?.lng,
-                                    latitudeDelta: 0.4,
-                                    longitudeDelta: 0.6,
+                                    latitudeDelta: 0.6,
+                                    longitudeDelta: 0.9,
                                 }}>
-                                <Marker
+                                {(bookingData && (bookingData?.type !== "PetSitter" || bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location")) && <Marker
 
                                     coordinate={{
 
-                                        latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : arrived ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
-                                        longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : arrived ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
+                                        latitude: reachDropoff ? bookingData?.returnDropoffCords?.lat : (arrived && bookingData?.type !== "PetSitter") ? bookingData?.dropoffCoords?.lat : bookingData?.pickupCords?.lat,
+                                        longitude: reachDropoff ? bookingData?.returnDropoffCords?.lng : (arrived && bookingData?.type !== "PetSitter") ? bookingData?.dropoffCoords?.lng : bookingData?.pickupCords?.lng,
 
                                     }}
                                     title={bookingData?.pickupAddress}
                                 >
-                                </Marker>
+                                </Marker>}
 
-                                <Marker
+                                {(bookingData && (bookingData?.type !== "PetSitter" || bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location")) && <Marker
 
                                     coordinate={{
                                         latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData?.driverData?.currentLocation?.latitude,
@@ -629,11 +971,50 @@ function PassengerRideDetail({ navigation, route }) {
                                         ],
 
                                     }} />
-                                </Marker>
+                                </Marker>}
+
+                                {(bookingData && (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "Sitter Location")) && <Marker
+
+                                    coordinate={{
+                                        latitude: bookingData?.pickupCords?.lat,
+                                        longitude: bookingData?.pickupCords?.lng,
+                                    }}
+                                    title={"Sitting Location"}
+                                >
+
+                                </Marker>}
+
+                                {(bookingData && (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "Sitter Location")) && currentLocation?.latitude && <Marker
+
+                                    coordinate={{
+                                        latitude: currentLocation?.latitude,
+                                        longitude: currentLocation?.longitude,
+                                    }}
+                                    title={"Current Location"}
+                                >
+
+                                    <Image source={bookingData.type == "driver" ? require("../../Images/car.png") : require("../../Images/avatar.png")} style={{
+                                        width: 40,
+                                        height: 40,
+                                        transform: [
+                                            {
+                                                rotate: currentLocation.heading
+                                                    ? `${currentLocation?.heading}deg`
+                                                    : '180deg',
+                                            },
+                                        ],
+
+                                    }} />
+
+                                </Marker>}
 
 
 
-                                {bookingData?.pickupCords?.lat && bookingData?.driverData?.currentLocation?.latitude && showDirection()}
+
+
+                                {bookingData?.pickupCords?.lat && bookingData?.driverData?.currentLocation?.latitude && ((bookingData?.type == "PetSitter" && !arrived && bookingData.selectedOption?.name == "My Location") || bookingData?.type !== "PetSitter") && showDirection()}
+
+                                {bookingData && bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "Sitter Location" && currentLocation?.latitude && currentLocation?.longitude && bookingData?.pickupCords?.lat && bookingData?.pickupCords?.lng && showUserDirection()}
 
 
                             </MapView>}
@@ -703,26 +1084,24 @@ function PassengerRideDetail({ navigation, route }) {
                         </TouchableOpacity>
 
 
-                        <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10 }} >
+                        <View style={{ marginTop: 10, backgroundColor: "#e6e6e6", borderRadius: 10, padding: 10, marginBottom: 5, }} >
 
                             <View style={{ flexDirection: "row", padding: 5, alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.buttonColor }} >
 
                                 <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
-                                <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Current Location: {bookingData?.pickupAddress}</Text>
+                                <Text style={{ color: arrived ? "#808080" : Colors.buttonColor, fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >{bookingData && bookingData?.type !== "PetSitter" ? "Current Location" : bookingData?.selectedOption?.name == "My Location" ? "Customer's Location" : "Sitter's Location"}: {bookingData?.pickupAddress}</Text>
 
                             </View>
 
 
-
-
-                            <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
+                            {bookingData && bookingData?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, datas: "center", alignItems: "center" }} >
 
                                 <IonIcons name={"location"} size={20} color={Colors.buttonColor} />
 
                                 <Text style={{ color: (!reachDropoff && arrived) ? Colors.buttonColor : "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop Off Location: {bookingData.dropoffAddress}</Text>
 
-                            </View>
+                            </View>}
 
 
                             {bookingData?.bookingType == "twoWay" ? <View>
@@ -753,12 +1132,25 @@ function PassengerRideDetail({ navigation, route }) {
                             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, color: Colors.black, marginLeft: 15 }} >**** **** **** {bookingData?.cardDetails?.last4}</Text>
                         </View>}
 
-                        <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
+                        {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
+
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? remainingTime : bookingData?.duration} min` : confirmArrival ? "Wait for pet sitter to start sitting" : arrived ? "Sitter has confirmed that he has been arrived kindly confirm from your side" : goToPickup ? `Pet sitter is ${Number(arrivalMileDis)} miles away from your location` : "Pet Sitter is about to come to your location"}</Text>
+
+                        </View>}
+
+                        {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
+
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? remainingTime : bookingData?.duration} min` : collectPet ? "Wait for pet sitter for start sitting" : arrivedSitterAddress ? "Wait for pet sitter to confirm collecting pet" : "Arriving to sitter's location"}</Text>
+
+                        </View>}
+
+
+                        {bookingData && bookingData?.type !== "PetSitter" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
 
                             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at drop off waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to drop off location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
-                        </View>
+                        </View>}
 
                         {endRide && <View style={{ marginTop: 10 }} >
 
@@ -781,10 +1173,17 @@ function PassengerRideDetail({ navigation, route }) {
 
                         {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
 
+
+                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && !confirmArrival && <CustomButton text={"Pet Sitter Arrived"} onPress={() => handleArriveSitter()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
+
+                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && !arrivedSitterAddress && <CustomButton text={"Arrived Sitter Address"} onPress={() => handleArriveSitterAddress()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
+
+
                         {!arrived && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
 
 
                         {imageModal && ShowLocationModal()}
+
                     </View>
 
 

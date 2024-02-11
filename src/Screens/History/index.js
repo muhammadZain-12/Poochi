@@ -202,29 +202,55 @@ function History({ navigation }) {
 
                     </View>
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
 
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Booking Type: {item?.bookingType == "oneWay" ? "One Way" : "Round Trip"}</Text>
 
-                    </View>
+                    </View>}
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+
+
+
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Location: {item?.selectedOption?.name == "My Location" ? "Customer's Location" : "Sitter's Location"}</Text>
+                    </View>}
+
+
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >{item?.selectedOption?.name == "My Location" ? "Customer's Address " : "Sitter's Address"}: {item?.selectedOption?.name == "My Location" ? item.pickupAddress : item?.sittingLocation?.address}</Text>
+
+                    </View>}
+
+                    {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Duration: {item?.duration} minutes</Text>
+
+                    </View>}
+
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Pick up Address: {item.pickupAddress}</Text>
 
-                    </View>
+                    </View>}
 
 
-                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+                    {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
 
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off Address: {item?.type == "PetWalk" ? item?.pickupAddress : item?.dropoffAddress}</Text>
 
-                    </View>
+                    </View>}
 
                     {item?.bookingType == "twoWay" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
@@ -242,6 +268,15 @@ function History({ navigation }) {
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Drop off eturn Address: {item.returnDropoffAddress}</Text>
 
                     </View>}
+
+
+                    <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
+
+                        <Image source={require("../../Images/Location3.png")} />
+
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Category: {item.type}</Text>
+
+                    </View>
 
                 </View>
 
@@ -347,7 +382,7 @@ function History({ navigation }) {
                         <Image source={require("../../Images/Location3.png")} />
 
                         <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >Location: {item?.selectedOption?.name == "My Location" ? "Customer's Location" : "Sitter's Location"}</Text>
-                </View>}
+                    </View>}
 
                     {item?.type !== "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
@@ -359,7 +394,7 @@ function History({ navigation }) {
                     {item?.type == "PetSitter" && <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }} >
 
                         <Image source={require("../../Images/Location3.png")} />
-                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >{item?.selectedOption?.name == "My Location" ? "Your Address " : "Sitter Address"}: {item.pickupAddress}</Text>
+                        <Text style={{ color: "#808080", fontSize: 14, fontFamily: "Poppins-Medium", marginLeft: 10 }} >{item?.selectedOption?.name == "My Location" ? "Your Address " : "Sitter Address"}: {item?.selectedOption?.name == "My Location" ? item.pickupAddress : item?.sittingLocation?.address}</Text>
 
                     </View>}
 
