@@ -116,6 +116,22 @@ function Petsitter({ navigation, route }) {
 
     ])
 
+    const [timeDuration, setTimeDuration] = useState([
+        {
+            type: "Hourly",
+            selected: false
+        },
+        {
+            type: "Half Day",
+            selected: false
+        },
+        {
+            type: "Full Day",
+            selected: false
+        },
+
+    ])
+
 
     const [customTime, setCustomTime] = useState(false)
     const [selectedTimeDuration, setSelectedTimeDuration] = useState(null)
@@ -466,6 +482,28 @@ function Petsitter({ navigation, route }) {
 
 
     }
+    const handleSelectTimeDuration = (e, ind) => {
+
+
+        setTimeDuration(timeDuration && timeDuration.length > 0 && timeDuration.map((e, i) => {
+
+            if (ind == i) {
+                return {
+                    ...e,
+                    selected: true
+                }
+            } else {
+                return {
+                    ...e,
+                    selected: false
+                }
+            }
+
+        }))
+
+
+
+    }
 
 
     const calculateFare = () => {
@@ -611,7 +649,9 @@ function Petsitter({ navigation, route }) {
             return
         }
 
-        if (!Number(selectedTimeDuration)) {
+        console.log(timeDuration.every((e, i) => (e.type.toLowerCase() == "half day" || e.type.toLowerCase() == "full day") && !e?.selected))
+
+        if ((!Number(selectedTimeDuration)) && timeDuration.every((e, i) => (e.type.toLowerCase() == "half day" || e.type.toLowerCase() == "full day") && !e?.selected)) {
             ToastAndroid.show("Kindly choose time duration", ToastAndroid.SHORT)
             return
         }
@@ -622,10 +662,17 @@ function Petsitter({ navigation, route }) {
             return
         }
 
-        let selectedOptions = option && option.length > 0 && option.filter((e, i) => e.selected)
+        let Options = option && option.length > 0 && option.filter((e, i) => e.selected)
 
-        if (selectedOptions.length == 0) {
+        if (Options.length == 0) {
             ToastAndroid.show("Kindly Choose Options", ToastAndroid.SHORT)
+            return
+        }
+
+        let timeType = timeDuration && timeDuration.length > 0 && timeDuration.filter((e, i) => e.selected)
+
+        if (timeType.length == 0) {
+            ToastAndroid.show("Kindly Choose Sitting Duration", ToastAndroid.SHORT)
             return
         }
 
@@ -652,33 +699,17 @@ function Petsitter({ navigation, route }) {
                 scheduleDate: date,
                 scheduleTime: time,
                 serviceCharge: serviceCharge,
-                // dropoffAddress: dropoffAddress ? dropoffAddress : pickupAddress,
-                // dropoffCoords: Object.keys(dropoff).length > 0 ? dropoff : pickup,
-                // returnPickupCords: dropoff,
-                // returnDropoffCords: pickup,
-                // returnPickupAddress: dropoffAddress,
-                // returnDropoffAddress: pickupAddress,
-                // distance: distance,
-                // pickupToDropDis: pickupToDropoffDistance,
-                // dropoffToPickupDis: dropoffToPickupDistance,
-                // minutes: minutes,
-                // pickupToDropoffMinutes: pickupToDropoffMinutes,
-                // dropoffToPickupMinutes: dropoffToPickupMinutes,
                 selectedPets: selectedPets,
-                selectedOption: selectedOptions[0],
+                selectedOption: Options[0],
                 comment: comment,
-
                 cardDetails: cardDetails,
                 userData: loginData,
-                // fare: Number(fare).toFixed(2),
-                // serviceCharge: serviceCharges,
-                // driverFare: Number(driverFare).toFixed(2),
-                duration: selectedTimeDuration,
+                duration: timeType[0].type.toLowerCase() == "full day" ? 1440 : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
+                timeType: timeType[0],
                 bookingType: "oneWay",
-                petCharges: Number(petCharges) * selectedPets.length - 1,
+                petCharges: Number(petCharges) * (selectedPets.length - 1),
                 requestDate: new Date(),
                 type: "PetSitter",
-                // deductedFromWallet: deductedFromWallet,
                 getDriverStatus: "pending",
                 ScheduleRidestatus: "pending"
             }
@@ -698,11 +729,12 @@ function Petsitter({ navigation, route }) {
                 serviceCharge: serviceCharge,
                 petCharges: Number(petCharges) * (selectedPets.length - 1),
                 selectedPets: selectedPets,
-                selectedOption: selectedOptions[0],
+                selectedOption: Options[0],
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                duration: selectedTimeDuration,
+                duration: timeType[0].type.toLowerCase() == "full day" ? 1440 : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
+                timeType: timeType[0],
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "PetSitter",
@@ -711,216 +743,216 @@ function Petsitter({ navigation, route }) {
         }
 
 
-        // if (date && time) {
+        if (date && time) {
 
-        //     let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
+            let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
 
-        //         const scheduledDateTime = new Date(
-        //             date.getFullYear(),
-        //             date.getMonth(),
-        //             date.getDate(),
-        //             time.getHours(),
-        //             time.getMinutes(),
-        //             time.getSeconds()
-        //         );
-
-
-
-        //         let previousDate = e?.scheduleDate?.toDate()
-        //         let previousTime = e?.scheduleTime?.toDate()
-
-        //         const previousDateTime = new Date(
-        //             previousDate.getFullYear(),
-        //             previousDate.getMonth(),
-        //             previousDate.getDate(),
-        //             previousTime.getHours(),
-        //             previousTime.getMinutes(),
-        //             previousTime.getSeconds()
-        //         );
+                const scheduledDateTime = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    time.getHours(),
+                    time.getMinutes(),
+                    time.getSeconds()
+                );
 
 
-        //         let previousDateGet = previousDateTime?.getTime()
-        //         let selectedDateGet = scheduledDateTime?.getTime()
 
-        //         let diff = selectedDateGet - previousDateGet
+                let previousDate = e?.scheduleDate?.toDate()
+                let previousTime = e?.scheduleTime?.toDate()
 
-        //         let diffHour = diff / 1000 / 60 / 60
-
-
-        //         return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
-
-
-        //     })
-
-
-        //     if (checkRideTime) {
-
-        //         ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
-        //         return
-        //     }
+                const previousDateTime = new Date(
+                    previousDate.getFullYear(),
+                    previousDate.getMonth(),
+                    previousDate.getDate(),
+                    previousTime.getHours(),
+                    previousTime.getMinutes(),
+                    previousTime.getSeconds()
+                );
 
 
-        //     setLoading(true)
+                let previousDateGet = previousDateTime?.getTime()
+                let selectedDateGet = scheduledDateTime?.getTime()
 
-        //     const drivers = [];
-        //     const tokens = [];
+                let diff = selectedDateGet - previousDateGet
 
-        //     const driversSnapshot = await firestore().collection('Drivers').get();
-        //     const scheduleRidesPromises = [];
-
-        //     driversSnapshot.forEach((doc) => {
-        //         const data = doc?.data();
-
-        //         if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved") {
-        //             const dis = getPreciseDistance(
-        //                 {
-        //                     latitude: pickup.lat,
-        //                     longitude: pickup.lng,
-        //                 },
-        //                 {
-        //                     latitude: data?.currentLocation?.latitude,
-        //                     longitude: data?.currentLocation?.longitude,
-        //                 }
-        //             );
-
-        //             const mileDistance = (dis / 1609.34)?.toFixed(2);
-
-        //             if (mileDistance <= scheduleRideRadius) {
-        //                 const driverId = data.id;
-        //                 const driverToken = data.token;
-
-        //                 scheduleRidesPromises.push(
-        //                     firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
-        //                         let hasConflictingRide = false;
-
-        //                         scheduleSnapshot.forEach((scheduleDoc) => {
-        //                             const scheduleData = scheduleDoc?.data();
-        //                             const scheduledRides = scheduleData?.scheduleRides;
-
-        //                             if (scheduledRides) {
-        //                                 scheduledRides.forEach((ride) => {
-        //                                     const scheduledDateTime = new Date(
-        //                                         date.getFullYear(),
-        //                                         date.getMonth(),
-        //                                         date.getDate(),
-        //                                         time.getHours(),
-        //                                         time.getMinutes(),
-        //                                         time.getSeconds()
-        //                                     );
-
-        //                                     if (
-        //                                         ride?.driverData?.id === driverId &&
-        //                                         ride?.getDriverStatus === 'accepted'
-        //                                     ) {
-        //                                         const previousDate = ride.scheduleDate.toDate();
-        //                                         const previousTime = ride.scheduleTime.toDate();
-        //                                         const previousDateTime = new Date(
-        //                                             previousDate.getFullYear(),
-        //                                             previousDate.getMonth(),
-        //                                             previousDate.getDate(),
-        //                                             previousTime.getHours(),
-        //                                             previousTime.getMinutes(),
-        //                                             previousTime.getSeconds()
-        //                                         );
-
-        //                                         const previousDateGet = previousDateTime.getTime();
-        //                                         const selectedDateGet = scheduledDateTime.getTime();
-        //                                         const diff = selectedDateGet - previousDateGet;
-        //                                         const diffHour = diff / 1000 / 60 / 60;
-
-        //                                         if (diffHour < 3 && diffHour > -3) {
-        //                                             hasConflictingRide = true;
-        //                                         }
-        //                                     }
-        //                                 });
-        //                             }
-        //                         });
-
-        //                         if (!hasConflictingRide) {
-        //                             tokens.push(driverToken);
-        //                             drivers.push(data);
-        //                         }
-        //                     })
-        //                 );
-        //             }
-        //         }
-        //     });
-
-        //     await Promise.all(scheduleRidesPromises);
-
-        //     dataToSend.drivers = drivers
+                let diffHour = diff / 1000 / 60 / 60
 
 
-        //     firestore().collection("ScheduleRides").doc(loginData.id).set(
-        //         { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
-        //     ).then(async (res) => {
-
-        //         var data = JSON.stringify({
-        //             notification: {
-        //                 body: "You have got Scheduled Ride request kindly respond back",
-        //                 title: `Scheduled Ride Request`,
-        //                 sound: "default"
-        //             },
-        //             android: {
-        //                 priority: "high",
-        //             },
-        //             registration_ids: tokens,
-        //         });
-        //         let config = {
-        //             method: 'post',
-        //             url: 'https://fcm.googleapis.com/fcm/send',
-        //             headers: {
-        //                 Authorization:
-        //                     'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             data: data,
-        //         };
-        //         axios(config)
-        //             .then(async (res) => {
+                return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
 
 
-        //                 let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+            })
 
-        //                     let id = e?.id
 
-        //                     let dataToSend = {
-        //                         title: "Scheduled Ride Request",
-        //                         body: 'You have got Scheduled Ride request kindly respond back',
-        //                         date: new Date()
-        //                     }
+            if (checkRideTime) {
 
-        //                     firestore().collection("DriverNotification").doc(id).set({
-        //                         notification: firestore.FieldValue.arrayUnion(dataToSend)
-        //                     }, { merge: true })
+                ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                return
+            }
 
-        //                 })
 
-        //                 await Promise.all(promises)
+            setLoading(true)
 
-        //                 setScheduleData([
-        //                     ...scheduleData,
-        //                     dataToSend
-        //                 ])
-        //                 setLoading(false)
-        //                 ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
-        //                 navigation.replace("Tab", {
-        //                     screen: "Home"
-        //                 })
+            const drivers = [];
+            const tokens = [];
 
-        //             })
+            const driversSnapshot = await firestore().collection('Drivers').get();
+            const scheduleRidesPromises = [];
 
-        //             .catch(error => {
-        //                 setLoading(false)
-        //                 console.log(error, "error")
-        //             });
+            driversSnapshot.forEach((doc) => {
+                const data = doc?.data();
 
-        //     }).catch((error) => {
-        //         setLoading(false)
-        //         console.log(error)
-        //     })
-        //     return
-        // }
+                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data.selectedCategory.length > 0 && data?.selectedCategory.some((e) => e == "sitter")) {
+                    const dis = getPreciseDistance(
+                        {
+                            latitude: pickup.lat,
+                            longitude: pickup.lng,
+                        },
+                        {
+                            latitude: data?.currentLocation?.latitude,
+                            longitude: data?.currentLocation?.longitude,
+                        }
+                    );
+
+                    const mileDistance = (dis / 1609.34)?.toFixed(2);
+
+                    if (mileDistance <= scheduleRideRadius) {
+                        const driverId = data.id;
+                        const driverToken = data.token;
+
+                        scheduleRidesPromises.push(
+                            firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
+                                let hasConflictingRide = false;
+
+                                scheduleSnapshot.forEach((scheduleDoc) => {
+                                    const scheduleData = scheduleDoc?.data();
+                                    const scheduledRides = scheduleData?.scheduleRides;
+
+                                    if (scheduledRides) {
+                                        scheduledRides.forEach((ride) => {
+                                            const scheduledDateTime = new Date(
+                                                date.getFullYear(),
+                                                date.getMonth(),
+                                                date.getDate(),
+                                                time.getHours(),
+                                                time.getMinutes(),
+                                                time.getSeconds()
+                                            );
+
+                                            if (
+                                                ride?.driverData?.id === driverId &&
+                                                ride?.getDriverStatus === 'accepted'
+                                            ) {
+                                                const previousDate = ride.scheduleDate.toDate();
+                                                const previousTime = ride.scheduleTime.toDate();
+                                                const previousDateTime = new Date(
+                                                    previousDate.getFullYear(),
+                                                    previousDate.getMonth(),
+                                                    previousDate.getDate(),
+                                                    previousTime.getHours(),
+                                                    previousTime.getMinutes(),
+                                                    previousTime.getSeconds()
+                                                );
+
+                                                const previousDateGet = previousDateTime.getTime();
+                                                const selectedDateGet = scheduledDateTime.getTime();
+                                                const diff = selectedDateGet - previousDateGet;
+                                                const diffHour = diff / 1000 / 60 / 60;
+
+                                                if (diffHour < 3 && diffHour > -3) {
+                                                    hasConflictingRide = true;
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+
+                                if (!hasConflictingRide) {
+                                    tokens.push(driverToken);
+                                    drivers.push(data);
+                                }
+                            })
+                        );
+                    }
+                }
+            });
+
+            await Promise.all(scheduleRidesPromises);
+
+            dataToSend.drivers = drivers
+
+
+            firestore().collection("ScheduleRides").doc(loginData.id).set(
+                { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
+            ).then(async (res) => {
+
+                var data = JSON.stringify({
+                    notification: {
+                        body: "You have got Scheduled Ride request kindly respond back",
+                        title: `Scheduled Ride Request`,
+                        sound: "default"
+                    },
+                    android: {
+                        priority: "high",
+                    },
+                    registration_ids: tokens,
+                });
+                let config = {
+                    method: 'post',
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    headers: {
+                        Authorization:
+                            'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+                        'Content-Type': 'application/json',
+                    },
+                    data: data,
+                };
+                axios(config)
+                    .then(async (res) => {
+
+
+                        let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+
+                            let id = e?.id
+
+                            let dataToSend = {
+                                title: "Scheduled Ride Request",
+                                body: 'You have got Scheduled Ride request kindly respond back',
+                                date: new Date()
+                            }
+
+                            firestore().collection("DriverNotification").doc(id).set({
+                                notification: firestore.FieldValue.arrayUnion(dataToSend)
+                            }, { merge: true })
+
+                        })
+
+                        await Promise.all(promises)
+
+                        setScheduleData([
+                            ...scheduleData,
+                            dataToSend
+                        ])
+                        setLoading(false)
+                        ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+                        navigation.replace("Tab", {
+                            screen: "Home"
+                        })
+
+                    })
+
+                    .catch(error => {
+                        setLoading(false)
+                        console.log(error, "error")
+                    });
+
+            }).catch((error) => {
+                setLoading(false)
+                console.log(error)
+            })
+            return
+        }
 
 
 
@@ -1071,7 +1103,16 @@ function Petsitter({ navigation, route }) {
 
                     </View>
 
-                    <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
+
+                    {timeDuration && setTimeDuration.length > 0 && timeDuration.map((e, i) => {
+                        return (
+                            <TouchableOpacity key={i} onPress={() => handleSelectTimeDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
+                                <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.type}</Text>
+                            </TouchableOpacity>
+                        )
+                    })}
+
+                    {timeDuration?.some((e) => e.type.toLowerCase() == "hourly" && e.selected) && <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap" }} >
 
                         {duration && duration.length > 0 && duration.map((e, i) => {
                             return (
@@ -1085,7 +1126,7 @@ function Petsitter({ navigation, route }) {
                             <Icons name="plus" size={25} color={"#777"} />
                         </TouchableOpacity>
 
-                    </View>
+                    </View>}
 
                     {customTime && <TextInput value={selectedTimeDuration} onChangeText={(e) => setSelectedTimeDuration(e)} keyboardType="numeric"
                         style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}

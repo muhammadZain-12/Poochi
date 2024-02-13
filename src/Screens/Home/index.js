@@ -938,7 +938,7 @@ function Home({ navigation }) {
                     margin: 0,
                   }}
 
-                  onPress={() => item.id == 2 ? navigation.navigate("PetSitter") : navigation.navigate("PetWalk")}
+                  onPress={() => item.id == 2 ? handleNavigateToBooking("PetSitter") : handleNavigateToBooking("PetWalk")}
 
                 >
                   <Image

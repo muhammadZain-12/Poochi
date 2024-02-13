@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react"
-import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator, ScrollView, StyleSheet, Modal } from "react-native"
+import { View, Text, Image, TouchableOpacity, TextInput, ToastAndroid, ActivityIndicator, ScrollView, StyleSheet, Modal, BackHandler } from "react-native"
 import CustomHeader from "../../Components/CustomHeader"
 import CustomButton from "../../Components/CustomButton"
 import Colors from "../../Constant/Color"
@@ -553,6 +553,20 @@ function PaymentMethod({ navigation, route }) {
         );
     };
 
+
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+        });
+
+        return () => {
+            backHandler.remove(); // Cleanup the event listener
+        }
+    }, []);
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >

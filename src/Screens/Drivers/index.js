@@ -29,7 +29,7 @@ function Drivers({ navigation }) {
     const [requestInProcess, setRequestInProcess] = useState(false)
     const [rejectDrivers, setRejectDrivers] = useState([])
     const [imageModal, setImageModal] = useState(false)
-
+    const [descriptionModal, setDescriptionModal] = useState(false)
     const [walletAmount, setWalletAmount] = useState(0)
     const [deductedFromWallet, setDeductedFromWallet] = useState(false)
 
@@ -95,12 +95,12 @@ function Drivers({ navigation }) {
                     let data = doc.data()
 
                     if (!data.inlined &&
-                        (bookingData.type.toLowerCase() == "medicaltrip" && data.selectedCategory == "driver") ||
-                        (bookingData.type.toLowerCase() == "pethotel" && data.selectedCategory == "driver") ||
-                        (bookingData.type.toLowerCase() == "friendsandfamily" && data.selectedCategory == "driver") ||
-                        (bookingData.type.toLowerCase() == "petgrooming" && data.selectedCategory == "driver") ||
-                        (bookingData.type.toLowerCase() == "petwalk" && data.selectedCategory == "walker") ||
-                        (bookingData.type.toLowerCase() == "petsitter" && data.selectedCategory == "sitter")
+                        (bookingData.type.toLowerCase() == "medicaltrip" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "driver")) ||
+                        (bookingData.type.toLowerCase() == "pethotel" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "driver")) ||
+                        (bookingData.type.toLowerCase() == "friendsandfamily" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "driver")) ||
+                        (bookingData.type.toLowerCase() == "petgrooming" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "driver")) ||
+                        (bookingData.type.toLowerCase() == "petwalk" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "walker")) ||
+                        (bookingData.type.toLowerCase() == "petsitter" && data?.selectedCategory && Array.isArray(data.selectedCategory) && data?.selectedCategory?.length > 0 && data?.selectedCategory?.some((e, i) => e == "sitter"))
                     ) {
 
                         if (data?.currentLocation?.latitude && data?.currentLocation?.longitude) {
@@ -304,26 +304,58 @@ function Drivers({ navigation }) {
 
     const handleSelectDriver = (driver) => {
 
+        let { selectedCategory } = driver
+
+        let category = selectedCategory && selectedCategory.length > 0 && selectedCategory.filter((e, i) => {
+
+            if (bookingData.type == "PetSitter") {
+                return e == "sitter"
+            }
+            else if (bookingData.type == "PetWalk") {
+                return e == "walker"
+            } else {
+                return e == "driver"
+            }
+
+        })
+
+
+
+        category = category && category.length > 0 && category[0]
+
+
+        let myDriver = {
+            ...driver,
+            selectedCategory: category,
+            deductedFromWallet: driver?.deductedFromWallet ? true : false
+        }
+
+
+
         let dataToSend;
 
         if (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location") {
 
+            driver.selectedCategory = "sitter"
+
             dataToSend = {
 
-                driverData: driver,
+                driverData: myDriver,
                 fare: driver?.fare,
                 driverFare: driver?.driverFare,
                 serviceCharge: driver?.serviceCharge,
-                deductedFromWallet: deductedFromWallet,
+                deductedFromWallet: driver?.deductedFromWallet ? true : false,
                 requestStatus: "pending"
 
             }
 
-        } else {
+        }
+
+        else {
 
             dataToSend = {
 
-                driverData: driver,
+                driverData: myDriver,
                 fare: driver?.fare,
                 sittingLocation: driver?.sittingLocation,
                 pickupCords: {
@@ -333,7 +365,7 @@ function Drivers({ navigation }) {
                 pickupAddress: driver?.sittingLocation?.address,
                 driverFare: driver?.driverFare,
                 serviceCharge: driver?.serviceCharge,
-                deductedFromWallet: deductedFromWallet,
+                deductedFromWallet: driver?.deductedFromWallet ? true : false,
                 requestStatus: "pending"
 
             }
@@ -382,11 +414,11 @@ function Drivers({ navigation }) {
                                 setSelectedDriver(driver)
                                 setBookingData({
                                     ...bookingData,
-                                    driverData: driver,
+                                    driverData: myDriver,
                                     fare: driver?.fare,
                                     driverFare: driver?.driverFare,
                                     serviceCharge: driver?.serviceCharge,
-                                    deductedFromWallet: deductedFromWallet,
+                                    deductedFromWallet: driver?.deductedFromWallet,
                                 })
                             }).catch((error) => {
 
@@ -406,15 +438,13 @@ function Drivers({ navigation }) {
                 ToastAndroid.show(error.message, ToastAndroid.SHORT)
 
             })
-        } else {
+        }
 
-
-            console.log(driver, "driver")
-
+        else {
 
 
             firestore().collection("Request").doc(bookingData?.userData?.id).update({
-                driverData: driver,
+                driverData: myDriver,
                 requestStatus: "pending"
             }).then(() => {
 
@@ -454,22 +484,22 @@ function Drivers({ navigation }) {
                                 notification: firestore.FieldValue.arrayUnion(notificationToSend)
                             }, { merge: true }).then((res) => {
                                 setRequestInProcess(true)
-                                setSelectedDriver(driver)
+                                setSelectedDriver(myDriver)
 
                                 if (bookingData.type == "PetSitter") {
                                     setBookingData({
                                         ...bookingData,
-                                        driverData: driver,
+                                        driverData: myDriver,
                                         fare: driver?.fare,
                                         driverFare: driver?.driverFare,
                                         serviceCharge: driver?.serviceCharge,
-                                        deductedFromWallet: deductedFromWallet,
+                                        deductedFromWallet: driver?.deductedFromWallet,
                                     })
                                 } else {
 
                                     setBookingData({
                                         ...bookingData,
-                                        driverData: driver,
+                                        driverData: myDriver,
                                     })
 
                                 }
@@ -516,11 +546,11 @@ function Drivers({ navigation }) {
     const [index, setIndex] = useState(0)
 
 
-    const ShowLocationModal = useCallback((driver) => {
+    const ShowLocationModal = useCallback((driver, ind) => {
         return (
             <View style={styles.centeredView}>
-                <Modal animationType="slide" transparent={true} onRequestClose={() => setImageModal(false)} visible={imageModal}>
-                    <TouchableWithoutFeedback style={{ flex: 1, borderWidth: 4, width: "100%", height: "100%", zIndex: 100 }} onPress={() => setImageModal(false)} >
+                <Modal animationType="slide" transparent={true} onRequestClose={() => handleShowImage(ind)} visible={imageModal}>
+                    <TouchableWithoutFeedback style={{ flex: 1, borderWidth: 4, width: "100%", height: "100%", zIndex: 100 }} onPress={() => handleShowImage(ind)} >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
                                 <Image style={{ width: "100%", height: 300, borderRadius: 20 }} resizeMode='cover' source={{ uri: index == 0 ? driver?.sittingimage1 : index == 1 ? driver?.sittingimage2 : driver?.sittingimage3 }} />
@@ -545,6 +575,97 @@ function Drivers({ navigation }) {
         );
     }, [imageModal, index]);
 
+
+
+    const ShowDescriptionModal = useCallback((driver, ind) => {
+        return (
+            <View style={styles.centeredView}>
+                <Modal animationType="slide" transparent={true} onRequestClose={() => handleShowDescription(ind)} visible={descriptionModal}>
+                    <TouchableWithoutFeedback style={{ flex: 1, borderWidth: 4, width: "100%", height: "100%", zIndex: 100 }} onPress={() => handleShowDescription(ind)} >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+
+
+                                <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16, padding: 10, }} >
+                                    {driver?.description ?? "No Description"}
+                                </Text>
+
+                            </View>
+
+                            <View>
+
+
+
+                            </View>
+
+                        </View>
+
+
+
+
+                    </TouchableWithoutFeedback>
+
+                </Modal>
+            </View>
+        );
+    }, [descriptionModal]);
+
+
+    const selectDeductFromWallet = (ind) => {
+
+        setDriverData(driverData && driverData.length > 0 && driverData.map((e, i) => {
+            if (ind == i) {
+                return {
+                    ...e,
+                    deductedFromWallet: !e.deductedFromWallet
+                }
+            } else {
+                return e
+            }
+        }))
+
+
+    }
+    const handleShowDescription = (ind) => {
+
+        setDriverData(driverData && driverData.length > 0 && driverData.map((e, i) => {
+            if (ind == i) {
+                return {
+                    ...e,
+                    showDescription: !e.showDescription
+                }
+            } else {
+                return {
+                    ...e,
+                    showDescription: false
+                }
+            }
+        }))
+
+
+        setDescriptionModal(!descriptionModal)
+
+    }
+
+
+    const handleShowImage = (ind) => {
+
+        setDriverData(driverData && driverData.length > 0 && driverData.map((e, i) => {
+            if (ind == i) {
+                return {
+                    ...e,
+                    showImage: !e.showImage
+                }
+            } else {
+                return {
+                    ...e,
+                    showImage: false
+                }
+            }
+        }))
+
+        setImageModal(!imageModal)
+    }
 
 
     return <View style={{ flex: 1, backgroundColor: Colors.white }} >
@@ -580,45 +701,120 @@ function Drivers({ navigation }) {
                     let driverFare;
                     let charges;
 
-                    if (e.selectedCategory == "sitter") {
+                    if (e.selectedCategory && Array.isArray(e?.selectedCategory) && e.selectedCategory?.length > 0 && e?.selectedCategory.some((e, i) => e == "sitter" && bookingData?.type == "PetSitter")) {
 
 
-                        let hours = bookingData?.duration / 60
+                        if (bookingData?.timeType.type.toLowerCase() == "hourly") {
 
-                        let hourlyRate;
+                            let hours = bookingData?.duration / 60
 
-                        console.log(e?.hourlyChargeCustomerLocation)
-                        console.log(e?.hourlyChargeSitterLocation)
+                            let hourlyRate;
 
-                        if (bookingData.selectedOption?.name == "My Location") {
+                            if (bookingData.selectedOption?.name == "My Location") {
 
-                            hourlyRate = e?.hourlyChargeCustomerLocation
+                                hourlyRate = e?.hourlyChargeCustomerLocation
+
+                            }
+                            else if (bookingData.selectedOption?.name == "Sitter Location") {
+
+                                hourlyRate = e?.hourlyChargeSitterLocation
+
+                            }
+
+                            let totalFare = (hours * hourlyRate) + bookingData?.petCharges
+                            fare = Number(totalFare).toFixed(2)
+
+                            let serviceCharge = bookingData?.serviceCharge
+
+                            let totalCharges = Number(totalFare) * serviceCharge / 100
+
+                            let TotaldriverFare = totalFare - totalCharges
+
+                            driverFare = Number(TotaldriverFare).toFixed(2)
+
+
+                            charges = Number(totalCharges)
+
 
                         }
-                        else if (bookingData.selectedOption?.name == "Sitter Location") {
+                        else if (bookingData?.timeType.type.toLowerCase() == "half day") {
 
-                            hourlyRate = e?.hourlyChargeSitterLocation
+
+
+                            let halfDayFare;
+
+
+                            if (bookingData.selectedOption?.name == "My Location") {
+
+                                halfDayFare = e?.halfDayChargeCustomerLocation
+
+                            }
+                            else if (bookingData.selectedOption?.name == "Sitter Location") {
+
+                                halfDayFare = e?.halfDayChargeSitterLocation
+
+                            }
+
+
+                            let totalFare = Number(halfDayFare) + bookingData?.petCharges
+
+                            fare = Number(totalFare).toFixed(2)
+
+                            let serviceCharge = bookingData?.serviceCharge
+
+                            let totalCharges = Number(totalFare) * Number(serviceCharge) / 100
+
+                            let TotaldriverFare = Number(totalFare) - Number(totalCharges)
+
+                            driverFare = Number(TotaldriverFare).toFixed(2)
+
+
+                            charges = Number(totalCharges)
+
+
 
                         }
 
-                        let totalFare = (hours * hourlyRate) + bookingData?.petCharges
-                        fare = Number(totalFare).toFixed(2)
-
-                        let serviceCharge = bookingData?.serviceCharge
-
-                        let totalCharges = Number(totalFare) * serviceCharge / 100
-
-                        let TotaldriverFare = totalFare - totalCharges
-
-                        driverFare = Number(TotaldriverFare).toFixed(2)
+                        else if (bookingData?.timeType.type.toLowerCase() == "full day") {
 
 
-                        charges = Number(totalCharges)
+
+                            let fullDayFare;
 
 
+                            if (bookingData.selectedOption?.name == "My Location") {
+
+                                fullDayFare = e?.dayChargeCustomerLocation
+
+                            }
+                            else if (bookingData.selectedOption?.name == "Sitter Location") {
+
+                                fullDayFare = e?.dayChargeSitterLocation
+
+                            }
+
+                            let totalFare = Number(fullDayFare) + bookingData?.petCharges
+                            fare = Number(totalFare).toFixed(2)
+
+                            let serviceCharge = bookingData?.serviceCharge
+
+                            let totalCharges = Number(totalFare) * serviceCharge / 100
+
+                            let TotaldriverFare = totalFare - totalCharges
+
+                            driverFare = Number(TotaldriverFare).toFixed(2)
+
+
+                            charges = Number(totalCharges)
+
+                        }
 
                     }
-                    if (e?.selectedCategory == "sitter") {
+                    console.log(driverFare, "driverD")
+
+                    console.log(fare, "fareeee")
+
+                    if (e?.selectedCategory && Array.isArray(e?.selectedCategory) && e?.selectedCategory?.length > 0 && e?.selectedCategory.some((e, i) => e == "sitter" && bookingData?.type == "PetSitter")) {
                         e.fare = fare
                         e.driverFare = driverFare
                         e.serviceCharge = charges
@@ -648,9 +844,9 @@ function Drivers({ navigation }) {
 
                                         walletAmount && (walletAmount > Number(e?.fare)) && e?.fare ? <View style={{ width: "80%", flexDirection: "row", alignItems: "center", marginBottom: 5 }}>
 
-                                        <TouchableOpacity onPress={() => setDeductedFromWallet(!deductedFromWallet)} style={{ width: 20, height: 20, borderWidth: 1, borderRadius: 5, borderColor: Colors.black, alignItems: "center", justifyContent: "center" }} >
+                                        <TouchableOpacity onPress={() => selectDeductFromWallet(i)} style={{ width: 20, height: 20, borderWidth: 1, borderRadius: 5, borderColor: Colors.black, alignItems: "center", justifyContent: "center" }} >
 
-                                            {deductedFromWallet && <AntDesign name={"check"} size={15} color={Colors.black} />}
+                                            {e?.deductedFromWallet && <AntDesign name={"check"} size={15} color={Colors.black} />}
 
                                         </TouchableOpacity>
                                         <Text style={{ fontSize: 10, fontFamily: "Poppins-Medium", color: Colors.black, marginLeft: 10 }} >Deduct from wallet</Text>
@@ -658,25 +854,31 @@ function Drivers({ navigation }) {
                                     </View> : ""
                                     }
 
-                                    {bookingData.type == "PetSitter" &&
-                                        <TouchableOpacity onPress={() => setImageModal(true)} style={{ borderWidth: 1, width: 120, borderRadius: 1, backgroundColor: Colors.buttonColor, borderRadius: 10, justifyContent: "center", padding: 2 }}  >
-                                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.white, marginLeft: 3 }} >See Pics</Text>
+                                    {(bookingData.type == "PetSitter" || bookingData.type == "PetWalk") &&
+                                        <TouchableOpacity onPress={() => handleShowDescription(i)} style={{ width: 120, borderRadius: 1, borderRadius: 10, justifyContent: "center", padding: 2 }}  >
+                                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 12, color: Colors.main, marginLeft: 3 }} >Show Description</Text>
                                         </TouchableOpacity>
                                     }
 
+                                    {bookingData.type == "PetSitter" &&
+                                        <TouchableOpacity onPress={() => handleShowImage(i)} style={{ borderWidth: 1, width: 80, borderRadius: 4, backgroundColor: Colors.buttonColor, justifyContent: "center", padding: 2 }}  >
+                                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.white, textAlign: "center" }} >See Pics</Text>
+                                        </TouchableOpacity>
+                                    }
 
                                 </View>
 
                             </View>
 
                             <View style={{ alignItems: "flex-end" }} >
-                                <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${e?.selectedCategory == "sitter" ? e?.fare : Number(bookingData.fare).toFixed(2)}</Text>
+                                <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.black, fontSize: 22 }} >${e?.selectedCategory && Array.isArray(e?.selectedCategory) && e?.selectedCategory?.length && e?.selectedCategory.some(e => e == "sitter") && bookingData?.type == "PetSitter" ? e?.fare : Number(bookingData.fare).toFixed(2)}</Text>
                                 <TouchableOpacity onPress={() => handleSelectDriver(e)} style={{ padding: 5, backgroundColor: Colors.buttonColor, borderRadius: 30, width: 100 }} >
                                     <Text style={{ fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 14, textAlign: "center" }} >Select</Text>
                                 </TouchableOpacity>
                             </View>
 
-                            {imageModal && ShowLocationModal(e)}
+                            {imageModal && e?.showImage && ShowLocationModal(e, i)}
+                            {descriptionModal && e?.showDescription && ShowDescriptionModal(e, i)}
 
 
                         </TouchableOpacity>

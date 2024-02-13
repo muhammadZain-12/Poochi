@@ -871,7 +871,7 @@ function PetWalk({ navigation, route }) {
             driversSnapshot.forEach((doc) => {
                 const data = doc?.data();
 
-                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "walker") {
+                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "walker")) {
                     const dis = getPreciseDistance(
                         {
                             latitude: pickup.lat,

@@ -147,10 +147,7 @@ function ScheduleRideDate({ navigation, route }) {
             }
 
             if (screen == "medical") {
-
                 navigation.navigate("MedicalTrip", { date: date, time: time })
-
-
             }
             else if (screen == "grooming") {
                 navigation.navigate("PetGrooming", { date: date, time: time })
@@ -163,6 +160,10 @@ function ScheduleRideDate({ navigation, route }) {
             }
             else if (screen == 'hotel') {
                 navigation.navigate("PetHotel", { date: date, time: time })
+            }
+
+            else if (screen == "PetSitter") {
+                navigation.navigate("PetSitter", { date: date, time: time })
             }
 
         } else {
@@ -181,6 +182,9 @@ function ScheduleRideDate({ navigation, route }) {
             }
             else if (screen == 'hotel') {
                 navigation.navigate("PetHotel", { date: date, time: time })
+            }
+            else if (screen == "PetSitter") {
+                navigation.navigate("PetSitter", { date: date, time: time })
             }
 
 

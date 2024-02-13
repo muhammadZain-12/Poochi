@@ -588,7 +588,7 @@ function FriendsAndFamily({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "FriendsAndFamily",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -658,7 +658,7 @@ function FriendsAndFamily({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -846,7 +846,7 @@ function FriendsAndFamily({ navigation, route }) {
                 bookingType: "twoWay",
                 requestDate: new Date(),
                 type: "FriendsAndFamily",
-                category : "driver",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -922,7 +922,7 @@ function FriendsAndFamily({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "FriendsAndFamily",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -991,7 +991,7 @@ function FriendsAndFamily({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1180,7 +1180,7 @@ function FriendsAndFamily({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "FriendsAndFamily",
-                category : "driver",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }

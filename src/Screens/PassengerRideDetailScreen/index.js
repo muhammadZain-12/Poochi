@@ -240,7 +240,7 @@ function PassengerRideDetail({ navigation, route }) {
                     }).then(() => {
 
                         navigation.replace("Drivers")
-                        ToastAndroid.show("Ride has been cancelled by driver", ToastAndroid.SHORT)
+                        ToastAndroid.show("Booking has been cancelled by driver", ToastAndroid.SHORT)
                     }).catch((error) => {
 
                         console.log(error)
@@ -698,7 +698,18 @@ function PassengerRideDetail({ navigation, route }) {
                         setRating(0)
                         setComment("")
                         ToastAndroid.show("Successfully Submitted Review", ToastAndroid.SHORT)
-                        navigation.replace("Tab")
+                        // navigation.replace("Tab")
+
+                        navigation.reset({
+                            index: 0,
+                            routes: [
+                                {
+                                    name: 'Tab',
+
+                                },
+                            ],
+                        });
+
                     }).catch((error) => {
                         setFinalLoader(false)
 
@@ -820,6 +831,8 @@ function PassengerRideDetail({ navigation, route }) {
             });
     }
 
+    console.log(bookingData?.type, "bookingDataaa")
+
     const handleArriveSitterAddress = () => {
 
 
@@ -904,8 +917,6 @@ function PassengerRideDetail({ navigation, route }) {
 
     }
 
-
-    console.log(arrivedSitterAddress, "arrivedSitter")
 
     return (
 
@@ -1134,13 +1145,13 @@ function PassengerRideDetail({ navigation, route }) {
 
                         {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
-                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? remainingTime : bookingData?.duration} min` : confirmArrival ? "Wait for pet sitter to start sitting" : arrived ? "Sitter has confirmed that he has been arrived kindly confirm from your side" : goToPickup ? `Pet sitter is ${Number(arrivalMileDis)} miles away from your location` : "Pet Sitter is about to come to your location"}</Text>
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? Number(remainingTime) / 60 > 1 ? "hour" : "min" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : confirmArrival ? "Wait for pet sitter to start sitting" : arrived ? "Sitter has confirmed that he has been arrived kindly confirm from your side" : goToPickup ? `Pet sitter is ${Number(arrivalMileDis)} miles away from your location` : "Pet Sitter is about to come to your location"}</Text>
 
                         </View>}
 
                         {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
-                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? remainingTime : bookingData?.duration} min` : collectPet ? "Wait for pet sitter for start sitting" : arrivedSitterAddress ? "Wait for pet sitter to confirm collecting pet" : "Arriving to sitter's location"}</Text>
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? Number(remainingTime) / 60 > 1 ? "hour" : "min" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : collectPet ? "Wait for pet sitter for start sitting" : arrivedSitterAddress ? "Wait for pet sitter to confirm collecting pet" : "Arriving to sitter's location"}</Text>
 
                         </View>}
 

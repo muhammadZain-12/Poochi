@@ -585,7 +585,7 @@ function PetGrooming({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "PetGrooming",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -655,7 +655,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -748,7 +748,7 @@ function PetGrooming({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -840,7 +840,7 @@ function PetGrooming({ navigation, route }) {
                 bookingType: "twoWay",
                 requestDate: new Date(),
                 type: "PetGrooming",
-                category : "driver",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -916,7 +916,7 @@ function PetGrooming({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "PetGrooming",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -983,7 +983,7 @@ function PetGrooming({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1071,7 +1071,7 @@ function PetGrooming({ navigation, route }) {
                         notification: {
                             body: "You have got Scheduled Ride request kindly respond back",
                             title: `Scheduled Ride Request`,
-                            sound : "default"
+                            sound: "default"
                         },
                         android: {
                             priority: "high",
@@ -1171,7 +1171,7 @@ function PetGrooming({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "PetGrooming",
-                category : "driver",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }
@@ -1511,7 +1511,7 @@ function PetGrooming({ navigation, route }) {
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
-                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", marginLeft:50, width: "100%" }} >Add a Payment Method</Text>
+                            <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", marginLeft: 50, width: "100%" }} >Add a Payment Method</Text>
 
 
                         </TouchableOpacity> :

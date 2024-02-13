@@ -566,7 +566,7 @@ function MedicalTrip({ navigation, route }) {
                     bookingType: "twoWay",
                     requestDate: new Date(),
                     type: "MedicalTrip",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -632,7 +632,7 @@ function MedicalTrip({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -796,7 +796,7 @@ function MedicalTrip({ navigation, route }) {
                 returnDropoffCords: returnDropoff,
                 selectedPets: selectedPets,
                 comment: comment,
-                category : "driver",
+                category: "driver",
                 driverFare: Number(driverFare).toFixed(2),
                 cardDetails: cardDetails,
                 userData: loginData,
@@ -887,7 +887,7 @@ function MedicalTrip({ navigation, route }) {
                     bookingType: "oneWay",
                     requestDate: new Date(),
                     type: "MedicalTrip",
-                    category : "driver",
+                    category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
                     ScheduleRidestatus: "pending"
@@ -953,7 +953,7 @@ function MedicalTrip({ navigation, route }) {
                 driversSnapshot.forEach((doc) => {
                     const data = doc?.data();
 
-                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory == "driver") {
+                    if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data?.selectedCategory?.some((e, i) => e == "driver")) {
                         const dis = getPreciseDistance(
                             {
                                 latitude: pickup.lat,
@@ -1139,7 +1139,7 @@ function MedicalTrip({ navigation, route }) {
                 bookingType: "oneWay",
                 requestDate: new Date(),
                 type: "MedicalTrip",
-                category : "driver",
+                category: "driver",
                 deductedFromWallet: deductedFromWallet,
 
             }
