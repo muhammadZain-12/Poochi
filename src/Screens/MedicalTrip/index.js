@@ -565,7 +565,7 @@ function MedicalTrip({ navigation, route }) {
                     waitingTime: customWaitingTime ? customWaitingTime : value,
                     bookingType: "twoWay",
                     requestDate: new Date(),
-                    type: "MedicalTrip",
+                    type: "Pet Taxi",
                     category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
@@ -811,7 +811,7 @@ function MedicalTrip({ navigation, route }) {
                 waitingTime: customWaitingTime ? customWaitingTime : value,
                 bookingType: "twoWay",
                 requestDate: new Date(),
-                type: "MedicalTrip",
+                type: "Pet Taxi",
                 deductedFromWallet: deductedFromWallet
             }
 
@@ -886,7 +886,7 @@ function MedicalTrip({ navigation, route }) {
                     minutes: minutes,
                     bookingType: "oneWay",
                     requestDate: new Date(),
-                    type: "MedicalTrip",
+                    type: "Pet Taxi",
                     category: "driver",
                     deductedFromWallet: deductedFromWallet,
                     getDriverStatus: "pending",
@@ -1138,7 +1138,7 @@ function MedicalTrip({ navigation, route }) {
                 minutes: minutes,
                 bookingType: "oneWay",
                 requestDate: new Date(),
-                type: "MedicalTrip",
+                type: "Pet Taxi",
                 category: "driver",
                 deductedFromWallet: deductedFromWallet,
 
@@ -1220,7 +1220,7 @@ function MedicalTrip({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Medical Trip"}
+                    text={"Pet Taxi"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1288,7 +1288,7 @@ function MedicalTrip({ navigation, route }) {
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Your Pet</Text>
 
-                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Additional $7 for extra pets</Text>
 
 
                     {selectedPets && selectedPets.length > 0 ? <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%" }} >
@@ -1443,7 +1443,7 @@ function MedicalTrip({ navigation, route }) {
 
                         multiline={true}
                         style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", paddingVertical: 15 }}
-                        placeholder='Comment'
+                        placeholder='Comments'
                         placeholderTextColor={"gray"}
                         onChangeText={(e) => setComment(e)}
                     />
@@ -1485,7 +1485,7 @@ function MedicalTrip({ navigation, route }) {
 
                 </View>
 
-                <CustomButton onPress={() => handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : date ? "Schedule Ride" : "Find a Driver"} />
+                <CustomButton onPress={() => handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator color={Colors.white} size={"small"} /> : date ? "Book Now" : "Find a Driver"} />
 
             </ScrollView>
 

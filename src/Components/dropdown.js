@@ -25,6 +25,7 @@ const CustomDropDown = (props) => {
         categoryShow,
         dropdownPlace,
         dropdownContainerStyle,
+        icon,
         setSelectedSubject,
         selectedSubject,
     } = props;
@@ -89,6 +90,7 @@ const CustomDropDown = (props) => {
                             style={{
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
+                                alignItems:"center",
                                 width: '100%',
                             }}>
                             <Text
@@ -118,9 +120,12 @@ const CustomDropDown = (props) => {
                         <View
                             style={{
                                 flexDirection: 'row',
-                                justifyContent: 'space-between',
+                                alignItems:"center",
+                                // justifyContent: 'space-between',
                                 width: '100%',
                             }}>
+                            <Image source={require("../Images/state.png")} style={{ width: 15, height: 15, marginRight: 5 }} />
+                            <View style={{justifyContent:"space-between",flexDirection:"row",width:icon ? "95%" : "100%"}} >
                             <Text
                                 style={{
                                     color: Colors.gray,
@@ -143,6 +148,7 @@ const CustomDropDown = (props) => {
                                     style={{ width: 20, height: 20 }}
                                 />
                             )}
+                            </View>
                         </View>
                     )}
                 </TouchableOpacity>
@@ -267,33 +273,33 @@ const CustomDropDown = (props) => {
                                     )
                                         .map((e, i) => {
 
-                                                return (
-                                                    <TouchableOpacity
-                                                        onPress={() =>
-                                                            SelectedServices(
-                                                                subject?.find(
-                                                                    (item) => `${item.subject}` === e,
-                                                                ),
-                                                            )
-                                                        }
-                                                        key={i}
+                                            return (
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        SelectedServices(
+                                                            subject?.find(
+                                                                (item) => `${item.subject}` === e,
+                                                            ),
+                                                        )
+                                                    }
+                                                    key={i}
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        paddingHorizontal: 10,
+                                                        marginVertical: 5,
+                                                        gap: 10,
+                                                    }}>
+                                                    <Text
                                                         style={{
-                                                            flexDirection: 'row',
-                                                            paddingHorizontal: 10,
-                                                            marginVertical: 5,
-                                                            gap: 10,
+                                                            color: Colors.gray,
+                                                            fontFamily: 'Poppins-SemiBold',
+                                                            fontSize: 14,
                                                         }}>
-                                                        <Text
-                                                            style={{
-                                                                color: Colors.gray,
-                                                                fontFamily: 'Poppins-SemiBold',
-                                                                fontSize: 14,
-                                                            }}>
-                                                            {e ?? selectedSubject}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                );
-                                            
+                                                        {e ?? selectedSubject}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+
                                         })
                                         .filter(Boolean)}
                             </View>

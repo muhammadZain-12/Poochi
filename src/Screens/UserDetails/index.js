@@ -36,7 +36,8 @@ import CustomDropDown from '../../Components/dropdown';
 import axios from 'axios';
 import { Base_Uri } from '../../Constant/BaseUri';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
+import FontAwesome from "react-native-vector-icons/FontAwesome"
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 export default function UserDetails({ route }) {
@@ -340,8 +341,6 @@ export default function UserDetails({ route }) {
 
     };
 
-    console.log(gender, "gender")
-
     const handleSelectGender = (event, ind) => {
 
         setGender(event?.value)
@@ -415,27 +414,16 @@ export default function UserDetails({ route }) {
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
-            <View style={{ marginTop: 5 }} >
+            {/* <View style={{ marginTop: 5 }} >
                 <CustomHeader
                     onPress={() => handleLogoutUser()}
                     iconname={"exit-outline"}
                     text="Complete Your Profile"
                     color={Colors.black}
                 />
-            </View>
+            </View> */}
 
 
-            <View style={{ width: "100%", justifyContent: "center", alignItems: "center", marginTop: 10 }} >
-
-                <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 100, alignItems: "center", justifyContent: "center" }} >
-
-                    {imageLoading ? <ActivityIndicator color={Colors.black} size={"small"} /> : <Image source={image1url ? { uri: image1url } : require("../../Images/box.png")} style={image1url && { width: 100, height: 100, borderRadius: 100 }} />}
-
-                </TouchableOpacity>
-
-                <Text style={{ fontSize: 16, fontFamily: "Poppins-SemiBold", color: Colors.black, marginTop: 10 }} >Upload Profile Picture</Text>
-
-            </View>
 
 
 
@@ -446,52 +434,99 @@ export default function UserDetails({ route }) {
                     <View style={{ flex: 1, backgroundColor: Colors.white }}>
                         <StatusBar
                             animated={true}
-                            backgroundColor="#fff"
-                            barStyle={'dark-content'}
+                            backgroundColor="#19A20D"
+                            barStyle={'light-content'}
                         />
 
-                        <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
-                            <TextInput
+
+                        <View style={{ height: 180, backgroundColor: "#19A20D", padding: 20, justifyContent: "flex-end" }} >
+
+
+                        <Ionicons onPress={handleLogoutUser} color={"white"} size={25} name="exit-outline" style={{ position: "absolute", top: 20, left: 20 }} />
+
+
+                            <Text
                                 style={{
-                                    backgroundColor: Colors.input,
-                                    borderRadius: 5,
-                                    width: '100%',
-                                    padding: 15,
-                                    borderWidth: 1,
-                                    borderColor: '#b2b2b1',
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    paddingHorizontal: 20,
-                                }}
-                                value={signinData.fullName}
-                                onChangeText={(e) => setSigninData({ ...signinData, fullName: e })}
-                                placeholder="Full Name"
-                                placeholderTextColor={Colors.gray}
-                            />
-
-
-                            <View
-                                style={{
-                                    backgroundColor: Colors.input,
-                                    borderRadius: 5,
-                                    width: '100%',
-                                    marginTop: 15,
-
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    borderWidth: 1,
-                                    borderColor: '#b2b2b1',
+                                    fontSize: 28,
+                                    fontFamily: 'Poppins-SemiBold',
+                                    color: Colors.white,
                                 }}>
+                                Create Your Profile
+                            </Text>
+
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins-Regular',
+                                    color: "#e6e6e6",
+                                    // fontWeight: 'bold',
+                                }}>
+                                Create Your Initial Profile To Get Started
+                            </Text>
+
+
+                        </View>
+
+
+
+                        <View style={{ width: "100%", justifyContent: "center", alignItems: "center", marginTop: 10 }} >
+
+                            <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: 115, height: 115, backgroundColor: "#e6e6e6", borderRadius: 100, alignItems: "center", justifyContent: "center" }} >
+
+                                {imageLoading ? <ActivityIndicator color={Colors.black} size={"small"} /> : <Image source={image1url ? { uri: image1url } : require("../../Images/user.png")} style={image1url && { width: 115, height: 115, borderRadius: 100 }} />}
+
+                            </TouchableOpacity>
+
+                            <Text style={{ fontSize: 16, fontFamily: "Poppins-SemiBold", color: Colors.black, marginTop: 10 }} >Upload Profile Picture</Text>
+
+                        </View>
+
+
+
+                        <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
+
+
+
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 5,
+                                paddingHorizontal: 15, borderRadius: 5,
+                                borderWidth: 1,
+                                borderColor: '#b2b2b1',
+                            }}>
+                                <Image source={require("../../Images/user.png")} style={{ width: 15, height: 20, marginRight: 5 }} />
+
+
                                 <TextInput
                                     style={{
-                                        backgroundColor: Colors.input,
-                                        borderRadius: 5,
-                                        width: '85%',
-                                        padding: 15,
+                                        width: '90%',
                                         color: Colors.black,
                                         fontSize: 16,
-                                        paddingHorizontal: 20,
+                                    }}
+                                    value={signinData.fullName}
+                                    onChangeText={(e) => setSigninData({ ...signinData, fullName: e })}
+                                    placeholder="Full Name"
+                                    placeholderTextColor={Colors.gray}
+                                />
+                            </View>
+
+
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 5,
+                                paddingHorizontal: 15, borderRadius: 5,
+                                borderWidth: 1,
+                                marginTop: 10,
+                                borderColor: '#b2b2b1',
+                            }}>
+                                <FontAwesome style={{ marginRight: 5 }} size={20} color="#B2B1B1" name="phone" />
+                                <TextInput
+                                    style={{
+                                        // backgroundColor: Colors.input,
+                                        // borderRadius: 5,
+                                        width: '90%',
+                                        // padding: 15,
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        // paddingHorizontal: 20,
                                     }}
                                     value={signinData?.mobileNumber}
                                     keyboardType='phone-pad'
@@ -586,15 +621,17 @@ export default function UserDetails({ route }) {
                                 setSelectedSubject={setSelectedCountry}
                                 selectedSubject={selectedCountry}
                                 dropdownPlace={"Select Country"}
+                                icon={true}
                                 dropdownContainerStyle={{
                                     paddingVertical: 15,
-                                    marginTop: 10,
+                                    marginTop: 5,
                                     borderWidth: 1,
                                     borderColor: '#b2b2b1',
-                                    paddingHorizontal: 20,
+                                    paddingHorizontal: 15,
                                     backgroundColor: Colors.input
 
                                 }}
+                                innerContainerStyle={{ margin: 0, marginTop: 0, marginBottom: 0 }}
                                 subject={countriesObject}
                             //   categoryShow={"complain_name"}
                             />
@@ -603,64 +640,95 @@ export default function UserDetails({ route }) {
 
 
 
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 3,
+                                paddingHorizontal: 15, borderRadius: 5,
+                                borderWidth: 1, marginTop: 5,
+                                borderColor: '#b2b2b1',
+                            }}>
+                                <Image source={require("../../Images/state.png")} style={{ width: 15, height: 15, marginRight: 5 }} />
 
-                            <TextInput
-                                style={{
-                                    backgroundColor: Colors.input,
-                                    borderRadius: 5,
-                                    width: '100%',
-                                    padding: 15,
-                                    marginTop: 10,
-                                    borderWidth: 1,
-                                    borderColor: '#b2b2b1',
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    paddingHorizontal: 20,
-                                }}
-                                value={signinData.state}
-                                onChangeText={(e) => setSigninData({ ...signinData, state: e })}
-                                placeholder="State"
-                                placeholderTextColor={Colors.gray}
-                            />
-                            <TextInput
-                                style={{
-                                    backgroundColor: Colors.input,
-                                    borderRadius: 5,
-                                    width: '100%',
-                                    padding: 15,
-                                    marginTop: 10,
-                                    borderWidth: 1,
-                                    borderColor: '#b2b2b1',
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    paddingHorizontal: 20,
-                                }}
-                                value={signinData.city}
-                                onChangeText={(e) => setSigninData({ ...signinData, city: e })}
-                                placeholder="City"
-                                placeholderTextColor={Colors.gray}
-                            />
+                                <TextInput
+                                    style={{
+                                        // backgroundColor: Colors.input,
+                                        // borderRadius: 5,
+                                        width: '90%',
+                                        // padding: 15,
+                                        // marginTop: 10,
+                                        // borderWidth: 1,
+                                        // borderColor: '#b2b2b1',
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        // paddingHorizontal: 20,
+                                    }}
+                                    value={signinData.state}
+                                    onChangeText={(e) => setSigninData({ ...signinData, state: e })}
+                                    placeholder="State"
+                                    placeholderTextColor={Colors.gray}
+                                />
+                            </View>
 
-                            <TextInput
-                                style={{
-                                    backgroundColor: Colors.input,
-                                    borderRadius: 5,
-                                    width: '100%',
-                                    padding: 15,
-                                    marginTop: 10,
-                                    borderWidth: 1,
-                                    borderColor: '#b2b2b1',
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    paddingHorizontal: 20,
-                                }}
-                                keyboardType='numeric'
-                                value={signinData.zipCode}
-                                onChangeText={(e) => setSigninData({ ...signinData, zipCode: e })}
-                                placeholder="Zip Code"
-                                placeholderTextColor={Colors.gray}
-                            />
 
+
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 3,
+                                paddingHorizontal: 15, borderRadius: 5,
+                                borderWidth: 1,
+                                marginTop: 10,
+                                borderColor: '#b2b2b1',
+                            }}>
+                                <Image source={require("../../Images/city.png")} style={{ width: 15, height: 15, marginRight: 5 }} />
+
+                                <TextInput
+                                    style={{
+                                        // backgroundColor: Colors.input,
+                                        // borderRadius: 5,
+                                        width: '90%',
+                                        // padding: 15,
+                                        // marginTop: 10,
+                                        // borderWidth: 1,
+                                        // borderColor: '#b2b2b1',
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        // paddingHorizontal: 20,
+                                    }}
+                                    value={signinData.city}
+                                    onChangeText={(e) => setSigninData({ ...signinData, city: e })}
+                                    placeholder="City"
+                                    placeholderTextColor={Colors.gray}
+                                />
+                            </View>
+
+
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 3,
+                                paddingHorizontal: 15, borderRadius: 5,
+                                borderWidth: 1,
+                                marginTop: 10,
+                                borderColor: '#b2b2b1',
+                            }}>
+                                <Image source={require("../../Images/zip.png")} style={{ width: 15, height: 15, marginRight: 5 }} />
+
+                                <TextInput
+                                    style={{
+                                        // backgroundColor: Colors.input,
+                                        // borderRadius: 5,
+                                        width: '90%',
+                                        // padding: 15,
+                                        // marginTop: 10,
+                                        // borderWidth: 1,
+                                        // borderColor: '#b2b2b1',
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        // paddingHorizontal: 20,
+                                    }}
+                                    keyboardType='numeric'
+                                    value={signinData.zipCode}
+                                    onChangeText={(e) => setSigninData({ ...signinData, zipCode: e })}
+                                    placeholder="Zip Code"
+                                    placeholderTextColor={Colors.gray}
+                                />
+                            </View>
                         </View>
 
 
@@ -672,6 +740,7 @@ export default function UserDetails({ route }) {
                                 width: '90%',
                                 marginBottom: 30
                             }}
+                            linearStyle={{ borderRadius: 10 }}
                             onPress={() => signInValidation()}
                             btnTextStyle={{ fontSize: 18 }}
                         />
@@ -689,3 +758,4 @@ export default function UserDetails({ route }) {
         </View>
     );
 }
+

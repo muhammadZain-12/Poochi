@@ -18,22 +18,22 @@ import Icons from 'react-native-vector-icons/AntDesign';
 const slides = [
   {
     id: '1',
-    image: require('../../Images/onboard1.png'),
+    image: require('../../Images/onboarding1.png'),
     title: 'Taxi  For Pets. we Drive Your pets to any appointment.',
     // subtitle:
     //   'Just turn on your location and you will find the nearest pet care you wish.',
   },
   {
     id: '2',
-    image: require('../../Images/onboard2.png'),
-    title: 'Vetted drivers for your Pets. we transport your furry friends with care. ',
+    image: require('../../Images/onboarding2.png'),
+    title: 'Find Local Pet Care Providers In Your Area.',
     // subtitle:
     //   'Just turn on your location and you will find the nearest pet care you wish.',
   },
   {
     id: '3',
-    image: require('../../Images/onboard3.png'),
-    title: 'Book a ride with poochie. one way or round trip, Quick, safe & reliable.',
+    image: require('../../Images/onboarding3.png'),
+    title: 'Your On-Demand Pet Care App For All Your Pet Care Needs.',
     // subtitle: 'What do you think? book our veterinanians now ',
   },
 ];
@@ -46,7 +46,7 @@ export default function OnBoardingScreen({ navigation }) {
 
   const updateCurrentSlideIndex = e => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
-    
+
     const currentIndex = Math.floor(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
   };
@@ -63,40 +63,44 @@ export default function OnBoardingScreen({ navigation }) {
       <View style={styles.centerItems}>
         <Image
           source={item.image}
-          style={{ height: Dimensions.get('window').height, width: width }}
+          style={{ height: Dimensions.get('window').height - 250, width: width }}
           resizeMode="cover"
         />
         <View
           style={[
             styles.textContainer,
-            { position: 'absolute', bottom: 130, left: 0, width: '85%' },
+            { position: 'absolute', bottom: 130, left: 0, width: '100%', minHeight: 100 },
           ]}>
           <Text
             style={[
               styles.title,
               {
-                color: Colors.white,
-                width: '90%',
-                fontFamily: 'Poppins-Bold',
-                fontWeight: 'bold',
+                color: Colors.black,
+                width: "80%",
+                alignSelf: "center",
+                fontSize: 20,
+                lineHeight: 30,
+                textAlign: "center",
+                fontFamily: 'Poppins-SemiBold',
+                // fontWeight: 'bold',
                 textTransform: 'capitalize',
 
               },
             ]}>
             {item.title}
           </Text>
-          <Text
+          {/* <Text
             style={[
               styles.subtitle,
               {
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 12,
                 width: '90%',
                 fontFamily: 'Poppins-Regular',
               },
             ]}>
             {item.subtitle}
-          </Text>
+          </Text> */}
         </View>
       </View>
     );
@@ -108,42 +112,18 @@ export default function OnBoardingScreen({ navigation }) {
         {currentSlideIndex == slides.length - 1 ? (
           <View
             style={{
-              flexDirection: 'row',
+              // flexDirection: 'column',
               paddingHorizontal: 40,
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              {/* Render indicator */}
-              {slides.map((_, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.indicator,
-                    {
-                      backgroundColor:
-                        currentSlideIndex == index
-                          ? Colors.green
-                          : Colors.white,
-                      width: 8,
-                      height: 8,
-                      borderRadius: 10,
-                    },
-                  ]}
-                />
-              ))}
-            </View>
 
             <View>
               <TouchableOpacity onPress={() => navigation.replace("Login")}>
                 <View
                   style={{
-                    width: 35,
-                    height: 35,
+                    width: 50,
+                    height: 50,
                     borderRadius: 100,
                     backgroundColor: Colors.green,
                     justifyContent: 'center',
@@ -153,19 +133,13 @@ export default function OnBoardingScreen({ navigation }) {
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingHorizontal: 40,
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
+
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
+                marginTop: 40,
+                marginBottom: 20
               }}>
               {/* Render indicator */}
               {slides.map((_, index) => (
@@ -177,7 +151,7 @@ export default function OnBoardingScreen({ navigation }) {
                       backgroundColor:
                         currentSlideIndex == index
                           ? Colors.green
-                          : Colors.white,
+                          : Colors.gray,
                       width: 8,
                       height: 8,
                       borderRadius: 10,
@@ -187,12 +161,24 @@ export default function OnBoardingScreen({ navigation }) {
               ))}
             </View>
 
+
+          </View>
+        ) : (
+          <View
+            style={{
+              // flexDirection: 'row',
+              paddingHorizontal: 40,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+
+
             <View>
               <TouchableOpacity onPress={goToNext}>
                 <View
                   style={{
-                    width: 35,
-                    height: 35,
+                    width: 50,
+                    height: 50,
                     borderRadius: 100,
                     backgroundColor: Colors.green,
                     justifyContent: 'center',
@@ -202,6 +188,34 @@ export default function OnBoardingScreen({ navigation }) {
                 </View>
               </TouchableOpacity>
             </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginTop: 40,
+                marginBottom: 20
+              }}>
+              {/* Render indicator */}
+              {slides.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.indicator,
+                    {
+                      backgroundColor:
+                        currentSlideIndex == index
+                          ? Colors.green
+                          : Colors.gray,
+                      width: 8,
+                      height: 8,
+                      borderRadius: 10,
+                    },
+                  ]}
+                />
+              ))}
+            </View>
+
           </View>
         )}
       </View>
@@ -211,10 +225,10 @@ export default function OnBoardingScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.rootContainer}>
       <StatusBar
-            animated={true}
-            backgroundColor="transparent"
-            barStyle={'light-content'}
-          />
+        animated={true}
+        backgroundColor="transparent"
+        barStyle={'light-content'}
+      />
       <View style={styles.innerTopContainer}>
         <FlatList
           ref={ref}
@@ -240,6 +254,7 @@ const styles = StyleSheet.create({
   },
   centerItems: {
     flex: 1,
+    backgroundColor: "#F6FFF5"
   },
   dots: {
     width: 15,
@@ -249,7 +264,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#F6FFF5',
     width: '100%',
     // alignItems: 'center',
     // justifyContent: 'center'
@@ -273,7 +288,7 @@ const styles = StyleSheet.create({
   },
   nextStyles: {
     fontSize: 20,
-    color: Colors.black,
+    color: "#F6FFF5",
     marginBottom: 5,
     fontWeight: 'bold',
   },

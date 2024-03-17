@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react"
-import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, BackHandler, ActivityIndicator } from "react-native"
+import { Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View, FlatList, ToastAndroid, BackHandler, ActivityIndicator, StatusBar } from "react-native"
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
 import Icons from 'react-native-vector-icons/Entypo';
@@ -19,6 +19,8 @@ import IonIcons from "react-native-vector-icons/Ionicons"
 import axios from "axios";
 import ScheduleRideContext from "../../Context/ScheduleRideContext/context";
 import RadiusContext from "../../Context/RadiusContext/context";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+
 
 function Petsitter({ navigation, route }) {
 
@@ -67,9 +69,14 @@ function Petsitter({ navigation, route }) {
     const [comment, setComment] = useState("")
     const [loading, setLoading] = useState(false)
     const [deductedFromWallet, setDeductedFromWallet] = useState(false)
-    const [selectedOption, setSelectedOption] = useState("")
+    const [selectedOption, setSelectedOption] = useState({
+        name: "My Location",
+        selected: true,
+        source: require("../../Images/walk.png")
+    },)
     const [petCharges, setPetCharges] = useState(0)
-
+    const [totalDays, setTotalDays] = useState("")
+    const [totalWeeks, setTotalWeeks] = useState("")
     const [pickupToDropoffDistance, setPickupToDropoffDistance] = useState(null)
     const [dropoffToPickupDistance, setDropoffToPickupDistance] = useState(null)
     const [pickupToDropoffMinutes, setPickupToDropoffMinutes] = useState(null)
@@ -81,36 +88,36 @@ function Petsitter({ navigation, route }) {
     const [option, setOptions] = useState([
         {
             name: "My Location",
-            selected: false,
-            source: require("../../Images/around.png")
+            selected: true,
+            source: require("../../Images/myLocation.png")
         },
         {
             name: "Sitter Location",
             selected: false,
-            source: require("../../Images/park.png")
+            source: require("../../Images/sitterLocation.png")
 
         },
 
     ])
     const [duration, setDuration] = useState([
         {
-            label: "60 Min",
+            label: "1 hour",
             value: 60,
             selected: false
         },
         {
-            label: "90 Min",
-            value: 90,
-            selected: false
-        },
-        {
-            label: "120 Min",
+            label: "2 hours",
             value: 120,
             selected: false
         },
         {
-            label: "150 Min",
-            value: 150,
+            label: "3 hours",
+            value: 180,
+            selected: false
+        },
+        {
+            label: "4 hours",
+            value: 240,
             selected: false
         }
 
@@ -118,15 +125,16 @@ function Petsitter({ navigation, route }) {
 
     const [timeDuration, setTimeDuration] = useState([
         {
-            type: "Hourly",
+            type: "By Hour",
+            selected: false
+        },
+
+        {
+            type: "By Day",
             selected: false
         },
         {
-            type: "Half Day",
-            selected: false
-        },
-        {
-            type: "Full Day",
+            type: "By Week",
             selected: false
         },
 
@@ -297,22 +305,6 @@ function Petsitter({ navigation, route }) {
     }
 
 
-
-
-
-    const renderSelectedPets = ({ item }, index) => {
-
-        return <View style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
-
-            <Image source={{ uri: item.image1 }} style={{ width: 120, height: 120, borderRadius: 10 }} />
-            <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
-                <AntDesign name="close" color={Colors.buttonColor} size={20} />
-            </TouchableOpacity>
-            <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 16 }} >{item.petName}</Text>
-            <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text>
-        </View>
-
-    }
 
 
 
@@ -517,7 +509,6 @@ function Petsitter({ navigation, route }) {
             if (data && data?.walkFare) {
 
 
-
                 if (Number(selectedTimeDuration) < 31) {
 
 
@@ -545,7 +536,9 @@ function Petsitter({ navigation, route }) {
 
                     totalFare = Number(totalFare) + Number(baseCharge) + (additionalPetCharge ? additionalPetCharge : 0) + totalMileCharges
 
-                    setFare(totalFare)
+                    totalFare =
+
+                        setFare(totalFare)
                     setDeductedFromWallet(false)
                     setServiceCharge(data?.serviceCharge)
                 }
@@ -649,18 +642,16 @@ function Petsitter({ navigation, route }) {
             return
         }
 
-        console.log(timeDuration.every((e, i) => (e.type.toLowerCase() == "half day" || e.type.toLowerCase() == "full day") && !e?.selected))
-
-        if ((!Number(selectedTimeDuration)) && timeDuration.every((e, i) => (e.type.toLowerCase() == "half day" || e.type.toLowerCase() == "full day") && !e?.selected)) {
+        if ((!Number(selectedTimeDuration)) && timeDuration.every((e, i) => (e.type.toLowerCase() == "by week" || e.type.toLowerCase() == "by day") && !e?.selected)) {
             ToastAndroid.show("Kindly choose time duration", ToastAndroid.SHORT)
             return
         }
 
 
-        if (!cardDetails && !deductedFromWallet) {
-            ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
-            return
-        }
+        // if (!cardDetails && !deductedFromWallet) {
+        //     ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
+        //     return
+        // }
 
         let Options = option && option.length > 0 && option.filter((e, i) => e.selected)
 
@@ -673,6 +664,12 @@ function Petsitter({ navigation, route }) {
 
         if (timeType.length == 0) {
             ToastAndroid.show("Kindly Choose Sitting Duration", ToastAndroid.SHORT)
+            return
+        }
+
+
+        if (!cardDetails && !deductedFromWallet) {
+            ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
             return
         }
 
@@ -704,10 +701,12 @@ function Petsitter({ navigation, route }) {
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                duration: timeType[0].type.toLowerCase() == "full day" ? 1440 : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
+                totalDays: totalDays,
+                totalWeeks: totalWeeks,
+                duration: timeType[0].type.toLowerCase() == "by week" ? (10080 * totalWeeks) : timeType[0].type.toLowerCase() == "by day" ? (1440 * totalDays) : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
                 timeType: timeType[0],
                 bookingType: "oneWay",
-                petCharges: Number(petCharges) * (selectedPets.length - 1),
+                petCharges: 0,
                 requestDate: new Date(),
                 type: "PetSitter",
                 getDriverStatus: "pending",
@@ -727,13 +726,15 @@ function Petsitter({ navigation, route }) {
                 pickupAddress: pickupAddress,
                 pickupCords: pickup,
                 serviceCharge: serviceCharge,
-                petCharges: Number(petCharges) * (selectedPets.length - 1),
+                petCharges: 0,
                 selectedPets: selectedPets,
                 selectedOption: Options[0],
                 comment: comment,
                 cardDetails: cardDetails,
                 userData: loginData,
-                duration: timeType[0].type.toLowerCase() == "full day" ? 1440 : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
+                totalDays: totalDays,
+                totalWeeks: totalWeeks,
+                duration: timeType[0].type.toLowerCase() == "by week" ? (10080 * totalWeeks) : timeType[0].type.toLowerCase() == "by day" ? (1440 * totalDays) : timeType[0].type.toLowerCase() == "half day" ? 720 : selectedTimeDuration,
                 timeType: timeType[0],
                 bookingType: "oneWay",
                 requestDate: new Date(),
@@ -743,216 +744,216 @@ function Petsitter({ navigation, route }) {
         }
 
 
-        if (date && time) {
+        // if (date && time) {
 
-            let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
+        //     let checkRideTime = scheduleData && scheduleData.length > 0 && scheduleData.some((e, i) => {
 
-                const scheduledDateTime = new Date(
-                    date.getFullYear(),
-                    date.getMonth(),
-                    date.getDate(),
-                    time.getHours(),
-                    time.getMinutes(),
-                    time.getSeconds()
-                );
-
-
-
-                let previousDate = e?.scheduleDate?.toDate()
-                let previousTime = e?.scheduleTime?.toDate()
-
-                const previousDateTime = new Date(
-                    previousDate.getFullYear(),
-                    previousDate.getMonth(),
-                    previousDate.getDate(),
-                    previousTime.getHours(),
-                    previousTime.getMinutes(),
-                    previousTime.getSeconds()
-                );
+        //         const scheduledDateTime = new Date(
+        //             date.getFullYear(),
+        //             date.getMonth(),
+        //             date.getDate(),
+        //             time.getHours(),
+        //             time.getMinutes(),
+        //             time.getSeconds()
+        //         );
 
 
-                let previousDateGet = previousDateTime?.getTime()
-                let selectedDateGet = scheduledDateTime?.getTime()
 
-                let diff = selectedDateGet - previousDateGet
+        //         let previousDate = e?.scheduleDate?.toDate()
+        //         let previousTime = e?.scheduleTime?.toDate()
 
-                let diffHour = diff / 1000 / 60 / 60
-
-
-                return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
-
-
-            })
-
-
-            if (checkRideTime) {
-
-                ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
-                return
-            }
+        //         const previousDateTime = new Date(
+        //             previousDate.getFullYear(),
+        //             previousDate.getMonth(),
+        //             previousDate.getDate(),
+        //             previousTime.getHours(),
+        //             previousTime.getMinutes(),
+        //             previousTime.getSeconds()
+        //         );
 
 
-            setLoading(true)
+        //         let previousDateGet = previousDateTime?.getTime()
+        //         let selectedDateGet = scheduledDateTime?.getTime()
 
-            const drivers = [];
-            const tokens = [];
+        //         let diff = selectedDateGet - previousDateGet
 
-            const driversSnapshot = await firestore().collection('Drivers').get();
-            const scheduleRidesPromises = [];
-
-            driversSnapshot.forEach((doc) => {
-                const data = doc?.data();
-
-                if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data.selectedCategory.length > 0 && data?.selectedCategory.some((e) => e == "sitter")) {
-                    const dis = getPreciseDistance(
-                        {
-                            latitude: pickup.lat,
-                            longitude: pickup.lng,
-                        },
-                        {
-                            latitude: data?.currentLocation?.latitude,
-                            longitude: data?.currentLocation?.longitude,
-                        }
-                    );
-
-                    const mileDistance = (dis / 1609.34)?.toFixed(2);
-
-                    if (mileDistance <= scheduleRideRadius) {
-                        const driverId = data.id;
-                        const driverToken = data.token;
-
-                        scheduleRidesPromises.push(
-                            firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
-                                let hasConflictingRide = false;
-
-                                scheduleSnapshot.forEach((scheduleDoc) => {
-                                    const scheduleData = scheduleDoc?.data();
-                                    const scheduledRides = scheduleData?.scheduleRides;
-
-                                    if (scheduledRides) {
-                                        scheduledRides.forEach((ride) => {
-                                            const scheduledDateTime = new Date(
-                                                date.getFullYear(),
-                                                date.getMonth(),
-                                                date.getDate(),
-                                                time.getHours(),
-                                                time.getMinutes(),
-                                                time.getSeconds()
-                                            );
-
-                                            if (
-                                                ride?.driverData?.id === driverId &&
-                                                ride?.getDriverStatus === 'accepted'
-                                            ) {
-                                                const previousDate = ride.scheduleDate.toDate();
-                                                const previousTime = ride.scheduleTime.toDate();
-                                                const previousDateTime = new Date(
-                                                    previousDate.getFullYear(),
-                                                    previousDate.getMonth(),
-                                                    previousDate.getDate(),
-                                                    previousTime.getHours(),
-                                                    previousTime.getMinutes(),
-                                                    previousTime.getSeconds()
-                                                );
-
-                                                const previousDateGet = previousDateTime.getTime();
-                                                const selectedDateGet = scheduledDateTime.getTime();
-                                                const diff = selectedDateGet - previousDateGet;
-                                                const diffHour = diff / 1000 / 60 / 60;
-
-                                                if (diffHour < 3 && diffHour > -3) {
-                                                    hasConflictingRide = true;
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-
-                                if (!hasConflictingRide) {
-                                    tokens.push(driverToken);
-                                    drivers.push(data);
-                                }
-                            })
-                        );
-                    }
-                }
-            });
-
-            await Promise.all(scheduleRidesPromises);
-
-            dataToSend.drivers = drivers
+        //         let diffHour = diff / 1000 / 60 / 60
 
 
-            firestore().collection("ScheduleRides").doc(loginData.id).set(
-                { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
-            ).then(async (res) => {
-
-                var data = JSON.stringify({
-                    notification: {
-                        body: "You have got Scheduled Ride request kindly respond back",
-                        title: `Scheduled Ride Request`,
-                        sound: "default"
-                    },
-                    android: {
-                        priority: "high",
-                    },
-                    registration_ids: tokens,
-                });
-                let config = {
-                    method: 'post',
-                    url: 'https://fcm.googleapis.com/fcm/send',
-                    headers: {
-                        Authorization:
-                            'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
-                        'Content-Type': 'application/json',
-                    },
-                    data: data,
-                };
-                axios(config)
-                    .then(async (res) => {
+        //         return diffHour < 3 && diffHour > -3 && e?.ScheduleRidestatus == "pending"
 
 
-                        let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+        //     })
 
-                            let id = e?.id
 
-                            let dataToSend = {
-                                title: "Scheduled Ride Request",
-                                body: 'You have got Scheduled Ride request kindly respond back',
-                                date: new Date()
-                            }
+        //     if (checkRideTime) {
 
-                            firestore().collection("DriverNotification").doc(id).set({
-                                notification: firestore.FieldValue.arrayUnion(dataToSend)
-                            }, { merge: true })
+        //         ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+        //         return
+        //     }
 
-                        })
 
-                        await Promise.all(promises)
+        //     setLoading(true)
 
-                        setScheduleData([
-                            ...scheduleData,
-                            dataToSend
-                        ])
-                        setLoading(false)
-                        ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
-                        navigation.replace("Tab", {
-                            screen: "Home"
-                        })
+        //     const drivers = [];
+        //     const tokens = [];
 
-                    })
+        //     const driversSnapshot = await firestore().collection('Drivers').get();
+        //     const scheduleRidesPromises = [];
 
-                    .catch(error => {
-                        setLoading(false)
-                        console.log(error, "error")
-                    });
+        //     driversSnapshot.forEach((doc) => {
+        //         const data = doc?.data();
 
-            }).catch((error) => {
-                setLoading(false)
-                console.log(error)
-            })
-            return
-        }
+        //         if (data?.currentLocation?.latitude && data?.currentLocation?.longitude && data?.status == "approved" && data?.selectedCategory && Array.isArray(data?.selectedCategory) && data.selectedCategory.length > 0 && data?.selectedCategory.some((e) => e == "sitter")) {
+        //             const dis = getPreciseDistance(
+        //                 {
+        //                     latitude: pickup.lat,
+        //                     longitude: pickup.lng,
+        //                 },
+        //                 {
+        //                     latitude: data?.currentLocation?.latitude,
+        //                     longitude: data?.currentLocation?.longitude,
+        //                 }
+        //             );
+
+        //             const mileDistance = (dis / 1609.34)?.toFixed(2);
+
+        //             if (mileDistance <= scheduleRideRadius) {
+        //                 const driverId = data.id;
+        //                 const driverToken = data.token;
+
+        //                 scheduleRidesPromises.push(
+        //                     firestore().collection('ScheduleRides').get().then((scheduleSnapshot) => {
+        //                         let hasConflictingRide = false;
+
+        //                         scheduleSnapshot.forEach((scheduleDoc) => {
+        //                             const scheduleData = scheduleDoc?.data();
+        //                             const scheduledRides = scheduleData?.scheduleRides;
+
+        //                             if (scheduledRides) {
+        //                                 scheduledRides.forEach((ride) => {
+        //                                     const scheduledDateTime = new Date(
+        //                                         date.getFullYear(),
+        //                                         date.getMonth(),
+        //                                         date.getDate(),
+        //                                         time.getHours(),
+        //                                         time.getMinutes(),
+        //                                         time.getSeconds()
+        //                                     );
+
+        //                                     if (
+        //                                         ride?.driverData?.id === driverId &&
+        //                                         ride?.getDriverStatus === 'accepted'
+        //                                     ) {
+        //                                         const previousDate = ride.scheduleDate.toDate();
+        //                                         const previousTime = ride.scheduleTime.toDate();
+        //                                         const previousDateTime = new Date(
+        //                                             previousDate.getFullYear(),
+        //                                             previousDate.getMonth(),
+        //                                             previousDate.getDate(),
+        //                                             previousTime.getHours(),
+        //                                             previousTime.getMinutes(),
+        //                                             previousTime.getSeconds()
+        //                                         );
+
+        //                                         const previousDateGet = previousDateTime.getTime();
+        //                                         const selectedDateGet = scheduledDateTime.getTime();
+        //                                         const diff = selectedDateGet - previousDateGet;
+        //                                         const diffHour = diff / 1000 / 60 / 60;
+
+        //                                         if (diffHour < 3 && diffHour > -3) {
+        //                                             hasConflictingRide = true;
+        //                                         }
+        //                                     }
+        //                                 });
+        //                             }
+        //                         });
+
+        //                         if (!hasConflictingRide) {
+        //                             tokens.push(driverToken);
+        //                             drivers.push(data);
+        //                         }
+        //                     })
+        //                 );
+        //             }
+        //         }
+        //     });
+
+        //     await Promise.all(scheduleRidesPromises);
+
+        //     dataToSend.drivers = drivers
+
+
+        //     firestore().collection("ScheduleRides").doc(loginData.id).set(
+        //         { scheduleRides: firestore.FieldValue.arrayUnion(dataToSend) }, { merge: true }
+        //     ).then(async (res) => {
+
+        //         var data = JSON.stringify({
+        //             notification: {
+        //                 body: "You have got Scheduled Ride request kindly respond back",
+        //                 title: `Scheduled Ride Request`,
+        //                 sound: "default"
+        //             },
+        //             android: {
+        //                 priority: "high",
+        //             },
+        //             registration_ids: tokens,
+        //         });
+        //         let config = {
+        //             method: 'post',
+        //             url: 'https://fcm.googleapis.com/fcm/send',
+        //             headers: {
+        //                 Authorization:
+        //                     'key=AAAAzwxYyNA:APA91bEU1Zss73BLEraf4jDgob9rsAfxshC0GBBxbgPo340U5DTWDVbS9MYudIPDjIvZwNH7kNkucQ0EHNQtnBcjf5gbhbn09qU0TpKagm2XvOxmAvyBSYoczFtxW7PpHgffPpdaS9fM',
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             data: data,
+        //         };
+        //         axios(config)
+        //             .then(async (res) => {
+
+
+        //                 let promises = drivers && drivers.length > 0 && drivers.map((e, i) => {
+
+        //                     let id = e?.id
+
+        //                     let dataToSend = {
+        //                         title: "Scheduled Ride Request",
+        //                         body: 'You have got Scheduled Ride request kindly respond back',
+        //                         date: new Date()
+        //                     }
+
+        //                     firestore().collection("DriverNotification").doc(id).set({
+        //                         notification: firestore.FieldValue.arrayUnion(dataToSend)
+        //                     }, { merge: true })
+
+        //                 })
+
+        //                 await Promise.all(promises)
+
+        //                 setScheduleData([
+        //                     ...scheduleData,
+        //                     dataToSend
+        //                 ])
+        //                 setLoading(false)
+        //                 ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+        //                 navigation.replace("Tab", {
+        //                     screen: "Home"
+        //                 })
+
+        //             })
+
+        //             .catch(error => {
+        //                 setLoading(false)
+        //                 console.log(error, "error")
+        //             });
+
+        //     }).catch((error) => {
+        //         setLoading(false)
+        //         console.log(error)
+        //     })
+        //     return
+        // }
 
 
 
@@ -961,8 +962,7 @@ function Petsitter({ navigation, route }) {
         firestore().collection("Request").doc(loginData.id).set(dataToSend).then((res) => {
             setLoading(false)
             setBookingData(dataToSend)
-            navigation.navigate("Drivers")
-
+            navigation.navigate("SittersGallery")
         }).catch((error) => {
             setLoading(false)
             ToastAndroid.show(error.message, ToastAndroid, SHORT)
@@ -990,10 +990,35 @@ function Petsitter({ navigation, route }) {
     }
 
 
-    return (
-        <View style={{ flex: 1, backgroundColor: Colors.white }} >
+    const handleSelectHours = (time) => {
 
-            <View style={{ marginTop: 5 }} >
+        let minutes = Number(time) * 60
+
+        setSelectedTimeDuration(minutes)
+
+    }
+
+    const renderSelectedPets = ({ item }, index) => {
+
+
+
+        return <TouchableOpacity onPress={() => navigation.navigate("SinglePetDetails", item)} key={index} style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
+
+
+            <Image source={{ uri: item.image1 }} style={{ width: 65, height: 65, borderRadius: 10 }} />
+
+            <TouchableOpacity style={{ position: "absolute", top: 5, right: 5 }} onPress={() => removeSelectedPet(index)} >
+                <AntDesign name="close" color={Colors.buttonColor} size={20} />
+            </TouchableOpacity>
+            <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.petName}</Text>
+            {/* <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text> */}
+        </TouchableOpacity>
+    }
+
+    return (
+        <View style={{ flex: 1, backgroundColor: "rgba(246, 255, 245, 1)" }} >
+
+            {/* <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
                     text={"Pet Sitter"}
@@ -1012,18 +1037,112 @@ function Petsitter({ navigation, route }) {
 
                 />
 
-            </View>
-            <ScrollView>
+            </View> */}
 
+
+            <StatusBar
+                animated={true}
+                backgroundColor="rgba(246, 255, 245, 1)"
+                barStyle={'dark-content'}
+            />
+
+            <View style={{ margin: 20, marginBottom: 0, padding: 10, paddingVertical: 20, borderWidth: 1, borderColor: "#B2B1B1", borderRadius: 10, backgroundColor: Colors.white, flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
+
+
+                <TouchableOpacity onPress={() => navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Tab',
+                        },
+                    ],
+                })}
+                    style={{ width: 35, height: 35, borderWidth: 2, justifyContent: "center", alignItems: "center", borderRadius: 10, borderColor: "#D9D9D9", position: "absolute", left: 10, top: 13 }} >
+                    <IonIcons
+                        name="chevron-back-outline"
+                        size={20}
+                        color={Colors.black}
+                    />
+                </TouchableOpacity>
+
+                <View>
+                    <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 14, lineHeight: 20, textAlign: "center" }} >Pet Sitting & Boarding</Text>
+                </View>
+
+            </View>
+
+
+
+
+
+            <ScrollView>
 
                 <View style={{ paddingHorizontal: 15, marginTop: 0 }} >
 
+                    <View style={{ padding: 10, borderWidth: 1, marginTop: 20, borderRadius: 10, borderWidth: 2, borderColor: Colors.buttonColor, backgroundColor: Colors.white }} >
 
-                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Select Your Pet</Text>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
-                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
+                            <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 16 }} >Your Pets</Text>
 
-                    {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
+                            {/* <TouchableOpacity onPress={() => navigation.navigate("Pets")} style={{ backgroundColor: Colors.buttonColor, padding: 5, borderRadius: 20, paddingHorizontal: 20 }} >
+
+
+                                <Text style={{ color: Colors.white, fontFamily: "Poppins-SemiBold", fontSize: 12 }} >See All</Text>
+
+
+                            </TouchableOpacity> */}
+
+                        </View>
+
+
+                        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%", marginTop: 10 }} >
+
+                            <View style={{ marginRight: 10 }} >
+                                <TouchableOpacity onPress={() => navigation.navigate("PetSelect", "PetSitter")} style={{ width: 65, height: 65, backgroundColor: "#CBFFC7", borderStyle: "dotted", borderRadius: 10, borderWidth: 1, borderColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+
+                                    <MaterialIcons name={"add"} size={20} color={Colors.buttonColor} />
+
+
+                                </TouchableOpacity>
+                                <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 12, textAlign: "center" }} >Add Pet</Text>
+                            </View>
+
+                            {selectedPets && selectedPets.length > 0 && selectedPets.map((e, i) => {
+
+                                return (
+
+                                    renderSelectedPets({ item: e }, i)
+
+                                )
+
+                            })}
+
+
+
+
+                            {/* <FlatList
+data={selectedPets}
+renderItem={renderSelectedPets}
+scrollEnabled={true}
+horizontal={true}
+/> */}
+
+                        </ScrollView>
+
+
+                    </View>
+
+
+
+
+
+
+                    {/* <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Select Your Pet</Text> */}
+
+                    {/* <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text> */}
+
+                    {/* {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
 
                         {selectedPets.map((e, i) => {
 
@@ -1053,25 +1172,8 @@ function Petsitter({ navigation, route }) {
 
                         </View>
 
-                    }
 
-
-                    <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Option</Text>
-
-                    <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }} >
-                        {option && option.length > 0 && option.map((e, i) => {
-                            return (
-                                <View key={i} style={{ width: 110, height: 110, marginRight: "10px" }} >
-                                    <TouchableOpacity onPress={() => handleSelectOptions(e, i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
-                                        <Image source={e?.source} style={{ width: 40, height: 40 }} />
-                                    </TouchableOpacity>
-                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.name}</Text>
-                                </View>
-                            )
-                        })}
-
-                    </View>
-
+                    } */}
 
 
                     {selectedOption.name == "My Location" && <View style={{ backgroundColor: "#21263D", borderRadius: 10, width: "100%", padding: 10, marginTop: 20 }} >
@@ -1098,13 +1200,124 @@ function Petsitter({ navigation, route }) {
                     </View>}
 
 
-                    <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
-                        <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Sitting Duration</Text>
+                    <View style={{ borderWidth: 1.5, borderColor: Colors.gray, borderRadius: 8, padding: 10, marginTop: 20, backgroundColor: Colors.white }} >
+
+
+                        <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", textAlign: "center" }} >Choose Location</Text>
+
+
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }} >
+
+                            {option && option.length > 0 && option.map((e, i) => {
+                                return (
+                                    <TouchableOpacity onPress={() => handleSelectOptions(e, i)} style={{ width: "48%", borderRadius: 8, height: 150 }} >
+
+                                        <Image source={e?.source} style={{ width: "100%", height: "100%", borderRadius: 8 }} />
+                                        {/* <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 12, textAlign: "center", marginTop: 10 }} >{e?.name}</Text> */}
+
+
+
+                                    </TouchableOpacity>
+
+                                )
+                            })}
+                        </View>
+
+                        <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }} >Sitting Duration</Text>
+                        <View style={{ width: "100%", justifyContent: "space-around", flexDirection: "row", marginTop: 10, marginBottom: 10 }} >
+                            {timeDuration && timeDuration.length > 0 && timeDuration.map((e, i) => {
+                                return (
+                                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }} >
+                                        <TouchableOpacity onPress={() => handleSelectTimeDuration(e, i)} style={{ width: 25, height: 25, borderRadius: 5, borderWidth: 1, borderColor: Colors.gray, justifyContent: "center", alignItems: "center" }} >
+
+                                            {e?.selected && <IonIcons name="checkmark-outline" size={15} color={Colors.black} />}
+
+                                        </TouchableOpacity>
+                                        <Text style={{ color: Colors.black, textAlign: "center", fontSize: 13, marginLeft: 5 }} >{e.type}</Text>
+                                    </View>
+
+                                    // <TouchableOpacity key={i} onPress={() => handleSelectTimeDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
+                                    //     <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.type}</Text>
+                                    // </TouchableOpacity>
+                                )
+                            })}
+                        </View>
+
+                        {timeDuration?.some((e) => e.type.toLowerCase() == "by hour" && e.selected) && <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", marginTop: 10 }} >
+
+                            {duration && duration.length > 0 && duration.map((e, i) => {
+                                return (
+                                    <TouchableOpacity key={i} onPress={() => handleSelectDuration(e, i)} style={{ borderRadius: 8, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
+                                        <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.label}</Text>
+                                    </TouchableOpacity>
+                                )
+                            })}
+
+                            <TouchableOpacity onPress={() => handlePressCustomTime()} style={{ justifyContent: "center", alignItems: "center", width: 70, height: 40, borderRadius: 20, backgroundColor: customTime ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5 }} >
+                                <Icons name="plus" size={25} color={"#777"} />
+                            </TouchableOpacity>
+
+                        </View>}
+
+                        {customTime && <TextInput value={selectedTimeDuration} onChangeText={(e) => handleSelectHours(e)} keyboardType="numeric"
+                            style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                            placeholder="Enter Time Duration (in hours)"
+                            placeholderTextColor={Colors.gray}
+
+                        />}
+
+                        {timeDuration?.some((e) => e.type.toLowerCase() == "by day" && e.selected) &&
+
+                            <TextInput value={totalDays} onChangeText={(e) => setTotalDays(e)} keyboardType="numeric"
+                                style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                                placeholder="Enter Number Of Days"
+                                placeholderTextColor={Colors.gray}
+                            />
+
+                        }
+
+                        {timeDuration?.some((e) => e.type.toLowerCase() == "by week" && e.selected) &&
+
+                            <TextInput value={totalWeeks} onChangeText={(e) => setTotalWeeks(e)} keyboardType="numeric"
+                                style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                                placeholder="Enter Number Of Weeks"
+                                placeholderTextColor={Colors.gray}
+                            />
+
+                        }
+
 
                     </View>
 
 
-                    {timeDuration && setTimeDuration.length > 0 && timeDuration.map((e, i) => {
+
+                    {/* <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Option</Text>
+
+                    <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }} >
+                        {option && option.length > 0 && option.map((e, i) => {
+                            return (
+                                <View key={i} style={{ width: 110, height: 110, marginRight: "10px" }} >
+                                    <TouchableOpacity onPress={() => handleSelectOptions(e, i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
+                                        <Image source={e?.source} style={{ width: 40, height: 40 }} />
+                                    </TouchableOpacity>
+                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.name}</Text>
+                                </View>
+                            )
+                        })}
+
+                    </View> */}
+
+
+
+
+
+                    {/* <View style={{ width: "100%", justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
+                        <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Sitting Duration</Text>
+
+                    </View> */}
+
+                    {/* 
+                    {timeDuration && timeDuration.length > 0 && timeDuration.map((e, i) => {
                         return (
                             <TouchableOpacity key={i} onPress={() => handleSelectTimeDuration(e, i)} style={{ borderRadius: 20, backgroundColor: e.selected ? Colors.buttonColor : "#e6e6e6", marginRight: 5, paddingHorizontal: 5, marginBottom: 10 }} >
                                 <Text style={{ color: e.selected ? Colors.white : "#777", textAlign: "center", padding: 10 }} >{e.type}</Text>
@@ -1128,21 +1341,43 @@ function Petsitter({ navigation, route }) {
 
                     </View>}
 
-                    {customTime && <TextInput value={selectedTimeDuration} onChangeText={(e) => setSelectedTimeDuration(e)} keyboardType="numeric"
+                    {customTime && <TextInput value={selectedTimeDuration} onChangeText={(e) => handleSelectHours(e)} keyboardType="numeric"
                         style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
-                        placeholder="Enter Time Duration (in min)"
+                        placeholder="Enter Time Duration (in hours)"
                         placeholderTextColor={Colors.gray}
 
-                    />}
+                    />} */}
+
+
+                    {/* 
+                    {timeDuration?.some((e) => e.type.toLowerCase() == "days" && e.selected) &&
+
+                        <TextInput value={totalDays} onChangeText={(e) => setTotalDays(e)} keyboardType="numeric"
+                            style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                            placeholder="Enter Number Of Days"
+                            placeholderTextColor={Colors.gray}
+                        />
+
+                    }
+
+                    {timeDuration?.some((e) => e.type.toLowerCase() == "weekly" && e.selected) &&
+
+                        <TextInput value={totalWeeks} onChangeText={(e) => setTotalWeeks(e)} keyboardType="numeric"
+                            style={{ width: "100%", borderWidth: 1, borderColor: Colors.gray, color: Colors.black, padding: 10, borderRadius: 5, marginTop: 10, fontFamily: "Poppins-Medium" }}
+                            placeholder="Enter Number Of Weeks"
+                            placeholderTextColor={Colors.gray}
+                        />
+
+                    } */}
 
 
 
 
 
 
-                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "PetSitter")} style={{ flexDirection: "row", justifyContent: "space-between", padding: 15, marginTop: 10, borderRadius: 10, paddingVertical: 15, borderWidth: 1, alignItems: "center" }} >
+                    <TouchableOpacity onPress={() => navigation.navigate("ScheduleRideDate", "PetSitter")} style={{ flexDirection: "row", padding: 15, marginTop: 20, borderRadius: 5, paddingVertical: 15, borderWidth: 1, alignItems: "center", backgroundColor: "#F5F9FE" }} >
 
-                        {!date && <Text style={{ fontSize: 16, color: Colors.gray, fontFamily: "Poppins-Medium" }} >Reserve in advance</Text>}
+                        {!date && <Text style={{ fontSize: 16, color: Colors.black, fontFamily: "Poppins-Medium", textAlign: "center", width: "100%" }} >Reserve in advance</Text>}
 
                         <View>
                             {date && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{date?.toLocaleDateString()}</Text>}
@@ -1150,7 +1385,7 @@ function Petsitter({ navigation, route }) {
                             {time && <Text style={{ fontSize: 14, color: Colors.gray, fontFamily: "Poppins-Medium", color: Colors.buttonColor }} >{time?.toLocaleTimeString()}</Text>}
                         </View>
 
-                        <Image source={require("../../Images/calender.png")} />
+                        {/* <Image source={require("../../Images/calender.png")} /> */}
 
                     </TouchableOpacity>
 
@@ -1168,15 +1403,7 @@ function Petsitter({ navigation, route }) {
                     </TouchableOpacity> */}
 
 
-                    <TextInput
 
-                        multiline={true}
-                        style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", paddingVertical: 15 }}
-                        placeholder='Comment'
-                        onChangeText={setComment}
-                        placeholderTextColor={"gray"}
-
-                    />
 
                     {/* {walletAmount && (walletAmount > Number(fare)) && fare && !cardDetails ? <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
 
@@ -1190,7 +1417,7 @@ function Petsitter({ navigation, route }) {
                     </View> : ""} */}
 
                     {!cardDetails ?
-                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "flex-start", padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, paddingVertical: 15, marginBottom: 15, backgroundColor: "#e6e6e6" }} >
+                        <TouchableOpacity onPress={() => handleNavigateToPayment()} style={{ flexDirection: "row", justifyContent: "flex-start", padding: 10, borderWidth: 1, marginTop: 20, backgroundColor: "#F5F9FE", borderRadius: 5, paddingVertical: 15, }} >
 
                             <Icons name="plus" size={25} color={Colors.black} style={{ position: "relative", left: 20 }} />
 
@@ -1210,17 +1437,27 @@ function Petsitter({ navigation, route }) {
 
                     }
 
+                    <TextInput
+
+                        multiline={true}
+                        style={{ backgroundColor: "#E6E6E6", borderRadius: 5, marginBottom: 10, marginTop: 20, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", paddingVertical: 15, marginBottom: 20 }}
+                        placeholder='Comments'
+                        onChangeText={setComment}
+                        placeholderTextColor={"gray"}
+
+                    />
+
+
 
 
 
                 </View>
 
-                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : date ? "Schedule Ride" : "Find a Sitter"} />
-
+                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "90%" }} linearStyle={{ borderRadius: 10 }} text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Find a Sitter"} />
 
             </ScrollView>
 
-        </View>
+        </View >
     )
 }
 

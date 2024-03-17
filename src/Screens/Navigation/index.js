@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../SplashScreen';
@@ -52,10 +52,31 @@ import PetHotel from '../PetHotel';
 import Claims from '../Claims';
 import ClaimDetails from '../ClaimsDetails';
 import Petsitter from '../PetSitter';
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
+import BookingContext from '../../Context/bookingContext/context';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import SittersGallery from '../SittersGallery';
 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+
+// const bookingCont = useContext(BookingContext)
+
+// const {bookingData} = bookingCont
+
+
+
+
+
+
+// if (!bookingData) {
+//   ToastAndroid.show("No Track Ride", ToastAndroid.SHORT)
+//   return
+// }
+
 
 
 
@@ -111,7 +132,7 @@ function CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHome
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavigateToChat()} >
 
-        <AntDesign name="wechat" size={50} color={chatScreen ? Colors.buttonColor : Colors.gray}  />
+        <AntDesign name="wechat" size={50} color={chatScreen ? Colors.buttonColor : Colors.gray} />
 
       </TouchableOpacity>
 
@@ -121,26 +142,149 @@ function CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHome
 }
 
 
+
+
+// const handleRouteToTrackScreen = () => {
+
+
+// let isTracked = false
+
+// firestore().collection("Request").doc(auth().currentUser?.uid).get().then((doc) => {
+
+//   let data = doc.data()
+
+//   if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
+//     ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
+//     isTracked = false
+//     return
+//   }
+
+//   else {
+
+//     isTracked = true
+//     // setBookingData(data)
+//     // navigation.navigate("PassengerRideDetail")
+
+//   }
+// })
+
+// return isTracked
+
+// // bookingData && bookingData?.bookingStatus == "running" ? 
+
+
+// }
+
+// let tracked = await handleRouteToTrackScreen()
+
+
 function MyTabs() {
 
   const navigation = useNavigation()
-
-  const [chatScreen, setChatScreen] = useState(false)
-  const [homeScreen, setHomeScreen] = useState(true)
-  const [petScreen, setPetScreen] = useState(false)
-
 
 
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
-      tabBarLabel: () => null, // Hide tab bar labels
+      tabBarStyle: {
+        backgroundColor: Colors.white,
+        padding: 10,
+        height: 70,
+      },
+
+      tabBarInactiveTintColor: Colors.gray,
+      tabBarActiveTintColor: Colors.buttonColor,
+      tabBarShowLabel: true,
+      // tabBarLabel: () => null, // Hide tab bar labels
     }}
-      tabBar={() => CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHomeScreen, petScreen, setPetScreen)}
+    // tabBar={() => CustomTabBar(navigation, chatScreen, setChatScreen, homeScreen, setHomeScreen, petScreen, setPetScreen)}
     >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="PetDetails" component={PetDetails} />
-      <Tab.Screen name="Chats" component={Chat} />
+      <Tab.Screen
+
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <AntDesign
+                color={color}
+                size={size}
+                name="home"
+                // source={require('../../Images/Home.png')}
+                style={{ width: 30, height: 30 }}
+              />
+            );
+          },
+
+          tabBarIconStyle: { marginTop: 10, padding: 0 },
+          tabBarItemStyle: { marginBottom: 5 },
+          tabBarLabelStyle: { fontSize: 12, marginTop: 10, fontFamily: "Poppins-Regular" },
+          tabBarShowLabel: true,
+        }}
+
+
+
+        name="Home" component={Home} />
+
+      <Tab.Screen
+
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <View style={{ width: 75, height: 75, borderRadius: 100, backgroundColor: Colors.white, justifyContent: "center", alignItems: "center" }} >
+
+                <View style={{ width: 50, height: 50, borderRadius: 100, backgroundColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+
+                  <Image source={require("../../Images/iconpet.png")} style={{ width: 20, height: 20 }} />
+
+                </View>
+
+              </View>
+
+            );
+          },
+          tabBarIconStyle: { marginTop: 0, padding: 0 },
+          tabBarItemStyle: {
+            marginBottom: 0,
+            padding: 0,
+            position: 'relative',
+            bottom: 20,
+          },
+          tabBarLabel: "",
+          tabBarShowLabel: false,
+        }}
+
+        name="PetDetails" component={PetDetails} />
+      {
+        <Tab.Screen
+
+          options={{
+            tabBarIcon: ({ color, size }) => {
+              return (
+                <FontAwesome style={{ width: 30, height: 30 }} name="route" size={size} color={color} />
+              );
+            },
+
+            tabPress: ({ navigation, defaultHandler }) => {
+              if (0) {
+                handleTrackTabPress(); // Run your function when the "Track" screen tab is pressed
+                defaultHandler(); // Ensure default navigation behavior if condition is fulfilled
+              } else {
+
+                console.log("hello world")
+
+                // Handle the case when the condition is not fulfilled
+                // For example, show a toast message or alert
+              }
+            },
+
+            tabBarIconStyle: { marginTop: 10, padding: 0 },
+            tabBarItemStyle: { marginBottom: 5 },
+            tabBarLabelStyle: { fontSize: 12, marginTop: 10, fontFamily: "Poppins-Regular" },
+            tabBarShowLabel: true,
+            tabBarLabel: "Track"
+          }}
+
+
+          name="PassengerRideDetail" component={PassengerRideDetail} />}
     </Tab.Navigator>
   );
 }
@@ -181,13 +325,17 @@ export default function Navigation() {
         <Stack.Screen name="PetSelect" component={PetSelect} />
         <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
         <Stack.Screen name="Drivers" component={Drivers} />
+        <Stack.Screen name="SittersGallery" options={{
+          freezeOnBlur: true
+        }} component={SittersGallery} />
         <Stack.Screen name="SinglePetDetails" component={SinglePetDetail} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="ScheduleRide" component={ScheduleRide} />
         <Stack.Screen name="ScheduleRideDetails" component={ScheduleRideDetails} />
         <Stack.Screen name="RideCancel" component={RideCancel} />
         <Stack.Screen options={{
-          unmountOnBlur: true
+          unmountOnBlur: true,
+          freezeOnBlur: true
         }} name="PassengerRideDetail" component={PassengerRideDetail} />
         <Stack.Screen name="Track" component={Track} />
         <Stack.Screen name="PetGrooming" component={PetGrooming} />

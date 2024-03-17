@@ -22,6 +22,7 @@ import axios from "axios"
 import Geocoder from 'react-native-geocoding';
 import Geolocation, { watchPosition } from 'react-native-geolocation-service';
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import FavouriteSitterContext from "../../Context/FavouriteContext/context"
 
 
 // import {MapViewDirections} from "react-native-maps-directions"
@@ -40,10 +41,32 @@ function PassengerRideDetail({ navigation, route }) {
         , returnPickupAddress, setReturnPickupAddress, returnDropoff, setReturnDropoff, returnDropoffAddress, setReturnDropoffAddress } = chooseLocationCont
 
 
+    const favouritesCont = useContext(FavouriteSitterContext)
+    const { favouriteSitters, setFavouriteSitters } = favouritesCont
+
+
+
     const { bookingData, setBookingData } = BookingCont
     const { cardDetails, setCardDetails } = cardCont
     const { selectedPets, setSelectedPets } = PetCont
+    const [addInFavourites, setAddInFavourites] = useState(false)
 
+    const [isRideRunning, setIsRideRunning] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [favouriteLoading, setFavouriteLoading] = useState(false)
+
+
+    var options = {
+        // year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+
+    var timeOption = {
+        hour: 'numeric',
+        minute: 'numeric',
+        // hour12: true // Optionally set to false if you want 24-hour format
+    };
 
     const mapRef = useRef()
 
@@ -57,6 +80,8 @@ function PassengerRideDetail({ navigation, route }) {
     const [goToPickup, setGoToPickup] = useState(false)
     const [petImage, setPetImage] = useState("")
     const [collectPet, setCollectPet] = useState(false)
+    const [startSittingTime, setStartSittingTime] = useState("")
+    const [endSittingTime, setEndSittingTime] = useState("")
     const [driverLocation, setDriverLocation] = useState({
         latitude: "",
         longitude: ""
@@ -106,6 +131,13 @@ function PassengerRideDetail({ navigation, route }) {
     }
 
 
+
+    useEffect(() => {
+
+        handleRouteToTrackScreen()
+        getFavouriteSitters()
+
+    }, [focus])
 
 
 
@@ -189,7 +221,7 @@ function PassengerRideDetail({ navigation, route }) {
 
         return () => clearInterval(interval)
 
-    }, [currentLocation?.latitude, currentLocation?.longitude])
+    }, [currentLocation?.latitude, currentLocation?.longitude, focus])
 
 
     const ShowLocationModal = useCallback(() => {
@@ -261,12 +293,11 @@ function PassengerRideDetail({ navigation, route }) {
 
                 }
 
-                if (data.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse) && focus) {
+                if (data?.bookingStatus == "running" || (data?.bookingStatus == "complete" && !data?.userResponse) && focus) {
 
                     setBookingData({
                         ...bookingData,
                         bookingStatus: data?.bookingStatus,
-
                     })
 
 
@@ -344,6 +375,16 @@ function PassengerRideDetail({ navigation, route }) {
                             ...bookingData,
                             goToPickup: true
                         })
+                    }
+
+                    if (data?.startRideTime && focus && bookingData?.type == "PetSitter") {
+
+                        setStartSittingTime(data?.startRideTime.toDate())
+
+                        const endRideTime = new Date((data?.startRideTime?.toDate()?.getTime()) + (bookingData.duration * 60000)) // Convert duration to milliseconds
+
+                        setEndSittingTime(endRideTime)
+
                     }
 
                     if (data?.collectPet && focus) {
@@ -431,15 +472,15 @@ function PassengerRideDetail({ navigation, route }) {
 
     useEffect(() => {
 
-        if (focus) {
+        if (focus && isRideRunning) {
+
 
             getDriverRideStatus()
 
         }
 
-    }, [focus])
+    }, [focus, isRideRunning])
 
-    console.log(arrived, "arrived")
 
     const showDirection = useCallback(() => {
 
@@ -757,6 +798,8 @@ function PassengerRideDetail({ navigation, route }) {
     }, []);
 
 
+    console.log(bookingData?.type,"typeeee")
+
     const handleArriveSitter = () => {
 
         firestore()
@@ -830,8 +873,6 @@ function PassengerRideDetail({ navigation, route }) {
                 }
             });
     }
-
-    console.log(bookingData?.type, "bookingDataaa")
 
     const handleArriveSitterAddress = () => {
 
@@ -918,16 +959,113 @@ function PassengerRideDetail({ navigation, route }) {
     }
 
 
+    const handleRouteToTrackScreen = () => {
+
+
+        setLoading(true)
+
+        firestore().collection("Request").doc(auth().currentUser?.uid).get().then((doc) => {
+
+
+
+            let data = doc.data()
+
+            console.log(data, "dataaa")
+
+            if (!data || data?.userResponse || (data?.bookingStatus !== "running" && data?.userResponse) || data.bookingStatus == "cancelled" || data?.requestStatus !== "accept") {
+
+                setIsRideRunning(false)
+                setLoading(false)
+                // ToastAndroid.show("No rides to track", ToastAndroid.SHORT)
+                return
+            }
+
+            else {
+
+
+                console.log(data, "dataaa")
+
+                // setBookingData(data)
+                setLoading(false)
+                setIsRideRunning(true)
+                // navigation.navigate("PassengerRideDetail")
+
+            }
+        })
+
+
+    }
+
+    const getFavouriteSitters = () => {
+
+
+        firestore().collection("Favourites").doc(auth().currentUser?.uid).get().then(doc => {
+
+            let data = doc?.data()
+
+
+            let favourites = data?.Favourites
+
+
+            setFavouriteSitters(favourites && favourites?.length > 0 ? favourites : [])
+
+        })
+
+
+
+    }
+
+
+    const handleAddInFavourites = () => {
+
+        setFavouriteLoading(true)
+
+        firestore().collection("Favourites").doc(auth().currentUser?.uid).set(
+            {
+                Favourites:
+                    firestore.FieldValue.arrayUnion(bookingData?.driverData),
+            },
+            { merge: true },
+        ).then((res) => {
+
+
+            setFavouriteSitters([...favouriteSitters, bookingData?.driverData])
+
+            setAddInFavourites(true)
+            setFavouriteLoading(false)
+            ToastAndroid.show("Successfully add in favourites", ToastAndroid.SHORT)
+            return
+        }).catch((error) => {
+
+            setFavouriteLoading(false)
+            ToastAndroid.show(error.message, ToastAndroid.SHORT)
+
+        })
+
+
+    }
+
+    // console.log((favouriteSitters && favouriteSitters?.length>0 && favouriteSitters?.some((e,i)=>e?.id == bookingData?.driverData?.id)))
+
+console.log(bookingData?.type,"typeee")
     return (
 
-        <View style={{ flex: 1, backgroundColor: Colors.white }} >
+        loading ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+
+            <ActivityIndicator color={Colors.buttonColor} size="large" />
+
+        </View> : !isRideRunning ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+
+            <Text style={{ fontFamily: "Poppins-Bold", fontSize: 24, color: Colors.black }} >No Bookings To Track</Text>
+
+        </View> : <View style={{ flex: 1, backgroundColor: Colors.white }} >
 
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" >
                 <View style={{ marginTop: 5 }} >
                     <CustomHeader
                         onPress={() => navigation.replace("Tab")}
                         iconname={"arrow-back-outline"}
-                        text={endRide ? "Arrived" : startRide ? "Track" : "Driver"}
+                        text={"Track Booking"}
                         color={Colors.black}
                     />
                 </View>
@@ -950,7 +1088,7 @@ function PassengerRideDetail({ navigation, route }) {
                                     latitudeDelta: 0.6,
                                     longitudeDelta: 0.9,
                                 }}>
-                                {(bookingData && (bookingData?.type !== "PetSitter" || bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location")) && <Marker
+                                {(bookingData && (bookingData?.type !== "PetSitter" || (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location"))) && <Marker
 
                                     coordinate={{
 
@@ -962,7 +1100,7 @@ function PassengerRideDetail({ navigation, route }) {
                                 >
                                 </Marker>}
 
-                                {(bookingData && (bookingData?.type !== "PetSitter" || bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location")) && <Marker
+                                {(bookingData && (bookingData?.type !== "PetSitter" || (bookingData?.type == "PetSitter" && bookingData?.selectedOption?.name == "My Location"))) && <Marker
 
                                     coordinate={{
                                         latitude: driverLocation?.latitude ? driverLocation?.latitude : bookingData?.driverData?.currentLocation?.latitude,
@@ -970,7 +1108,7 @@ function PassengerRideDetail({ navigation, route }) {
                                     }}
                                     title={"Drivers Location"}
                                 >
-                                    <Image source={bookingData.type == "driver" ? require("../../Images/car.png") : require("../../Images/avatar.png")} style={{
+                                    <Image source={bookingData.type == "PetSitter" ? require("../../Images/avatar.png") :  require("../../Images/car.png")  } style={{
                                         width: 40,
                                         height: 40,
                                         transform: [
@@ -1004,7 +1142,7 @@ function PassengerRideDetail({ navigation, route }) {
                                     title={"Current Location"}
                                 >
 
-                                    <Image source={bookingData.type == "driver" ? require("../../Images/car.png") : require("../../Images/avatar.png")} style={{
+                                    <Image source={bookingData.type == "PetSitter" ?  require("../../Images/avatar.png") : require("../../Images/car.png") } style={{
                                         width: 40,
                                         height: 40,
                                         transform: [
@@ -1033,7 +1171,7 @@ function PassengerRideDetail({ navigation, route }) {
 
 
                         {
-                            endRide && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
+                            (endRide && bookingData?.type !== "PetSitter") && <View style={{ marginTop: 10, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }} >
 
 
                                 <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 16, color: Colors.black }} >Confirmation photo of your pet</Text>
@@ -1145,13 +1283,73 @@ function PassengerRideDetail({ navigation, route }) {
 
                         {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
-                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? Number(remainingTime) / 60 > 1 ? "hour" : "min" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : confirmArrival ? "Wait for pet sitter to start sitting" : arrived ? "Sitter has confirmed that he has been arrived kindly confirm from your side" : goToPickup ? `Pet sitter is ${Number(arrivalMileDis)} miles away from your location` : "Pet Sitter is about to come to your location"}</Text>
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60 / 24) > 1 ? Math.ceil(Number(remainingTime) / 60 / 24) : (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : (Number(bookingData?.duration) / 60 / 24) > 1 ? Number(bookingData?.duration) / 60 / 24 : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? (Number(remainingTime) / 60 / 24) > 1 ? "Days" : Number(remainingTime) / 60 > 1 ? "hour" : "min" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : confirmArrival ? "Wait for pet sitter to start sitting" : arrived ? "Sitter has confirmed that he has been arrived kindly confirm from your side" : goToPickup ? `Pet sitter is ${Number(arrivalMileDis)} miles away from your location` : "Pet Sitter is about to come to your location"}</Text>
 
                         </View>}
 
+
+                        {startSittingTime && (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    paddingHorizontal: 10,
+                                    alignContent: 'center',
+                                    paddingVertical: 15,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: Colors.gray,
+                                        fontFamily: 'Poppins-Medium',
+                                    }}>
+                                    Sitting Start Time:
+                                </Text>
+
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontFamily: 'Poppins-Medium',
+                                    }}>
+                                    {new Intl.DateTimeFormat('en-US', options).format(startSittingTime)} {new Intl.DateTimeFormat('en-US', timeOption).format(startSittingTime)}
+                                </Text>
+                            </View>
+                        )}
+
+
+                        {endSittingTime && (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    paddingHorizontal: 10,
+                                    alignContent: 'center',
+                                    paddingVertical: 15,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: Colors.gray,
+                                        fontFamily: 'Poppins-Medium',
+                                    }}>
+                                    Sitting End Time:
+                                </Text>
+
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontFamily: 'Poppins-Medium',
+                                    }}>
+                                    {new Intl.DateTimeFormat('en-US', options).format(endSittingTime)} {new Intl.DateTimeFormat('en-US', timeOption).format(endSittingTime)}
+                                </Text>
+                            </View>
+                        )}
+
                         {bookingData && bookingData?.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && <View style={{ marginTop: 20, backgroundColor: "#A3DA9E", borderRadius: 20, padding: 7, flexDirection: "row", alignItems: "center", marginBottom: 15 }} >
 
-                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? Number(remainingTime) / 60 > 1 ? "hour" : "min" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : collectPet ? "Wait for pet sitter for start sitting" : arrivedSitterAddress ? "Wait for pet sitter to confirm collecting pet" : "Arriving to sitter's location"}</Text>
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Pet Sitting has been ended by sitter" : startRide ? `pet sitting has been started remaining pet sitting time is ${remainingTime ? (Number(remainingTime) / 60 / 24) > 1 ? Math.ceil(Number(remainingTime) / 60 / 24) : (Number(remainingTime) / 60) > 1 ? Math.ceil(Number(remainingTime) / 60) : remainingTime : (Number(bookingData?.duration) / 60 / 24) > 1 ? Number(bookingData?.duration) / 60 / 24 : Number(bookingData?.duration) / 60 > 1 ? Math.ceil(Number(bookingData?.duration) / 60) : bookingData?.duration} ${remainingTime ? (Number(remainingTime) / 60 / 24) > 1 ? "Days" : Number(remainingTime) / 60 > 1 ? "hour" : "min" : (Number(bookingData?.duration) / 60 / 24) > 1 ? "Days" : Number(bookingData?.duration) / 60 > 1 ? "hour" : "min"}` : collectPet ? "Wait for pet sitter for start sitting" : arrivedSitterAddress ? "Wait for pet sitter to confirm collecting pet" : "Arriving to sitter's location"}</Text>
 
                         </View>}
 
@@ -1162,6 +1360,10 @@ function PassengerRideDetail({ navigation, route }) {
                             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: Colors.black, textAlign: "center", width: "100%" }} >{endRide ? "Arrived Safely" : startRide && bookingData?.type !== "PetWalk" ? `Travel time to drop off location-${bookingData && bookingData?.bookingType == "twoWay" ? bookingData?.dropoffToPickupMinutes : arriveDropoffMin} min.` : startRide && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff && bookingData?.type == "PetWalk" ? `Your pet walk duration is ${bookingData?.duration} min ` : reachDropoff ? `You have reached at drop off waiting time is ${bookingData?.waitingTime} min` : rideStartToDropoff ? `Traval time to drop off location ${bookingData?.pickupToDropoffMinutes}min ` : arrived ? "Your Driver Arrived" : `Arriving in ${arrivalDis} mins`}</Text>
 
                         </View>}
+
+
+                        {(endRide && bookingData?.type == "PetSitter") && (addInFavourites ? <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 15, textAlign: "center", width: "100%", color: Colors.black }} >Succesfully Add In Favourites</Text> : (favouriteSitters && favouriteSitters?.length > 0 && favouriteSitters?.some((e, i) => e?.id == bookingData?.driverData?.id)) ? "" : <CustomButton onPress={() => handleAddInFavourites()} text={favouriteLoading ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Add In Favourites"} linearStyle={{ borderRadius: 5 }} styleContainer={{ width: "100%", marginBottom: 10 }} />)}
+
 
                         {endRide && <View style={{ marginTop: 10 }} >
 
@@ -1178,6 +1380,10 @@ function PassengerRideDetail({ navigation, route }) {
                                 })}
                             </View>
                         </View>}
+
+
+
+
                         {endRide && <TextInput onChangeText={(e) => setComment(e)} value={comment} placeholder="Comment" placeholderTextColor={Colors.gray} numberOfLines={5} multiline={true} textAlignVertical="top" style={{ backgroundColor: "#e6e6e6", borderRadius: 10, marginBottom: 10, padding: 10, fontSize: 16, fontFamily: "Poppins-Medium", color: Colors.black }} />}
 
                         {endRide && <CustomButton onPress={() => handleSubmitReview()} text={finalLoader ? <ActivityIndicator color={Colors.white} size={"small"} /> : "Submit Review"} styleContainer={{ width: "100%", marginBottom: 10 }} />}
@@ -1185,12 +1391,12 @@ function PassengerRideDetail({ navigation, route }) {
                         {endRide && <CustomButton onPress={() => handleBackToHome()} text={"Back To Home"} styleContainer={{ width: "100%", marginBottom: 20 }} linearColor={"#e6e6e6"} btnTextStyle={{ color: "#808080" }} />}
 
 
-                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && !confirmArrival && <CustomButton text={"Pet Sitter Arrived"} onPress={() => handleArriveSitter()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
+                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "My Location" && !confirmArrival && !endRide && <CustomButton text={"Pet Sitter Arrived"} onPress={() => handleArriveSitter()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
 
-                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && !arrivedSitterAddress && <CustomButton text={"Arrived Sitter Address"} onPress={() => handleArriveSitterAddress()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
+                        {bookingData && bookingData.type == "PetSitter" && bookingData.selectedOption?.name == "Sitter Location" && !arrivedSitterAddress && !endRide && <CustomButton text={"Arrived Sitter Address"} onPress={() => handleArriveSitterAddress()} styleContainer={{ marginBottom: 20, width: "100%", marginTop: 10 }} />}
 
 
-                        {!arrived && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
+                        {((!arrived || bookingData?.type == "PetSitter") && !endRide) && <CustomButton text={"Cancel Ride"} onPress={() => navigation.navigate("RideCancel")} styleContainer={{ marginBottom: 20, width: "100%" }} linearColor="#e6e6e6" btnTextStyle={{ color: Colors.black }} />}
 
 
                         {imageModal && ShowLocationModal()}

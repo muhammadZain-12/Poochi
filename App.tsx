@@ -39,6 +39,10 @@ import RadiusState from './src/Context/RadiusContext/state';
 import ClaimContext from './src/Context/ClaimContext/context';
 import ClaimState from './src/Context/ClaimContext/state';
 import CancelChargesState from './src/Context/cancelRideChargesContext/state';
+import PetsState from './src/Context/PetContext/state';
+import BannerContext from './src/Context/BannerContext/context';
+import BannerState from './src/Context/BannerContext/state';
+import FavouriteSittersState from './src/Context/FavouriteContext/state';
 
 function App() {
   useEffect(() => {
@@ -58,29 +62,36 @@ function App() {
         // 'pk_test_51NV3dXCcj0GzAQ3b6AnfokqtMfMp6tgV8G1CoAy0hwFM4ChQtVvORsdd4VGMQAPOwlt4FFxKpnigH2p2RtL6tIT0009uUfUTiP'
       }>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        <SelectedPetState>
-          <RadiusState>
-            <NotificationState>
-              <ScheduleRideState>
-                <CancelChargesState>
-                  <ClaimState>
-                    <BookingState>
-                      <ChooseLocationState>
-                        <CardDetailsState>
-                          <LoginState>
-                            <LocationState>
-                              <Navigation />
-                            </LocationState>
-                          </LoginState>
-                        </CardDetailsState>
-                      </ChooseLocationState>
-                    </BookingState>
-                  </ClaimState>
-                </CancelChargesState>
-              </ScheduleRideState>
-            </NotificationState>
-          </RadiusState>
-        </SelectedPetState>
+        <BannerState>
+          <SelectedPetState>
+            <RadiusState>
+              <NotificationState>
+                <FavouriteSittersState>
+                <PetsState>
+                  <ScheduleRideState>
+                    <CancelChargesState>
+                      <ClaimState>
+                        <BookingState>
+                          <ChooseLocationState>
+                            <CardDetailsState>
+                              <LoginState>
+                                <LocationState>
+                                  <Navigation />
+                                </LocationState>
+                              </LoginState>
+                            </CardDetailsState>
+                          </ChooseLocationState>
+                        </BookingState>
+                      </ClaimState>
+                    </CancelChargesState>
+                  </ScheduleRideState>
+                </PetsState>
+                </FavouriteSittersState>
+              </NotificationState>
+
+            </RadiusState>
+          </SelectedPetState>
+        </BannerState>
       </View>
     </StripeProvider>
   );

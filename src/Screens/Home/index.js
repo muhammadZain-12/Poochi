@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
-import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView, ToastAndroid, Modal, StyleSheet, ActivityIndicator, Linking } from 'react-native';
+import { Image, Text, Touchable, TouchableOpacity, FlatList, View, Dimensions, ScrollView, ToastAndroid, Modal, StyleSheet, ActivityIndicator, Linking, StatusBar } from 'react-native';
 import Colors from '../../Constant/Color';
 import Icons from "react-native-vector-icons/Feather"
 import LoginContext from '../../Context/loginContext/context';
@@ -24,6 +24,11 @@ import RadiusContext from '../../Context/RadiusContext/context';
 import Font from "react-native-vector-icons/FontAwesome"
 import ClaimContext from '../../Context/ClaimContext/context';
 import CancelChargesContext from '../../Context/cancelRideChargesContext/context';
+import AntDesign from "react-native-vector-icons/AntDesign"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import PetContext from '../../Context/PetContext/context';
+import BannerContext from '../../Context/BannerContext/context';
+import FavouriteSitterContext from '../../Context/FavouriteContext/context';
 
 
 function Home({ navigation }) {
@@ -50,10 +55,17 @@ function Home({ navigation }) {
   const chooseLocationCont = useContext(ChooseLocationContext)
   const scheduleRideCont = useContext(ScheduleRideContext)
   const claimCont = useContext(ClaimContext)
+  const favouriteSitterCont = useContext(FavouriteSitterContext)
   let radiusCont = useContext(RadiusContext)
   let cancelChargesCont = useContext(CancelChargesContext)
+  let petCont = useContext(PetContext)
+  let bannerCont = useContext(BannerContext)
 
+  const { banners, setBanners } = bannerCont
 
+  const { favouriteSitters, setFavouriteSitters } = favouriteSitterCont
+
+  const { pets, setPets } = petCont
 
   const { loginData, setLoginData } = context
   const { locationData, setLocationData } = locationCont
@@ -66,10 +78,7 @@ function Home({ navigation }) {
   const { scheduleData, setScheduleData } = scheduleRideCont
   const { claim, setClaim } = claimCont
   let { radius, setRadius, scheduleRideRadius, setScheduleRideRadius } = radiusCont
-  let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
-
-
-
+  let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges, setCancelPetSittingCharges, setScheduleCancelPetSittingCharges } = cancelChargesCont
 
 
   const focus = useIsFocused()
@@ -77,6 +86,7 @@ function Home({ navigation }) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false)
+  // const [pets, setPets] = useState(false)
   const flatListRef = useRef(null);
 
 
@@ -95,6 +105,78 @@ function Home({ navigation }) {
       image: require('../../Images/banner4.jpg'),
     },
   ];
+
+
+
+  const getBanners = () => {
+
+    firestore().collection("Banners").doc("banner321654987").onSnapshot(querySnapshot => {
+
+      let data = querySnapshot.data()
+
+      let allBanners = data?.banners
+
+      setBanners(allBanners)
+
+    })
+
+
+  }
+
+
+  const getFavouriteSitters = () => {
+
+
+    firestore().collection("Favourites").doc(auth().currentUser?.uid).get().then(doc => {
+
+      let data = doc?.data()
+
+
+      let favourites = data?.Favourites
+
+
+      setFavouriteSitters(favourites && favourites?.length > 0 ? favourites : [])
+
+    })
+
+
+
+  }
+
+  useEffect(() => {
+    getBanners()
+    getFavouriteSitters()
+  }, [])
+
+
+
+  const getUserPets = async () => {
+
+    let id = auth().currentUser?.uid
+
+    firestore().collection("Pets").doc(id).get().then((doc) => {
+
+      let userPets = doc?.data()
+
+      if (userPets?.pets) {
+        setPets(userPets.pets)
+      }
+      else {
+        setPets([])
+      }
+
+    })
+
+
+
+  }
+
+  React.useEffect(() => {
+
+    getUserPets()
+
+  }, [navigation])
+
 
 
   // const [scheduleData, setScheduleData] = useState([
@@ -296,7 +378,6 @@ function Home({ navigation }) {
                   scheduleRides: allData
                 }).then((res) => {
 
-                  console.log("notification has been succesfully send")
 
                 }).catch((error) => {
                   ToastAndroid.show(error?.message, ToastAndroid.SHORT)
@@ -380,6 +461,11 @@ function Home({ navigation }) {
       let cancellationCharges = data?.cancelRideCharges
       let scheduleCancellationCharges = data?.scheduleCancelRideCharges
 
+      let cancellationPetSittingCharges = data?.cancelPetSittingCharges
+
+      let scheduleCancellationPetSittingCharges = data?.scheduleCancelPetSittingCharges
+
+
 
 
       setRadius(radius)
@@ -387,6 +473,11 @@ function Home({ navigation }) {
 
       setCancelCharges(cancellationCharges)
       setScheduleCancelCharges(scheduleCancellationCharges)
+
+      setCancelPetSittingCharges(cancellationPetSittingCharges)
+
+      setScheduleCancelPetSittingCharges(scheduleCancellationPetSittingCharges)
+
 
     })
 
@@ -630,7 +721,7 @@ function Home({ navigation }) {
           let scheduleGetTime = scheduledDateTime.getTime()
           let nowGetTime = nowDateTime.getTime()
 
-          return e?.ScheduleRidestatus == "pending" && (scheduleGetTime > nowGetTime)
+          return (e?.ScheduleRidestatus == "pending") && (scheduleGetTime > nowGetTime)
         })
 
         setScheduleData(rides)
@@ -661,7 +752,7 @@ function Home({ navigation }) {
 
   const nextImage = () => {
 
-    if (currentIndex == HomePageBanner.length - 1) {
+    if (currentIndex == (banners && banners.length - 1)) {
       const nextIndex = 0
       setCurrentIndex(nextIndex);
       flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
@@ -854,17 +945,73 @@ function Home({ navigation }) {
     })
 
 
-    // bookingData && bookingData?.bookingStatus == "running" ? 
-
-
   }
 
 
-  return <View style={{ flex: 1, backgroundColor: Colors.white }} >
+  const renderSelectedPets = ({ item }, index) => {
 
-    <ScrollView>
 
-      <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center", paddingBottom: 10 }} >
+
+    return <TouchableOpacity onPress={() => navigation.navigate("SinglePetDetails", item)} key={index} style={{ justifyContent: "center", alignItems: "center", marginRight: 10 }} >
+      <Image source={{ uri: item.image1 }} style={{ width: 65, height: 65, borderRadius: 10 }} />
+      <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.petName}</Text>
+      {/* <Text style={{ color: Colors.gray, fontFamily: "Poppins-Medium", fontSize: 12 }} >{item.breed}</Text> */}
+    </TouchableOpacity>
+  }
+
+
+  return <View style={{ flex: 1 }} >
+
+    <ScrollView style={{ backgroundColor: "rgba(246, 255, 245, 1)" }} >
+
+      <StatusBar
+        animated={true}
+        backgroundColor="rgba(246, 255, 245, 1)"
+        barStyle={'dark-content'}
+      />
+
+      <View style={{ margin: 20, marginBottom: 0, padding: 10, borderWidth: 1, borderColor: "#B2B1B1", borderRadius: 10, backgroundColor: Colors.white, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+
+        <View style={{ flexDirection: "row", alignItems: "center" }} >
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
+            <Image source={{ uri: loginData.profile }} style={{ width: 50, height: 50, borderRadius: 10 }} />
+          </TouchableOpacity>
+
+          <View style={{ marginLeft: 10 }} >
+            <Text style={{ color: Colors.black, fontFamily: "Poppins-Bold", fontSize: 14, lineHeight: 20 }} >Hi, {loginData?.fullName?.length > 10 ? `${loginData?.fullName?.slice(0, 8)}...` : loginData.fullName}</Text>
+
+            <Text style={{ color: "#A7A7A7", fontFamily: "Poppins-Medium", fontSize: 12, lineHeight: 15 }} >{loginData?.city}, {loginData?.country?.value} </Text>
+
+
+          </View>
+
+        </View>
+
+        <View style={{ width: "30%", flexDirection: "row", justifyContent: unseenNotification && unseenNotification.length > 0 ? "space-around" : "flex-end" }} >
+          {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide")} style={{ width: 35, height: 35, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "#CCCCCC", borderRadius: 7, marginRight: 5 }} >
+            <MaterialIcons name="schedule" size={20} color={Colors.gray} />
+
+          </TouchableOpacity>}
+
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")} style={{ width: 35, height: 35, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "#CCCCCC", borderRadius: 7 }} >
+
+            {unseenNotification && unseenNotification.length > 0 && <View style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 50, position: "absolute", left: 20, justifyContent: "center", alignItems: "center", top: -5 }} >
+
+              <Text style={{ color: Colors.whichte, fontFamily: "Poppins-Medium", fontSize: 14 }}>{unseenNotification?.length}</Text>
+
+
+            </View>}
+            <IonIcons name="notifications" size={20} color={Colors.gray} />
+
+
+          </TouchableOpacity>
+
+        </View>
+
+      </View>
+
+
+      {/* <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 20, alignItems: "center", paddingBottom: 10 }} >
         <TouchableOpacity onPress={() => navigation.navigate("Profile")} >
           <Image source={{ uri: loginData.profile }} style={{ width: 70, height: 70, borderRadius: 100 }} />
         </TouchableOpacity>
@@ -896,12 +1043,15 @@ function Home({ navigation }) {
         </View>
 
 
-      </View>
+      </View> */}
+
+
+
 
       <View style={{ paddingHorizontal: 20 }} >
 
 
-        <View>
+        {/* <View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 }} >
 
             {scheduleData && scheduleData.length > 0 && <TouchableOpacity onPress={() => navigation.navigate("ScheduleRide")} style={{ backgroundColor: "#d9d9d9", borderRadius: 30, padding: 10, justifyContent: "center", alignItems: "center" }} >
@@ -909,18 +1059,18 @@ function Home({ navigation }) {
             </TouchableOpacity>}
           </View>
 
+        </View> */}
 
 
 
 
-        </View>
 
         <View
           // colors={[Color.mainColor, Color.white]}
-          style={{ zIndex: 2, width: "100%", borderRadius: 10 }}>
+          style={{ zIndex: 2, width: "100%", borderRadius: 10, marginTop: 10 }}>
           <FlatList
             ref={flatListRef}
-            data={HomePageBanner}
+            data={banners}
             showsHorizontalScrollIndicator={false}
             onScroll={e => {
               const x = e.nativeEvent.contentOffset.x;
@@ -928,6 +1078,7 @@ function Home({ navigation }) {
             }}
             horizontal
             renderItem={({ item, index }) => {
+
               return (
                 <TouchableOpacity
                   style={{
@@ -937,12 +1088,10 @@ function Home({ navigation }) {
                     padding: 0,
                     margin: 0,
                   }}
-
-                  onPress={() => item.id == 2 ? handleNavigateToBooking("PetSitter") : handleNavigateToBooking("PetWalk")}
-
+                  onPress={() => item?.bannerType?.id == 1 ? handleNavigateToBooking("PetSitter") : item?.bannerType?.id == 2 ? handleNavigateToBooking("PetWalk") : handleNavigateToBooking("MedicalTrip")}
                 >
                   <Image
-                    source={item.image}
+                    source={{ uri: item.banner }}
                     style={{ width: width - 40, height: 150, borderRadius: 10 }}
                     resizeMode="stretch"
                   />
@@ -953,7 +1102,104 @@ function Home({ navigation }) {
         </View>
 
 
-        <View style={{ paddingHorizontal: 20 }} >
+
+
+        <View style={{ padding: 10, borderWidth: 1, marginTop: 10, borderRadius: 10, borderWidth: 2, borderColor: Colors.buttonColor, backgroundColor: Colors.white }} >
+
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+
+            <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 16 }} >Your Pets</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate("Pets")} style={{ backgroundColor: Colors.buttonColor, padding: 5, borderRadius: 20, paddingHorizontal: 20 }} >
+
+
+              <Text style={{ color: Colors.white, fontFamily: "Poppins-SemiBold", fontSize: 12 }} >See All</Text>
+
+
+            </TouchableOpacity>
+
+          </View>
+
+
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={{ flexDirection: "row", width: "100%", marginTop: 10 }} >
+
+            <View style={{ marginRight: 10 }} >
+              <TouchableOpacity onPress={() => navigation.navigate("PetDetails")} style={{ width: 65, height: 65, backgroundColor: "#CBFFC7", borderStyle: "dotted", borderRadius: 10, borderWidth: 1, borderColor: Colors.buttonColor, justifyContent: "center", alignItems: "center" }} >
+
+                <MaterialIcons name={"add"} size={20} color={Colors.buttonColor} />
+
+
+              </TouchableOpacity>
+              <Text style={{ color: Colors.black, fontFamily: "Poppins-Medium", fontSize: 12, textAlign: "center" }} >Add Pet</Text>
+            </View>
+
+            {pets && pets.length > 0 && pets.map((e, i) => {
+
+              return (
+
+                renderSelectedPets({ item: e }, i)
+
+              )
+
+            })}
+
+
+
+
+            {/* <FlatList
+    data={selectedPets}
+    renderItem={renderSelectedPets}
+    scrollEnabled={true}
+    horizontal={true}
+/> */}
+
+          </ScrollView>
+
+
+        </View>
+
+
+
+        <View style={{ borderWidth: 2, borderRadius: 10, marginTop: 10, padding: 10, borderColor: Colors.buttonColor, backgroundColor: Colors.white, marginBottom: 30 }} >
+
+
+
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
+
+            <TouchableOpacity onPress={() => navigation?.navigate("PetWalk")} style={{ width: "48%", height: 150, borderRadius: 10 }} >
+
+              <Image source={require("../../Images/DogWalking.png")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
+              {/* <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 12, textAlign: "center", marginTop: 10 }} >Dog Walking</Text> */}
+
+
+
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation?.navigate("MedicalTrip")} style={{ width: "48%", height: 150, borderRadius: 10 }} >
+
+              <Image source={require("../../Images/taxipet.png")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
+
+              {/* <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 12, textAlign: "center", marginTop: 10 }} >Pet Taxi</Text> */}
+
+            </TouchableOpacity>
+
+
+          </View>
+
+
+
+          <TouchableOpacity onPress={() => navigation?.navigate("PetSitter")} style={{ width: "100%", height: 150, borderRadius: 10, marginTop: 10 }} >
+
+            <Image source={require("../../Images/petsitting.png")} style={{ width: "100%", height: "100%", borderRadius: 10 }} />
+
+            {/* <Text style={{ color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 12, textAlign: "center", marginTop: 10 }} >Pet Sitting And Boarding</Text> */}
+
+          </TouchableOpacity>
+
+
+        </View>
+
+        {/* <View style={{ paddingHorizontal: 20 }} >
 
           <Text style={{ textAlign: "center", color: Colors.black, fontFamily: "Poppins-SemiBold", fontSize: 22, marginTop: 20, marginBottom: 20 }} >Where Would You Like To Go?</Text>
 
@@ -984,7 +1230,7 @@ function Home({ navigation }) {
           </View>
 
 
-        </View>
+        </View> */}
 
       </View>
 

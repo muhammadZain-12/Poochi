@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { View, Text, Dimensions, Image, TextInput, ScrollView, TouchableOpacity, ToastAndroid, PermissionsAndroid, ActivityIndicator, BackHandler, Linking } from 'react-native';
 import CustomHeader from '../../Components/CustomHeader';
 import Colors from '../../Constant/Color';
@@ -13,6 +13,7 @@ import storage, { FirebaseStorageTypes } from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { Link } from "@react-navigation/native";
+import PetContext from "../../Context/PetContext/context";
 
 function PetDetails({ navigation, route }) {
 
@@ -43,6 +44,11 @@ function PetDetails({ navigation, route }) {
   const [image3, setImage3] = useState("")
   const [image3Url, setImage3Url] = useState("")
 
+  const [selectedOption, setSelectedOption] = useState('')
+
+  const petCont = useContext(PetContext)
+
+  const { pets, setPets } = petCont
 
   let initialNature = [
 
@@ -65,13 +71,33 @@ function PetDetails({ navigation, route }) {
 
   ]
 
+  const [option, setOptions] = useState([
+
+    {
+      id: 1,
+      size: "Small",
+      weight: '10-20 lb'
+    },
+    {
+      id: 2,
+      size: "Medium",
+      weight: '20-50 lb'
+    },
+    {
+      id: 3,
+      size: "Large",
+      weight: '50 lb plus'
+    },
+
+  ])
+
   const [natureOfPet, setNatureOfPets] = useState(initialNature)
 
   let otherInitialData = {
     breed: "",
     petName: "",
-    weight: "",
-    height: "",
+    // weight: "",
+    // height: "",
     additionalDetails: "",
   }
 
@@ -80,7 +106,6 @@ function PetDetails({ navigation, route }) {
 
 
 
-  console.log(otherData, "otherData")
 
   React.useEffect(() => {
 
@@ -89,8 +114,8 @@ function PetDetails({ navigation, route }) {
       setOtherData({
 
         additionalDetails: petData.additionalDetails,
-        height: petData.height,
-        weight: petData.weight,
+        // height: petData.height,
+        // weight: petData.weight,
         petName: petData.petName,
         breed: petData.breed
       })
@@ -98,11 +123,28 @@ function PetDetails({ navigation, route }) {
       setValue(petData.typeOfPet)
       setImage1(petData.image1)
       setImage1url(petData.image1)
+      setSelectedOption([petData?.size])
       setImage2(petData.image2)
       setImage2Url(petData.image2)
       setImage3(petData.image3)
       setImage3Url(petData.image3)
       setHealthIssue(petData.healthIssue)
+
+
+      setOptions(option.map((e, i) => {
+        if (e.id == petData?.size?.id) {
+          return {
+            ...e,
+            selected: true
+          }
+        } else {
+          return {
+            ...e,
+            selected: false
+          }
+        }
+      }))
+
       setNatureOfPets(natureOfPet.map((e, i) => {
         if (e.label == petData.natureOfPet) {
           return {
@@ -198,7 +240,6 @@ function PetDetails({ navigation, route }) {
       } else if (result.errorCode == 'others') {
         Linking.openSettings();
         hideModal1();
-        console.log(result,"result")
         ToastAndroid.show(result.errorMessage, ToastAndroid.SHORT);
       } else {
         hideModal1();
@@ -341,7 +382,7 @@ function PetDetails({ navigation, route }) {
         let filename = result.assets[0].fileName
 
         setImage3Url(uri)
-        // Provide a unique name for the image
+        // Provide a unique name for the imas
         await uploadImageToFirebase(uri, filename);
 
         // Get the download URL of the uploaded image
@@ -424,7 +465,6 @@ function PetDetails({ navigation, route }) {
 
 
 
-  console.log(petData, "PETdTA")
 
   const handleSubmitData = async () => {
 
@@ -439,8 +479,9 @@ function PetDetails({ navigation, route }) {
         gender: gender,
         breed: otherData.breed,
         petName: otherData.petName,
-        height: otherData.height,
-        weight: otherData.weight,
+        // height: otherData.height,
+        // weight: otherData.weight,
+        size: selectedOption && selectedOption?.length > 0 ? selectedOption[0] : selectedOption,
         additionalDetails: otherData.additionalDetails,
         natureOfPet: natureOfPet.filter((e, i) => e.selected),
         healthIssue: healthIssue,
@@ -496,6 +537,9 @@ function PetDetails({ navigation, route }) {
 
 
           firestore().collection("Pets").doc(currentUser.uid).set(sendingData).then((res) => {
+
+            setPets(mergeData)
+
             ToastAndroid.show("Pet has been succesfully edited", ToastAndroid.SHORT)
             setLoading(false)
             navigation.navigate("Pets", mergeData)
@@ -503,7 +547,6 @@ function PetDetails({ navigation, route }) {
             setLoading(false)
             ToastAndroid.show(erorr.message, ToastAndroid.SHORT)
           })
-
         })
 
 
@@ -525,7 +568,9 @@ function PetDetails({ navigation, route }) {
       // image2: image2,
       // image3: image3,
       typeOfPet: value,
+
       gender: gender,
+      size: selectedOption && selectedOption?.length > 0 ? selectedOption[0] : selectedOption,
       natureOfPet: natureOfPet.filter((e, i) => e.selected),
       healthIssue: healthIssue ? healthIssue : false
     }
@@ -570,6 +615,12 @@ function PetDetails({ navigation, route }) {
       return
     }
 
+    if (selectedOption && selectedOption.length == 0) {
+
+      ToastAndroid.show("Select Pet Size", ToastAndroid.SHORT)
+      return
+    }
+
     if (!otherData?.petName) {
       ToastAndroid.show("PetName is missing", ToastAndroid.SHORT)
       return
@@ -580,15 +631,15 @@ function PetDetails({ navigation, route }) {
       return
     }
 
-    if (!otherData?.weight) {
-      ToastAndroid.show("Weight is missing", ToastAndroid.SHORT)
-      return
-    }
+    // if (!otherData?.weight) {
+    //   ToastAndroid.show("Weight is missing", ToastAndroid.SHORT)
+    //   return
+    // }
 
-    if (!otherData?.height) {
-      ToastAndroid.show("Height is missing", ToastAndroid.SHORT)
-      return
-    }
+    // if (!otherData?.height) {
+    //   ToastAndroid.show("Height is missing", ToastAndroid.SHORT)
+    //   return
+    // }
 
 
 
@@ -632,6 +683,10 @@ function PetDetails({ navigation, route }) {
           pets: firestore.FieldValue.arrayUnion(dataToSend)
         }, { merge: true }
       ).then((res) => {
+
+
+        setPets([...pets, dataToSend])
+
         setLoading(false)
         setNatureOfPets(initialNature)
         setHealthIssue(false)
@@ -689,6 +744,51 @@ function PetDetails({ navigation, route }) {
   }, []);
 
 
+  const handleSelectOption = (e, ind) => {
+
+
+    setSelectedOption(e)
+
+    setOptions(option && option.length > 0 && option.map((e, i) => {
+      if (ind == i) {
+        return {
+          ...e,
+          selected: true
+        }
+
+
+      } else {
+        return {
+          ...e,
+          selected: false
+        }
+      }
+    }))
+
+  }
+
+
+  const handleGoBack = () => {
+
+    
+    if (petData?.screen) {
+      navigation.replace(petData?.screen, petData?.name)
+      setLoading(false)
+      
+    }
+    else {
+     
+      navigation?.navigate("Tab",{
+        screen : "Home"
+      })
+
+
+    }
+  
+
+
+  }
+
 
   return loading ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
 
@@ -697,21 +797,27 @@ function PetDetails({ navigation, route }) {
   </View> : <View style={{ flex: 1, backgroundColor: Colors.white }} >
     <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true} >
       <View style={{ marginTop: 10 }} >
-        <CustomHeader text={"Enter New Pet"} />
+        <CustomHeader text={"Enter New Pet"} 
+        
+        onPress={() => handleGoBack()}
+        iconname={"arrow-back-outline"}
+        color={Colors.black}
+        
+        />
       </View>
 
       <View style={{ paddingHorizontal: 15, marginTop: 10 }} >
 
-        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black }} >Upload Pet Image</Text>
 
-        <View style={{ width: "100%", flexDirection: "row", marginTop: 10, justifyContent: "center" }} >
+        <View style={{ width: "100%", flexDirection: "column", marginTop: 10, justifyContent: "center" ,alignItems:"center"}} >
 
           <TouchableOpacity onPress={() => setVisible1(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
 
             {image1url ? <Image source={{ uri: image1url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
-
-
           </TouchableOpacity>
+
+          <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 18, color: Colors.black,alignSelf:"center" }} >Upload Pet Image</Text>
+
           {/* <TouchableOpacity onPress={() => setVisible2(true)} style={{ width: width / 3.5, height: 100, backgroundColor: "#E6E6E6", borderRadius: 15, justifyContent: "center", alignItems: "center" }} >
             {image2url ? <Image source={{ uri: image2url }} style={{ width: width / 3.5, height: 100, borderRadius: 10 }} resizeMode='cover' /> : <Image source={require("../../Images/picker.png")} />}
 
@@ -796,7 +902,7 @@ function PetDetails({ navigation, route }) {
             placeholderStyle={{ color: "gray" }}
           />
 
-          <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
+          {/* <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }} >
 
 
             <TextInput
@@ -819,14 +925,42 @@ function PetDetails({ navigation, route }) {
               onChangeText={(e) => setOtherData({ ...otherData, height: e })}
             />
 
+          </View> */}
+
+
+
+
+          <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Select Pet Size:</Text>
+
+          <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", zIndex: -10 }} >
+            <View style={{ marginTop: 10, flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-start" }} >
+              {option && option.length > 0 && option.map((e, i) => {
+                return (
+                  <View key={i} style={{ width: 110, height: 110, marginRight: "10px" }} >
+                    <TouchableOpacity onPress={() => handleSelectOption(e, i)} style={{ borderWidth: e.selected ? 2 : 0, borderColor: e.selected ? Colors.buttonColor : "none", width: 100, height: 100, backgroundColor: "#e6e6e6", borderRadius: 10, justifyContent: "center", alignItems: "center", marginLeft: 5 }} >
+
+                      <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.size}</Text>
+                      <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", textAlign: "center", marginTop: 5, color: Colors.black }} >{e.weight}</Text>
+                    </TouchableOpacity>
+                  </View>
+                )
+              })}
+
+            </View>
+
+
+
+
+
+
           </View>
 
 
+
+
+
           <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold", color: Colors.black, marginTop: 10, zIndex: -10 }} >Nature Of Pet</Text>
-
-
           <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center", zIndex: -10 }} >
-
 
             {natureOfPet && natureOfPet.length > 0 && natureOfPet.map((e, i) => {
 
@@ -844,12 +978,7 @@ function PetDetails({ navigation, route }) {
               )
 
             })}
-
-
-
           </View>
-
-
 
           <TextInput
 

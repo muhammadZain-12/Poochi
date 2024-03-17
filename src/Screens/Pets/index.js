@@ -52,7 +52,7 @@ function Pets({ navigation, route }) {
             // Replace 'TabScreenName' with the name of your tab screen
             // This will navigate to the specified tab screen when the back button is pressed
 
-            navigation.navigate("Profile")
+            navigation.goBack()
 
             return true; // Return true to prevent the default back action
 
@@ -70,7 +70,7 @@ function Pets({ navigation, route }) {
 
             <View style={{ marginTop: 10 }} >
                 <CustomHeader
-                    onPress={() => navigation.navigate("Profile")}
+                    onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
                     text="Pets"
                     color={Colors.black}

@@ -1068,7 +1068,7 @@ function PetWalk({ navigation, route }) {
             <View style={{ marginTop: 5 }} >
                 <CustomHeader
 
-                    text={"Pet Walk"}
+                    text={"Dog Walking"}
                     iconname={"arrow-back-outline"}
                     color={Colors.black}
                     onPress={() => navigation.reset({
@@ -1153,7 +1153,7 @@ function PetWalk({ navigation, route }) {
 
                     <Text style={{ fontSize: 17, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 30 }} >Select Your Pet</Text>
 
-                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >additional $7 for extra pet</Text>
+                    <Text style={{ fontSize: 14, color: Colors.black, fontFamily: "Poppins-SemiBold", marginTop: 10 }} >Additional $7 for extra pets</Text>
 
                     {selectedPets && selectedPets.length > 0 ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ flexDirection: "row", width: "100%" }} >
 
@@ -1255,7 +1255,7 @@ function PetWalk({ navigation, route }) {
 
                         multiline={true}
                         style={{ backgroundColor: "#e6e6e6", borderRadius: 5, marginBottom: 10, marginTop: 10, fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16, paddingHorizontal: 10, textAlignVertical: "top", paddingVertical: 15 }}
-                        placeholder='Comment'
+                        placeholder='Comments'
                         onChangeText={setComment}
                         placeholderTextColor={"gray"}
 
@@ -1299,7 +1299,7 @@ function PetWalk({ navigation, route }) {
                 </View>
 
 
-                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : date ? "Schedule Ride" : "Find a Pet Walker"} />
+                <CustomButton onPress={() => !loading && handleFindDriver()} styleContainer={{ alignSelf: "center", marginBottom: 20, width: "85%" }} text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : date ? "Book Now" : "Find a Dog Walker"} />
 
 
             </ScrollView>

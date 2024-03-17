@@ -101,6 +101,11 @@ function ScheduleCancelRide({ navigation, route }) {
         let diff = scheduleGetTime - nowGetTime
         let hours = diff / 1000 / 60 / 60
 
+
+
+
+
+
         if (!items?.driverData) {
 
             firestore().collection("ScheduleRides").doc(items?.userData?.id).get().then((doc) => {
@@ -179,7 +184,7 @@ function ScheduleCancelRide({ navigation, route }) {
 
                             var data = JSON.stringify({
                                 notification: {
-                                    body: 'Scheduled Ride has been cancelled by customer',
+                                    body: 'Scheduled Booking has been cancelled by customer',
                                     title: `Hi ${driverData?.fullName}`,
                                     sound: "default"
                                 },
@@ -207,7 +212,7 @@ function ScheduleCancelRide({ navigation, route }) {
                                     }, { merge: true }).then(() => {
 
                                         let notificationToSend = {
-                                            body: "Scheduled Ride has been cancelled by customer",
+                                            body: "Scheduled Booking has been cancelled by customer",
                                             title: `Hi ${driverData?.fullName}`,
                                             date: new Date()
                                         }
@@ -216,7 +221,7 @@ function ScheduleCancelRide({ navigation, route }) {
                                             notification: firestore.FieldValue.arrayUnion(notificationToSend)
                                         }, { merge: true }).then((res) => {
                                             navigation.navigate("ScheduleRide")
-                                            ToastAndroid.show("Your scheduled ride has been succesfully cancelled", ToastAndroid.LONG)
+                                            ToastAndroid.show("Your scheduled booking has been succesfully cancelled", ToastAndroid.LONG)
                                             setLoading(false)
                                         }).catch((error) => {
                                             setLoading(false)
@@ -224,8 +229,6 @@ function ScheduleCancelRide({ navigation, route }) {
                                     }).catch((error) => {
                                         setLoading(false)
                                     })
-
-
 
                                 })
                                 .catch(error => {

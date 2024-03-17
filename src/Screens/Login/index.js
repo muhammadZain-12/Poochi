@@ -13,6 +13,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   PermissionsAndroid,
+  Dimensions,
 } from 'react-native';
 import CustomButton from '../../Components/CustomButton';
 import CustomHeader from '../../Components/CustomHeader';
@@ -623,7 +624,7 @@ export default function Login() {
             if (data) {
               setLoginData(data)
               firestore().collection("Request").doc(user.uid).get().then((doc) => {
-                
+
                 let data = doc.data()
                 setLoading(false);
 
@@ -926,26 +927,52 @@ export default function Login() {
         <View style={{ flex: 1, backgroundColor: Colors.white }}>
           <StatusBar
             animated={true}
-            backgroundColor="#fff"
-            barStyle={'dark-content'}
+            backgroundColor="#19A20D"
+            barStyle={'light-content'}
           />
-          <View style={{ alignItems: 'center', marginTop: 50 }}>
+          {/* <View style={{ alignItems: 'center', marginTop: 50 }}>
             <Image source={require('../../Images/logo.png')} />
+          </View> */}
+
+
+          <View style={{ height: 180, backgroundColor: "#19A20D", padding: 20, justifyContent: "flex-end" }} >
+
+
+            <Text
+              style={{
+                fontSize: 28,
+                fontFamily: 'Poppins-SemiBold',
+                color: Colors.white,
+              }}>
+              Welcome 👋
+            </Text>
+
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: 'Poppins-Regular',
+                color: "#e6e6e6",
+                // fontWeight: 'bold',
+              }}>
+              Let’s Get You Started With Poochie App
+            </Text>
+
+
           </View>
 
           <Text
             style={{
               fontSize: 32,
-              fontFamily: 'Poppins-Bold',
-              marginTop: 20,
+              fontFamily: 'Poppins-SemiBold',
+              marginTop: 15,
               color: Colors.black,
               textAlign: 'center',
-              fontWeight: 'bold',
+
             }}>
             Login
           </Text>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               marginBottom: 10,
               margin: 20,
@@ -982,11 +1009,107 @@ export default function Login() {
                 Google
               </Text>
             </View>
+          </TouchableOpacity> */}
+
+
+          <View style={{
+            margin: 20, marginTop: 10, marginBottom: 10
+
+          }}>
+
+            <View style={{
+              flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: Colors.input, paddingVertical: 5,
+              paddingHorizontal: 15, borderRadius: 5,
+              borderWidth: 1,
+              borderColor: '#b2b2b1',
+            }}>
+              <Image source={require("../../Images/envelope.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
+              <TextInput
+                style={{
+                  color: Colors.black,
+                  fontSize: 16,
+                  width:"90%"
+                }}
+                onChangeText={(e) => setSigninData({ ...signinData, email: e })}
+                placeholder="Email Address"
+                placeholderTextColor={Colors.gray}
+              />
+            </View>
+
+            <View
+              style={{
+                backgroundColor: Colors.input,
+                borderRadius: 5,
+                width: '100%',
+                marginTop: 15,
+                padding: 5,
+                paddingHorizontal: 15,
+                flexDirection: 'row',
+                // justifyContent: 'space-between',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: '#b2b2b1',
+              }}>
+
+              <Image source={require("../../Images/lock.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
+              <TextInput
+                style={{
+                  backgroundColor: Colors.input,
+                  borderRadius: 5,
+                  width: '85%',
+
+                  color: Colors.black,
+                  fontSize: 16,
+
+                }}
+                onChangeText={(e) => setSigninData({ ...signinData, password: e })}
+                placeholder="Password"
+                placeholderTextColor={Colors.gray}
+                secureTextEntry={secureEntry}
+              />
+              <Icons
+                name={secureEntry ? 'eye' : 'eye-off'}
+                color={Colors.gray}
+                size={25}
+                onPress={togglePassword}
+                style={{ width: '15%' }}
+              />
+            </View>
+          </View>
+
+          <CustomButton
+            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Login"}
+            styleContainer={{
+              alignSelf: 'center',
+              marginTop: 20,
+              width: '90%',
+            }}
+            linearStyle={{ borderRadius: 10 }}
+            onPress={() => signInValidation()}
+            btnTextStyle={{ fontSize: 18 }}
+          />
+
+
+          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} >
+            <Text
+              style={{
+                color: Colors.red,
+                paddingHorizontal: 20,
+                fontSize: 14,
+                fontFamily: "Poppins-SemiBold",
+                marginTop: 15,
+                textAlign: 'center',
+              }}>
+              Forgot Password?
+            </Text>
           </TouchableOpacity>
+
+
+
 
           <View
             style={{
-              marginTop: 10,
+              marginTop: 20,
               margin: 20,
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -1005,83 +1128,52 @@ export default function Login() {
             <View style={{ width: '44%', borderBottomWidth: 1 }}></View>
           </View>
 
-          <View style={{ margin: 20, marginTop: 10, marginBottom: 10 }}>
-            <TextInput
-              style={{
-                backgroundColor: Colors.input,
-                borderRadius: 5,
-                width: '100%',
-                padding: 15,
-                borderWidth: 1,
-                borderColor: '#b2b2b1',
-                color: Colors.black,
-                fontSize: 16,
-                paddingHorizontal: 20,
-              }}
-              onChangeText={(e) => setSigninData({ ...signinData, email: e })}
-              placeholder="Email"
-              placeholderTextColor={Colors.gray}
-            />
 
+          <TouchableOpacity
+            style={{
+              marginBottom: 10,
+              marginTop:10,
+              margin: 20,
+              backgroundColor: Colors.input,
+              borderWidth: 1,
+              borderRadius: 10,
+              padding: 5,
+              alignItems:"center",
+              justifyContent: 'center',
+            }}
+            onPress={() =>
+              onGoogleButtonPress()
+                .then(res => afterGoogleLogin(res))
+                .catch(error => setGoogleLoading(false))
+            }
+          >
             <View
               style={{
-                backgroundColor: Colors.input,
-                borderRadius: 5,
-                width: '100%',
-                marginTop: 15,
+                paddingHorizontal: 10,
+                paddingVertical: 7,
                 flexDirection: 'row',
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                borderWidth: 1,
-                borderColor: '#b2b2b1',
               }}>
-              <TextInput
+              <Image
+                source={require('../../Images/google.png')}
+                style={{ width: 30, height: 30 }}
+              />
+              <Text
                 style={{
-                  backgroundColor: Colors.input,
-                  borderRadius: 5,
-                  width: '85%',
-                  padding: 15,
-                  color: Colors.black,
-                  fontSize: 16,
-                  paddingHorizontal: 20,
-                }}
-                onChangeText={(e) => setSigninData({ ...signinData, password: e })}
-                placeholder="Password"
-                placeholderTextColor={Colors.gray}
-                secureTextEntry={secureEntry}
-              />
-              <Icons
-                name={secureEntry ? 'eye' : 'eye-off'}
-                color={Colors.gray}
-                size={25}
-                onPress={togglePassword}
-                style={{ width: '15%' }}
-              />
+                  marginLeft: 10,
+                  fontFamily: 'Poppins-Regular',
+                  color: '#61677D',
+                  fontSize: 18,
+                }}>
+                Google
+              </Text>
             </View>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} >
-            <Text
-              style={{
-                color: Colors.red,
-                paddingHorizontal: 20,
-                fontSize: 14,
-                textAlign: 'right',
-              }}>
-              Forgot Password?
-            </Text>
           </TouchableOpacity>
 
-          <CustomButton
-            text={loading ? <ActivityIndicator size={"small"} color={Colors.white} /> : "Log in"}
-            styleContainer={{
-              alignSelf: 'center',
-              marginTop: 30,
-              width: '90%',
-            }}
-            onPress={() => signInValidation()}
-            btnTextStyle={{ fontSize: 18 }}
-          />
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+
+
+
+          <TouchableOpacity  onPress={() => navigation.navigate('Signup')}>
             <Text
               style={{
                 marginHorizontal: 20,

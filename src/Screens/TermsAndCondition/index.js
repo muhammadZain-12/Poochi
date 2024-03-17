@@ -14,6 +14,7 @@ import {
     StatusBar,
     KeyboardAvoidingView,
     PermissionsAndroid,
+    Linking,
 } from 'react-native';
 import Colors from '../../Constant/Color';
 import CustomButton from '../../Components/CustomButton';
@@ -27,6 +28,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function TermsAndConditions({ navigation, route }) {
 
+
+    const [termsAndConditionsLink, setTermsAndConditionLink] = useState("")
 
 
 
@@ -49,6 +52,25 @@ function TermsAndConditions({ navigation, route }) {
     }, []);
 
 
+
+
+    const getTermsAndConditions = () => {
+
+        firestore().collection("Policy").doc("policy987456321").get().then((doc) => {
+
+            let data = doc?.data()
+
+            setTermsAndConditionLink(data?.termsAndConditionLink)
+
+        }).catch((error) => {
+
+        })
+
+    }
+
+    useEffect(() => {
+        getTermsAndConditions()
+    }, [])
 
     const handleLogoutUser = async () => {
 
@@ -122,7 +144,7 @@ function TermsAndConditions({ navigation, route }) {
                 <Modal animationType="slide" transparent={true} visible={modalVisible}>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <ScrollView style={{ marginBottom: 0, marginRight: 10, width: "100%" }}  >
+                            {/* <ScrollView style={{ marginBottom: 0, marginRight: 10, width: "100%" }}  >
 
                                 <Text style={{ color: Colors.black, fontSize: 16, fontFamily: "Poppins-Medium", marginHorizontal: 20 }} >
                                     Welcome to Poochie!
@@ -1318,7 +1340,13 @@ function TermsAndConditions({ navigation, route }) {
                                     If you have any questions or concerns about your privacy or anything in this policy, including if you need to access this policy in an alternative format, we encourage you to contact us at
                                     <Text style={{ color: "blue", fontFamily: "Poppins-Medium", fontSize: 12 }} > 818-213-3884 </Text>
                                 </Text>
-                            </ScrollView>
+                            </ScrollView> */}
+
+
+                            <TouchableOpacity onPress={() => Linking.openURL(termsAndConditionsLink)}  >
+                                <Text style={{ fontFamily: "Poppins-SemiBold", color: "blue", fontSize: 14 }} >Press here to read Terms And Conditions</Text>
+                            </TouchableOpacity>
+
                             <View style={{ flexDirection: "row", justifyContent: "space-around", width: "100%", marginHorizontal: 20 }} >
                                 <CustomButton
                                     onPress={handleDeclinePress}
@@ -1366,7 +1394,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 10,
         width: '90%',
-        height: "80%",
+        // height: "80%",
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {

@@ -7,16 +7,16 @@ import CustomButton from "../../Components/CustomButton"
 
 function ScheduleRideDate({ navigation, route }) {
 
-
     let screen = route.params
-
-
 
     var options = {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     };
+
+
+    console.log(screen, "screensss")
 
     const [date, setDate] = useState(new Date());
 
@@ -59,8 +59,6 @@ function ScheduleRideDate({ navigation, route }) {
 
 
 
-
-        console.log(time, "timee")
 
 
         let now = new Date()
@@ -200,7 +198,7 @@ function ScheduleRideDate({ navigation, route }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Schedule A Ride"
+                    text={screen == "PetSitter" ? "Schedule With Sitter" : "Schedule A Ride"}
                     color={Colors.black}
                 />
             </View>
@@ -224,7 +222,7 @@ function ScheduleRideDate({ navigation, route }) {
                 )}
 
                 <TouchableOpacity onPress={() => setShowTimePicker(true)} style={{ backgroundColor: "#e6e6e6", padding: 10, borderRadius: 10, paddingVertical: 15, marginTop: 20 }} >
-                    <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{time ? time?.toLocaleTimeString() : "Select Time"}</Text>
+                    <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors.buttonColor, fontSize: 16 }} >{time ? time?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Select Time"}</Text>
                 </TouchableOpacity>
                 {showTimePicker && (
                     <DateTimePicker

@@ -16,7 +16,6 @@ function PetSelect({ navigation, route }) {
 
     const focus = useIsFocused()
 
-    console.log(routeData, "routeData")
 
     const selectedPetsCont = useContext(SelectedPetContext)
 

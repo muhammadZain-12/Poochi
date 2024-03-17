@@ -34,10 +34,10 @@ function RideCancel({ navigation }) {
     const { bookingData, setBookingData } = bookingCont
     const { selectedPets, setSelectedPets } = selectedPetCont
     const { cardDetails, setCardDetails } = cardCont
-    let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges } = cancelChargesCont
+    let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges, scheduleCancelPetSittingCharges, cancelPetSittingCharges } = cancelChargesCont
 
 
-    console.log(bookingData?.bookingId,"bookingId")
+    console.log(bookingData?.bookingId, "bookingId")
 
 
     const handleCancelRide = () => {
@@ -116,9 +116,9 @@ function RideCancel({ navigation }) {
 
                                 date: new Date(),
                                 deposit: 0,
-                                cancellationCharges: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
+                                cancellationCharges: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(scheduleCancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
                                 spent: 0,
-                                remainingWallet: -(Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
+                                remainingWallet: -bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(scheduleCancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
 
                             }
 
@@ -128,9 +128,9 @@ function RideCancel({ navigation }) {
 
                                 let walletToAdd = {
                                     date: new Date(),
-                                    earning: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
+                                    earning: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(scheduleCancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100,
                                     withdraw: 0,
-                                    remainingWallet: (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
+                                    remainingWallet: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(scheduleCancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(scheduleCancelCharges)) / 100
                                 }
 
                                 firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
@@ -143,7 +143,7 @@ function RideCancel({ navigation }) {
                                             notification: {
                                                 body: "Customer has changed his mind",
                                                 title: `Hi ${bookingData?.driverData?.fullName} `,
-                                                sound : "default"
+                                                sound: "default"
                                             },
                                             to: bookingData?.driverData?.token,
                                         });
@@ -192,7 +192,7 @@ function RideCancel({ navigation }) {
                                     // setBookingData("")
                                     setCardDetails("")
 
-                                    ToastAndroid.show("Ride has been succesfully cancelled", ToastAndroid.SHORT)
+                                    ToastAndroid.show("Booking has been succesfully cancelled", ToastAndroid.SHORT)
                                     navigation.replace("Tab")
 
 
@@ -264,10 +264,9 @@ function RideCancel({ navigation }) {
 
                     date: new Date(),
                     deposit: 0,
-                    cancellationCharges: (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
+                    cancellationCharges: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(cancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
                     spent: 0,
-                    remainingWallet: -(Number(bookingData?.fare) * Number(cancelCharges)) / 100
-
+                    remainingWallet: -bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(cancelPetSittingCharges)) / 100 : (Number(bookingData?.fare) * Number(cancelCharges)) / 100
                 }
 
                 firestore().collection("UserWallet").doc(id).set({
@@ -276,9 +275,9 @@ function RideCancel({ navigation }) {
 
                     let walletToAdd = {
                         date: new Date(),
-                        earning: (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
+                        earning: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(cancelPetSittingCharges) / 2) / 100 : (Number(bookingData?.fare) * Number(cancelCharges)) / 100,
                         withdraw: 0,
-                        remainingWallet: (Number(bookingData?.fare) * Number(cancelCharges)) / 100
+                        remainingWallet: bookingData?.type == "PetSitter" ? (Number(bookingData?.fare) * Number(cancelPetSittingCharges) / 2) / 100 : (Number(bookingData?.fare) * Number(cancelCharges)) / 100
                     }
 
                     firestore().collection("DriverWallet").doc(bookingData?.driverData?.id).set({
@@ -291,7 +290,7 @@ function RideCancel({ navigation }) {
                                 notification: {
                                     body: "Customer has changed his mind",
                                     title: `Hi ${bookingData?.driverData?.fullName} `,
-                                    sound : "default"
+                                    sound: "default"
                                 },
                                 to: bookingData?.driverData?.token,
                             });
@@ -341,7 +340,7 @@ function RideCancel({ navigation }) {
                         // setBookingData("")
                         setCardDetails("")
 
-                        ToastAndroid.show("Ride has been succesfully cancelled", ToastAndroid.SHORT)
+                        ToastAndroid.show("Booking has been succesfully cancelled", ToastAndroid.SHORT)
                         navigation.replace("Tab")
 
 

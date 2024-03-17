@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, Linking, BackHandler } from "react-native"
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import Colors from "../../Constant/Color"
 import Icons from "react-native-vector-icons/Ionicons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -13,7 +13,12 @@ import BookingContext from "../../Context/bookingContext/context"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import FontAwesome from "react-native-vector-icons/FontAwesome5"
 
+
+
 function Profile({ navigation }) {
+
+
+    const [privacyPolicyLink, setPrivacyPolicyLink] = useState("")
 
 
 
@@ -25,6 +30,25 @@ function Profile({ navigation }) {
                 '889265375440-jbbsvsaa0p98bs1itd620d3qbl4hs6rh.apps.googleusercontent.com',
         });
     }, []);
+
+    
+    const getPrivacyPolicy = () => {
+
+        firestore().collection("Policy").doc("policy987456321").get().then((doc) => {
+
+            let data = doc?.data()
+
+            setPrivacyPolicyLink(data?.privacyPolicyLink)
+
+        }).catch((error) => {
+
+        })
+
+    }
+
+    useEffect(() => {
+        getPrivacyPolicy()
+    }, [])
 
     const loginCont = useContext(LoginContext)
     const locationCont = useContext(LocationContext)
@@ -289,7 +313,7 @@ function Profile({ navigation }) {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity onPress={() => navigation.navigate("PrivacyPolicy")} style={{ paddingHorizontal: 20, marginTop: 20 }} >
+                <TouchableOpacity onPress={() => Linking.openURL(privacyPolicyLink)} style={{ paddingHorizontal: 20, marginTop: 20 }} >
 
                     <View style={{ width: "100%", backgroundColor: "#D9d9D9", padding: 15, borderRadius: 10, flexDirection: "row", alignItems: "center" }} >
 
