@@ -37,7 +37,6 @@ function RideCancel({ navigation }) {
     let { cancelCharges, setCancelCharges, scheduleCancelCharges, setScheduleCancelCharges, scheduleCancelPetSittingCharges, cancelPetSittingCharges } = cancelChargesCont
 
 
-    console.log(bookingData?.bookingId, "bookingId")
 
 
     const handleCancelRide = () => {
@@ -388,7 +387,7 @@ function RideCancel({ navigation }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Cancel Ride"
+                    text="Cancel Booking"
                     color={Colors.black}
                 />
             </View>

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid } from "react-native"
+import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid, BackHandler } from "react-native"
 import DateTimePicker from '@react-native-community/datetimepicker'
 import Colors from "../../Constant/Color"
 import CustomHeader from "../../Components/CustomHeader"
@@ -16,7 +16,6 @@ function ScheduleRideDate({ navigation, route }) {
     };
 
 
-    console.log(screen, "screensss")
 
     const [date, setDate] = useState(new Date());
 
@@ -85,14 +84,14 @@ function ScheduleRideDate({ navigation, route }) {
 
         if (nowYear > selectedYear) {
 
-            ToastAndroid.show("you cannot schedule ride of previous year", ToastAndroid.SHORT)
+            ToastAndroid.show("you cannot schedule booking of previous year", ToastAndroid.SHORT)
             return
 
 
         }
 
         if (nowYear == selectedYear && nowMonth > selectedMonth) {
-            ToastAndroid.show("you cannot schedule ride of previous month", ToastAndroid.SHORT)
+            ToastAndroid.show("you cannot schedule booking of previous month", ToastAndroid.SHORT)
             return
         }
 
@@ -132,15 +131,13 @@ function ScheduleRideDate({ navigation, route }) {
 
             let diffHours = diff / 1000 / 60 / 60
 
-            console.log(diffHours, "hourss")
-
 
             if (Number(diffHours) < 0) {
-                ToastAndroid.show("You cannot schedule ride of previous hours", ToastAndroid.SHORT)
+                ToastAndroid.show("You cannot schedule booking of previous hours", ToastAndroid.SHORT)
             }
 
             if (Number(diffHours) < 3) {
-                ToastAndroid.show("Ride must be scheduled 3 hours prior to current time", ToastAndroid.SHORT)
+                ToastAndroid.show("Booking must be scheduled 3 hours prior to current time", ToastAndroid.SHORT)
                 return
             }
 
@@ -189,6 +186,24 @@ function ScheduleRideDate({ navigation, route }) {
         }
 
     }
+
+
+    React.useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            // Replace 'TabScreenName' with the name of your tab screen
+            // This will navigate to the specified tab screen when the back button is pressed
+
+
+            navigation.goBack()
+
+            return true; // Return true to prevent the default back action
+
+        });
+
+        return () => backHandler.remove(); // Cleanup the event listener
+
+    }, []);
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >

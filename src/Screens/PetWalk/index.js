@@ -855,7 +855,7 @@ function PetWalk({ navigation, route }) {
 
             if (checkRideTime) {
 
-                ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                ToastAndroid.show("You have already schedule booking within this time slot", ToastAndroid.SHORT)
                 return
             }
 
@@ -958,8 +958,8 @@ function PetWalk({ navigation, route }) {
 
                     var data = JSON.stringify({
                         notification: {
-                            body: "You have got Scheduled Ride request kindly respond back",
-                            title: `Scheduled Ride Request`,
+                            body: "You have got Scheduled Booking request kindly respond back",
+                            title: `Scheduled Booking Request`,
                             sound: "default"
                         },
                         android: {
@@ -986,8 +986,8 @@ function PetWalk({ navigation, route }) {
                                 let id = e?.id
 
                                 let dataToSend = {
-                                    title: "Scheduled Ride Request",
-                                    body: 'You have got Scheduled Ride request kindly respond back',
+                                    title: "Scheduled Booking Request",
+                                    body: 'You have got Scheduled Booking request kindly respond back',
                                     date: new Date()
                                 }
                                 firestore().collection("DriverNotification").doc(id).set({
@@ -1002,7 +1002,7 @@ function PetWalk({ navigation, route }) {
                                 dataToSend
                             ])
                             setLoading(false)
-                            ToastAndroid.show("Your ride has been succesfully scheduled", ToastAndroid.LONG)
+                            ToastAndroid.show("Your booking has been succesfully scheduled", ToastAndroid.LONG)
                             navigation.replace("Tab", {
                                 screen: "Home"
                             })

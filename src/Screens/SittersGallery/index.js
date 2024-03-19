@@ -82,7 +82,6 @@ function SittersGallery({ navigation }) {
     const { loginData, setLoginData } = loginCont
 
 
-
     const scheduleRideCont = useContext(ScheduleRideContext)
     const { scheduleData, setScheduleData } = scheduleRideCont
 
@@ -432,8 +431,6 @@ function SittersGallery({ navigation }) {
 
 
         let dataToSend;
-
-
         if (bookingData?.type == "PetSitter" && bookingData?.scheduleDate) {
 
             let allData;
@@ -516,7 +513,7 @@ function SittersGallery({ navigation }) {
 
             if (checkRideTime) {
 
-                ToastAndroid.show("You have already schedule ride within this time slot", ToastAndroid.SHORT)
+                ToastAndroid.show("You have already schedule booking within this time slot", ToastAndroid.SHORT)
                 setLoading(false)
                 return
             }
@@ -528,8 +525,8 @@ function SittersGallery({ navigation }) {
 
                 var data = JSON.stringify({
                     notification: {
-                        body: "You have got Scheduled Ride request kindly respond back",
-                        title: `Scheduled Ride Request`,
+                        body: "You have got Scheduled Booking request kindly respond back",
+                        title: `Scheduled Booking Request`,
                         sound: "default"
                     },
                     android: {
@@ -552,8 +549,8 @@ function SittersGallery({ navigation }) {
 
 
                         let dataToSend = {
-                            title: "Scheduled Ride Request",
-                            body: 'You have got Scheduled Ride request kindly respond back',
+                            title: "Scheduled Booking Request",
+                            body: 'You have got Scheduled Booking request kindly respond back',
                             date: new Date()
                         }
 

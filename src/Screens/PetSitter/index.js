@@ -648,6 +648,9 @@ function Petsitter({ navigation, route }) {
         }
 
 
+
+
+
         // if (!cardDetails && !deductedFromWallet) {
         //     ToastAndroid.show("Kindly Enter Payment Details", ToastAndroid.SHORT)
         //     return
@@ -664,6 +667,29 @@ function Petsitter({ navigation, route }) {
 
         if (timeType.length == 0) {
             ToastAndroid.show("Kindly Choose Sitting Duration", ToastAndroid.SHORT)
+            return
+        }
+
+        let timeSelected = [...timeType]
+        timeSelected = timeSelected[0]
+
+        if (timeSelected.type.toLowerCase() == "by week" && !totalWeeks) {
+
+            ToastAndroid.show("Kindly Enter Number Of Weeks", ToastAndroid.SHORT)
+            return
+
+        }
+
+        if (timeSelected.type.toLowerCase() == "by day" && !totalDays) {
+
+            ToastAndroid.show("Kindly Enter Number Of Days", ToastAndroid.SHORT)
+            return
+
+        }
+
+
+        if (timeSelected.type.toLowerCase() == "by hour" && !selectedTimeDuration) {
+            ToastAndroid.show("Kindly Enter Number Of Hours", ToastAndroid.SHORT)
             return
         }
 
