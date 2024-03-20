@@ -242,7 +242,7 @@ function ScheduleRide({ navigation, route }) {
                 <CustomHeader
                     onPress={() => navigation.goBack()}
                     iconname={"arrow-back-outline"}
-                    text="Scheduled Rides"
+                    text="Scheduled Bookings"
                     color={Colors.black}
                 />
             </View>
