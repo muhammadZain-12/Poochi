@@ -229,11 +229,7 @@ function ScheduleRide({ navigation, route }) {
             </TouchableOpacity>
         )
 
-
-
-
     }
-
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.white }} >
